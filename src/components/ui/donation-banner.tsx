@@ -6,9 +6,10 @@ import { clsx } from "clsx";
 
 interface DonationBannerProps {
   onDonateClick: () => void;
+  onVisibilityChange?: (visible: boolean) => void;
 }
 
-export function DonationBanner({ onDonateClick }: DonationBannerProps) {
+export function DonationBanner({ onDonateClick, onVisibilityChange }: DonationBannerProps) {
   const [isVisible, setIsVisible] = useState(false);
   const [isDismissed, setIsDismissed] = useState(false);
 
@@ -17,14 +18,18 @@ export function DonationBanner({ onDonateClick }: DonationBannerProps) {
     const dismissed = sessionStorage.getItem("donation-banner-dismissed");
     if (!dismissed) {
       // Delay showing banner for a smoother experience
-      const timer = setTimeout(() => setIsVisible(true), 1000);
+      const timer = setTimeout(() => {
+        setIsVisible(true);
+        onVisibilityChange?.(true);
+      }, 1000);
       return () => clearTimeout(timer);
     }
-  }, []);
+  }, [onVisibilityChange]);
 
   const handleDismiss = () => {
     setIsVisible(false);
     setIsDismissed(true);
+    onVisibilityChange?.(false);
     sessionStorage.setItem("donation-banner-dismissed", "true");
   };
 
@@ -33,7 +38,7 @@ export function DonationBanner({ onDonateClick }: DonationBannerProps) {
   return (
     <div
       className={clsx(
-        "relative overflow-hidden border-b border-border/50",
+        "relative overflow-hidden border-b border-border/30",
         "bg-gradient-to-r from-rose-500/5 via-amber-500/5 to-rose-500/5",
         "animate-in slide-in-from-top duration-500"
       )}

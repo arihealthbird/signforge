@@ -358,16 +358,39 @@ function HomeContent({
     };
   }, [emailTheme]);
 
+  // Track banner visibility for layout calculations
+  const [donationBannerVisible, setDonationBannerVisible] = useState(false);
+  const [sharedBannerVisible, setSharedBannerVisible] = useState(isSharedTemplate);
+
+  // Update shared banner visibility when isSharedTemplate changes
+  useEffect(() => {
+    setSharedBannerVisible(isSharedTemplate);
+  }, [isSharedTemplate]);
+
+  // Calculate top offset based on visible banners
+  // Base header: 56px (h-14), Donation banner: ~32px, Shared banner: ~48px
+  const getTopOffset = () => {
+    let offset = 56; // base header height
+    if (donationBannerVisible) offset += 32;
+    if (sharedBannerVisible) offset += 48;
+    return offset;
+  };
+
   return (
     <div className="min-h-screen bg-background flex flex-col">
       {/* Visual Editor Toolbar - floating */}
       {isVisualEditMode && <VisualEditorToolbar />}
       
-      {/* Donation Banner */}
-      <DonationBanner onDonateClick={() => setIsDonateModalOpen(true)} />
+      {/* Unified Header + Banner Container */}
+      <header className="sticky top-0 z-50 bg-background/95 backdrop-blur-xl">
+        {/* Donation Banner - now inside header */}
+        <DonationBanner 
+          onDonateClick={() => setIsDonateModalOpen(true)} 
+          onVisibilityChange={setDonationBannerVisible}
+        />
 
-      {/* Header */}
-      <header className="sticky top-0 z-50 border-b border-border bg-background/95 backdrop-blur-xl">
+        {/* Main Header Bar */}
+        <div className="border-b border-border">
         <div className="px-3 md:px-4 h-14 flex items-center justify-between">
           <div className="flex items-center gap-2 md:gap-4">
             <div className="flex items-center gap-2 md:gap-3">
@@ -476,17 +499,21 @@ function HomeContent({
             <ThemeToggle />
           </div>
         </div>
-      </header>
+        </div>
 
-      {/* Shared Template Banner */}
-      {isSharedTemplate && (
-        <SharedTemplateBanner
-          creatorName={sharedCreatorName}
-          hasStartedEditing={hasBeenCustomized}
-          onDismiss={onSharedTemplateDismiss}
-          onStartEditing={onSharedTemplateUse}
-        />
-      )}
+        {/* Shared Template Banner - inside header */}
+        {isSharedTemplate && sharedBannerVisible && (
+          <SharedTemplateBanner
+            creatorName={sharedCreatorName}
+            hasStartedEditing={hasBeenCustomized}
+            onDismiss={() => {
+              setSharedBannerVisible(false);
+              onSharedTemplateDismiss();
+            }}
+            onStartEditing={onSharedTemplateUse}
+          />
+        )}
+      </header>
 
       {/* Main Builder Layout */}
       {/* ======================= MOBILE LAYOUT ======================= */}
@@ -870,10 +897,12 @@ function HomeContent({
           {/* Center - Canvas/Preview (Fixed) */}
           <main 
             className={clsx(
-              "fixed bg-secondary/30 flex flex-col z-40 top-14 bottom-10 transition-all duration-300",
+              "fixed bg-secondary/30 flex flex-col z-40 bottom-10",
+              "transition-[left,top] duration-300 ease-in-out",
               "right-80 lg:right-96",
               leftPanelOpen ? "left-72 lg:left-80" : "left-0"
             )}
+            style={{ top: `${getTopOffset()}px` }}
           >
           {/* Canvas Toolbar */}
           <div className="h-12 border-b border-l border-r border-border bg-background/50 flex items-center justify-between px-4">
