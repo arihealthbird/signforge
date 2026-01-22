@@ -391,17 +391,17 @@ function HomeContent({
 
         {/* Main Header Bar */}
         <div className="border-b border-border">
-        <div className="px-3 md:px-4 h-14 flex items-center justify-between">
-          <div className="flex items-center gap-2 md:gap-4">
-            <div className="flex items-center gap-2 md:gap-3">
+        <div className="px-2.5 sm:px-3 md:px-4 h-12 sm:h-14 flex items-center justify-between">
+          <div className="flex items-center gap-2 sm:gap-3 md:gap-4">
+            <div className="flex items-center gap-1.5 sm:gap-2 md:gap-3">
               <AnimatedLogo />
-              <div className="hidden xs:block">
-                <h1 className="font-semibold text-sm tracking-tight">Signature Forge</h1>
+              <div>
+                <h1 className="font-semibold text-xs sm:text-sm tracking-tight">Signature Forge</h1>
                 <a 
                   href="https://www.openinsurance.ai" 
                   target="_blank" 
                   rel="noopener noreferrer"
-                  className="text-[10px] text-muted-foreground hover:text-foreground transition-colors flex items-center gap-1"
+                  className="text-[9px] sm:text-[10px] text-muted-foreground hover:text-foreground transition-colors flex items-center gap-0.5 sm:gap-1"
                 >
                   by <span className="font-medium">OpenOS</span>
                 </a>
@@ -466,7 +466,15 @@ function HomeContent({
               <Sparkles className="w-4 h-4" />
               <span className="hidden lg:inline">AI Assist</span>
             </SparkleButton>
-            {/* Share button */}
+            {/* Share button - visible on all screen sizes */}
+            <Button
+              variant="ghost"
+              size="icon"
+              className="md:hidden h-8 w-8 text-muted-foreground hover:text-foreground"
+              onClick={() => setIsShareModalOpen(true)}
+            >
+              <SendHorizontal className="w-4 h-4" />
+            </Button>
             <Button
               variant="ghost"
               size="sm"
@@ -518,7 +526,7 @@ function HomeContent({
       {/* Main Builder Layout */}
       {/* ======================= MOBILE LAYOUT ======================= */}
       {isMobile && (
-        <div className="flex-1 flex flex-col overflow-hidden pb-[76px] safe-area-bottom min-h-screen-mobile">
+        <div className="flex-1 flex flex-col overflow-hidden pb-[68px] safe-area-bottom min-h-screen-mobile">
           {/* Mobile Panel Content */}
           <div className="flex-1 overflow-y-auto scroll-touch">
             {/* Preview Panel */}
@@ -526,20 +534,12 @@ function HomeContent({
               <div className="h-full bg-secondary/30 flex flex-col">
                 {/* Enhanced mobile toolbar - sticky */}
                 <div className="sticky top-0 z-20 border-b border-border bg-background/95 backdrop-blur-sm">
-                  {/* Top row - Theme and actions */}
+                {/* Top row - Theme and actions */}
                   <div className="h-11 flex items-center justify-between px-3">
                     <div className="flex items-center gap-2">
                       <EmailThemeSelector value={emailTheme} onChange={setEmailTheme} />
                     </div>
                     <div className="flex items-center gap-1">
-                      <Button
-                        variant="ghost"
-                        size="icon"
-                        className="h-9 w-9 hover:text-[var(--gradient-mid-3)] touch-manipulation"
-                        onClick={() => setIsShareModalOpen(true)}
-                      >
-                        <SendHorizontal className="w-4 h-4" />
-                      </Button>
                       <PreviewThemeSwitch
                         isDark={previewTheme === "dark"}
                         onChange={(isDark) => setPreviewTheme(isDark ? "dark" : "light")}
