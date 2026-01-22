@@ -697,11 +697,11 @@ function HomeContent({
       {/* ======================= TABLET LAYOUT ======================= */}
       {isTablet && (
         <div className="flex-1 flex overflow-hidden relative">
-          {/* Left Drawer */}
+          {/* Left Drawer - wider on larger tablets/small laptops */}
           <aside 
             className={clsx(
               "absolute left-0 top-0 bottom-0 z-30 border-r border-border bg-card flex flex-col transition-all duration-300",
-              tabletDrawerOpen === "left" ? "w-72 translate-x-0" : "w-72 -translate-x-full"
+              tabletDrawerOpen === "left" ? "w-72 md:w-80 lg:w-[340px] translate-x-0" : "w-72 md:w-80 lg:w-[340px] -translate-x-full"
             )}
           >
             <div className="flex items-center justify-between p-3 border-b border-border">
@@ -744,11 +744,11 @@ function HomeContent({
             </div>
           </aside>
 
-          {/* Right Drawer */}
+          {/* Right Drawer - wider on larger tablets/small laptops */}
           <aside 
             className={clsx(
               "absolute right-0 top-0 bottom-0 z-30 border-l border-border bg-card flex flex-col transition-all duration-300",
-              tabletDrawerOpen === "right" ? "w-80 translate-x-0" : "w-80 translate-x-full"
+              tabletDrawerOpen === "right" ? "w-80 md:w-[340px] lg:w-96 translate-x-0" : "w-80 md:w-[340px] lg:w-96 translate-x-full"
             )}
           >
             <div className="flex items-center justify-between p-3 border-b border-border">
@@ -807,59 +807,73 @@ function HomeContent({
 
           {/* Center - Canvas/Preview */}
           <main className="flex-1 bg-secondary/30 flex flex-col">
-            <div className="h-12 border-b border-border bg-background/50 flex items-center justify-between px-3">
-              <div className="flex items-center gap-2">
-                <span className="text-xs font-medium text-muted-foreground uppercase tracking-wide">Preview</span>
+            <div className="h-11 border-b border-border bg-background/50 flex items-center justify-between px-2 lg:px-4">
+              <div className="flex items-center gap-1.5 lg:gap-2">
+                <span className="text-[10px] lg:text-xs font-medium text-muted-foreground uppercase tracking-wide hidden lg:block">Preview</span>
+                <span className="text-[10px] lg:text-xs text-muted-foreground px-1.5 py-0.5 bg-secondary rounded border border-border capitalize truncate max-w-[80px] lg:max-w-[120px]">
+                  {selectedTemplate.replace(/-/g, " ")}
+                </span>
                 <EmailThemeSelector value={emailTheme} onChange={setEmailTheme} />
+                {/* Device switcher for larger tablets */}
+                <div className="hidden lg:block">
+                  <DevicePreviewSwitcher value={previewDevice} onChange={setPreviewDevice} />
+                </div>
               </div>
-              <div className="flex items-center gap-1">
+              <div className="flex items-center gap-0.5 lg:gap-1">
                 <button
                   onClick={() => setIsVisualEditMode(!isVisualEditMode)}
                   className={clsx(
-                    "visual-edit-btn relative flex items-center gap-2 h-8 px-2 rounded-lg text-sm font-medium transition-all",
+                    "visual-edit-btn relative flex items-center gap-1 h-7 lg:h-8 px-2 rounded-lg text-sm font-medium transition-all",
                     isVisualEditMode ? "visual-edit-btn-active" : "visual-edit-btn-inactive"
                   )}
                 >
                   <MousePointerClick className={clsx(
-                    "w-4 h-4 transition-all",
+                    "w-3.5 h-3.5 lg:w-4 lg:h-4 transition-all",
                     isVisualEditMode ? "text-white animate-pulse" : "text-[var(--gradient-mid-4)]"
                   )} />
+                  <span className={clsx(
+                    "hidden lg:inline text-xs",
+                    isVisualEditMode ? "text-white" : "text-foreground"
+                  )}>
+                    {isVisualEditMode ? "Editing" : "Edit"}
+                  </span>
                 </button>
                 <PreviewThemeSwitch
                   isDark={previewTheme === "dark"}
                   onChange={(isDark) => setPreviewTheme(isDark ? "dark" : "light")}
                 />
-                <div className="w-px h-6 bg-border mx-1" />
+                <div className="w-px h-5 bg-border mx-0.5 lg:mx-1" />
                 <Button
                   variant="ghost"
                   size="icon"
-                  className="h-8 w-8"
+                  className="h-7 w-7 lg:h-8 lg:w-8"
                   onClick={() => setPreviewZoom(Math.max(50, previewZoom - 25))}
                   disabled={previewZoom <= 50}
                 >
-                  <ZoomOut className="w-4 h-4" />
+                  <ZoomOut className="w-3.5 h-3.5 lg:w-4 lg:h-4" />
                 </Button>
-                <span className="text-xs text-muted-foreground w-10 text-center">{previewZoom}%</span>
+                <span className="text-[10px] lg:text-xs text-muted-foreground w-8 lg:w-10 text-center">{previewZoom}%</span>
                 <Button
                   variant="ghost"
                   size="icon"
-                  className="h-8 w-8"
+                  className="h-7 w-7 lg:h-8 lg:w-8"
                   onClick={() => setPreviewZoom(Math.min(200, previewZoom + 25))}
                   disabled={previewZoom >= 200}
                 >
-                  <ZoomIn className="w-4 h-4" />
+                  <ZoomIn className="w-3.5 h-3.5 lg:w-4 lg:h-4" />
                 </Button>
+                <div className="w-px h-5 bg-border mx-0.5" />
                 <Button
                   variant="ghost"
                   size="icon"
-                  className="h-8 w-8"
+                  className="h-7 w-7 lg:h-8 lg:w-8"
                   onClick={toggleFullscreen}
                 >
-                  <Maximize2 className="w-4 h-4" />
+                  <Maximize2 className="w-3.5 h-3.5 lg:w-4 lg:h-4" />
                 </Button>
               </div>
             </div>
-            <div className="flex-1 flex items-start justify-center p-4 overflow-auto relative">
+            <div className="flex-1 flex items-start justify-center p-3 lg:p-4 overflow-auto relative">
               <ThemeCanvasEffects themeId={emailTheme} className="absolute inset-0 overflow-hidden" />
               <div className="relative z-10" style={{ transform: `scale(${previewZoom / 100})`, transformOrigin: 'top center' }}>
                 <div 
@@ -905,7 +919,7 @@ function HomeContent({
           <aside 
             className={clsx(
               "border-r border-border bg-card flex flex-col transition-all duration-300 flex-shrink-0",
-              leftPanelOpen ? "w-72 lg:w-80" : "w-0 overflow-hidden"
+              leftPanelOpen ? "w-64 xl:w-72 2xl:w-80" : "w-0 overflow-hidden"
             )}
           >
             {/* Left Tabs */}
@@ -915,20 +929,20 @@ function HomeContent({
                   key={tab.id}
                   onClick={() => setLeftTab(tab.id)}
                   className={clsx(
-                    "flex-1 flex items-center justify-center gap-2 px-4 py-3 text-sm font-medium transition-all border-b-2",
+                    "flex-1 flex items-center justify-center gap-1.5 xl:gap-2 px-2 xl:px-4 py-2.5 text-xs xl:text-sm font-medium transition-all border-b-2",
                     leftTab === tab.id
                       ? "border-primary text-foreground bg-background"
                       : "border-transparent text-muted-foreground hover:text-foreground hover:bg-secondary/50"
                   )}
                 >
-                  <tab.icon className="w-4 h-4" />
+                  <tab.icon className="w-3.5 h-3.5 xl:w-4 xl:h-4" />
                   {tab.label}
                 </button>
               ))}
             </div>
 
             {/* Left Tab Content */}
-            <div className="flex-1 overflow-y-auto p-4">
+            <div className="flex-1 overflow-y-auto p-3 xl:p-4">
               {leftTab === "templates" && (
                 <TemplateSelector
                   selectedTemplate={selectedTemplate}
@@ -946,31 +960,33 @@ function HomeContent({
             className={clsx(
               "fixed bg-secondary/30 flex flex-col z-40 bottom-10",
               "transition-[left,top] duration-300 ease-in-out",
-              "right-80 lg:right-96",
-              leftPanelOpen ? "left-72 lg:left-80" : "left-0"
+              "right-72 xl:right-80 2xl:right-96",
+              leftPanelOpen ? "left-64 xl:left-72 2xl:left-80" : "left-0"
             )}
             style={{ top: `${getTopOffset()}px` }}
           >
-          {/* Canvas Toolbar */}
-          <div className="h-12 border-b border-l border-r border-border bg-background/50 flex items-center justify-between px-4">
-            <div className="flex items-center gap-3">
-              <span className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
+          {/* Canvas Toolbar - Responsive */}
+          <div className="h-11 border-b border-l border-r border-border bg-background/50 flex items-center justify-between px-2 xl:px-4">
+            <div className="flex items-center gap-1.5 xl:gap-3">
+              <span className="text-[10px] xl:text-xs font-medium text-muted-foreground uppercase tracking-wide hidden xl:block">
                 Preview
               </span>
-              <span className="text-xs text-muted-foreground px-2 py-0.5 bg-secondary rounded border border-border capitalize">
+              <span className="text-[10px] xl:text-xs text-muted-foreground px-1.5 xl:px-2 py-0.5 bg-secondary rounded border border-border capitalize truncate max-w-[100px] xl:max-w-none">
                 {selectedTemplate.replace(/-/g, " ")}
               </span>
-              <div className="w-px h-5 bg-border" />
+              <div className="w-px h-4 bg-border hidden xl:block" />
               <EmailThemeSelector value={emailTheme} onChange={setEmailTheme} />
-              <div className="w-px h-5 bg-border" />
-              <DevicePreviewSwitcher value={previewDevice} onChange={setPreviewDevice} />
+              <div className="w-px h-4 bg-border hidden 2xl:block" />
+              <div className="hidden 2xl:block">
+                <DevicePreviewSwitcher value={previewDevice} onChange={setPreviewDevice} />
+              </div>
             </div>
-            <div className="flex items-center gap-1">
+            <div className="flex items-center gap-0.5 xl:gap-1">
               {/* Visual Edit Mode Toggle */}
               <button
                 onClick={() => setIsVisualEditMode(!isVisualEditMode)}
                 className={clsx(
-                  "visual-edit-btn relative flex items-center gap-2 h-8 px-3 rounded-lg text-sm font-medium transition-all",
+                  "visual-edit-btn relative flex items-center gap-1 xl:gap-2 h-7 xl:h-8 px-2 xl:px-3 rounded-lg text-sm font-medium transition-all",
                   isVisualEditMode 
                     ? "visual-edit-btn-active" 
                     : "visual-edit-btn-inactive"
@@ -978,13 +994,13 @@ function HomeContent({
                 title={isVisualEditMode ? "Exit Visual Edit Mode" : "Enter Visual Edit Mode"}
               >
                 <MousePointerClick className={clsx(
-                  "w-4 h-4 transition-all",
+                  "w-3.5 h-3.5 xl:w-4 xl:h-4 transition-all",
                   isVisualEditMode 
                     ? "text-white animate-pulse" 
                     : "text-[var(--gradient-mid-4)]"
                 )} />
                 <span className={clsx(
-                  "hidden sm:inline transition-all",
+                  "hidden 2xl:inline text-xs transition-all",
                   isVisualEditMode ? "text-white" : "text-foreground"
                 )}>
                   {isVisualEditMode ? "Editing" : "Edit"}
@@ -998,43 +1014,43 @@ function HomeContent({
                   </>
                 )}
               </button>
-              <div className="w-px h-6 bg-border mx-1" />
+              <div className="w-px h-5 bg-border mx-0.5 xl:mx-1" />
               {/* Preview Theme Toggle */}
               <PreviewThemeSwitch
                 isDark={previewTheme === "dark"}
                 onChange={(isDark) => setPreviewTheme(isDark ? "dark" : "light")}
               />
-              <div className="w-px h-6 bg-border mx-2" />
+              <div className="w-px h-5 bg-border mx-0.5 xl:mx-1" />
               <Button
                 variant="ghost"
                 size="icon"
-                className="h-8 w-8"
+                className="h-7 w-7 xl:h-8 xl:w-8"
                 onClick={() => setPreviewZoom(Math.max(50, previewZoom - 25))}
                 disabled={previewZoom <= 50}
               >
-                <ZoomOut className="w-4 h-4" />
+                <ZoomOut className="w-3.5 h-3.5 xl:w-4 xl:h-4" />
               </Button>
-              <span className="text-xs text-muted-foreground w-12 text-center">
+              <span className="text-[10px] xl:text-xs text-muted-foreground w-8 xl:w-10 text-center">
                 {previewZoom}%
               </span>
               <Button
                 variant="ghost"
                 size="icon"
-                className="h-8 w-8"
+                className="h-7 w-7 xl:h-8 xl:w-8"
                 onClick={() => setPreviewZoom(Math.min(200, previewZoom + 25))}
                 disabled={previewZoom >= 200}
               >
-                <ZoomIn className="w-4 h-4" />
+                <ZoomIn className="w-3.5 h-3.5 xl:w-4 xl:h-4" />
               </Button>
-              <div className="w-px h-6 bg-border mx-1" />
+              <div className="w-px h-5 bg-border mx-0.5" />
               <Button
                 variant="ghost"
                 size="icon"
-                className="h-8 w-8"
+                className="h-7 w-7 xl:h-8 xl:w-8"
                 onClick={toggleFullscreen}
                 title="Toggle fullscreen"
               >
-                <Maximize2 className="w-4 h-4" />
+                <Maximize2 className="w-3.5 h-3.5 xl:w-4 xl:h-4" />
               </Button>
             </div>
           </div>
@@ -1137,7 +1153,7 @@ function HomeContent({
         <div className="flex-1 min-w-0" />
 
         {/* Right Sidebar - Content Editor */}
-        <aside className="w-80 lg:w-96 border-l border-border bg-card flex flex-col flex-shrink-0">
+        <aside className="w-72 xl:w-80 2xl:w-96 border-l border-border bg-card flex flex-col flex-shrink-0">
           {/* Right Tabs */}
           <div className="flex border-b border-border">
             {rightTabs.map((tab) => (
@@ -1145,7 +1161,7 @@ function HomeContent({
                 key={tab.id}
                 onClick={() => tab.id === "export" ? handleExportClick() : setRightTab(tab.id)}
                 className={clsx(
-                  "flex-1 flex items-center justify-center gap-2 px-3 py-3 text-sm font-medium transition-all",
+                  "flex-1 flex items-center justify-center gap-1.5 xl:gap-2 px-2 xl:px-3 py-2.5 text-xs xl:text-sm font-medium transition-all",
                   rightTab === tab.id
                     ? tab.id === "ai" 
                       ? "rainbow-underline text-foreground bg-background border-b-0" 
@@ -1154,7 +1170,7 @@ function HomeContent({
                 )}
               >
                 <tab.icon className={clsx(
-                  "w-4 h-4",
+                  "w-3.5 h-3.5 xl:w-4 xl:h-4",
                   rightTab === tab.id && tab.id === "ai" && "text-[var(--gradient-mid-4)]"
                 )} />
                 <span className={clsx(
@@ -1167,7 +1183,7 @@ function HomeContent({
           </div>
 
           {/* Right Tab Content */}
-          <div className="flex-1 overflow-y-auto p-4">
+          <div className="flex-1 overflow-y-auto p-3 xl:p-4">
             {rightTab === "content" && (
               <SignatureForm data={signatureData} onChange={setSignatureData} emailTheme={emailTheme} />
             )}

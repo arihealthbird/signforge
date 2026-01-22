@@ -12,11 +12,12 @@ export interface ResponsiveState {
   width: number;
 }
 
-// Breakpoints aligned with Tailwind's defaults
+// Breakpoints - adjusted for better 3-panel layout support
+// Desktop requires enough space for 3 panels to not feel cramped
 const BREAKPOINTS = {
   mobile: 0,
-  tablet: 768,  // md
-  desktop: 1024, // lg
+  tablet: 768,  // md - single column with drawers
+  desktop: 1280, // xl - full 3-panel layout (was 1024, now needs more space)
 } as const;
 
 /**
