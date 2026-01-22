@@ -25,7 +25,7 @@ const THEME_COLORS: Record<EmailThemeId, string> = {
 
 // Custom logo images for specific themes
 const THEME_LOGOS: Partial<Record<EmailThemeId, string>> = {
-"darth-vader": "/images/Darth-Vader-Logo-v2.jpg",
+  "darth-vader": "/images/darth-vader-logo-v2.jpg",
   "yoda": "/images/yoda-logo.png",
 "pirate": "/images/pirates-logo-v2.png",
   "spider-man": "/images/spiderman-logo.png",
