@@ -60,7 +60,7 @@ export default function Home() {
   const [leftTab, setLeftTab] = useState<LeftTab>("templates");
   const [rightTab, setRightTab] = useState<RightTab>("content");
   const [leftPanelOpen, setLeftPanelOpen] = useState(true);
-  const [previewZoom, setPreviewZoom] = useState(100);
+  const [previewZoom, setPreviewZoom] = useState(90); // Default 90% for better mobile visibility
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [previewTheme, setPreviewTheme] = useState<"light" | "dark">("light");
   const [isAIGenerating, setIsAIGenerating] = useState(false);
@@ -518,47 +518,94 @@ function HomeContent({
       {/* Main Builder Layout */}
       {/* ======================= MOBILE LAYOUT ======================= */}
       {isMobile && (
-        <div className="flex-1 flex flex-col overflow-hidden pb-16 safe-area-bottom">
+        <div className="flex-1 flex flex-col overflow-hidden pb-[76px] safe-area-bottom min-h-screen-mobile">
           {/* Mobile Panel Content */}
           <div className="flex-1 overflow-y-auto scroll-touch">
             {/* Preview Panel */}
             {mobileTab === "preview" && (
               <div className="h-full bg-secondary/30 flex flex-col">
-                {/* Compact toolbar */}
-                <div className="h-10 border-b border-border bg-background/50 flex items-center justify-between px-3">
-                  <div className="flex items-center gap-2">
-                    <EmailThemeSelector value={emailTheme} onChange={setEmailTheme} />
+                {/* Enhanced mobile toolbar - sticky */}
+                <div className="sticky top-0 z-20 border-b border-border bg-background/95 backdrop-blur-sm">
+                  {/* Top row - Theme and actions */}
+                  <div className="h-11 flex items-center justify-between px-3">
+                    <div className="flex items-center gap-2">
+                      <EmailThemeSelector value={emailTheme} onChange={setEmailTheme} />
+                    </div>
+                    <div className="flex items-center gap-1">
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        className="h-9 w-9 hover:text-[var(--gradient-mid-3)] touch-manipulation"
+                        onClick={() => setIsShareModalOpen(true)}
+                      >
+                        <SendHorizontal className="w-4 h-4" />
+                      </Button>
+                      <PreviewThemeSwitch
+                        isDark={previewTheme === "dark"}
+                        onChange={(isDark) => setPreviewTheme(isDark ? "dark" : "light")}
+                      />
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        className="h-9 w-9 touch-manipulation"
+                        onClick={toggleFullscreen}
+                      >
+                        <Maximize2 className="w-4 h-4" />
+                      </Button>
+                    </div>
                   </div>
-                  <div className="flex items-center gap-1">
+                  {/* Bottom row - Zoom controls */}
+                  <div className="h-10 flex items-center justify-center gap-3 px-3 border-t border-border/50 bg-secondary/30">
                     <Button
                       variant="ghost"
                       size="icon"
-                      className="h-8 w-8 hover:text-[var(--gradient-mid-3)]"
-                      onClick={() => setIsShareModalOpen(true)}
+                      className="h-8 w-8 touch-manipulation"
+                      onClick={() => setPreviewZoom(Math.max(50, previewZoom - 10))}
+                      disabled={previewZoom <= 50}
                     >
-                      <SendHorizontal className="w-4 h-4" />
+                      <ZoomOut className="w-4 h-4" />
                     </Button>
-                    <PreviewThemeSwitch
-                      isDark={previewTheme === "dark"}
-                      onChange={(isDark) => setPreviewTheme(isDark ? "dark" : "light")}
-                    />
+                    {/* Zoom slider for fine control */}
+                    <div className="flex items-center gap-2 flex-1 max-w-[200px]">
+                      <input
+                        type="range"
+                        min="50"
+                        max="150"
+                        step="5"
+                        value={previewZoom}
+                        onChange={(e) => setPreviewZoom(Number(e.target.value))}
+                        className="flex-1 h-1.5 bg-border rounded-full appearance-none cursor-pointer touch-manipulation"
+                      />
+                      <span className="text-xs text-muted-foreground w-10 text-center font-medium">
+                        {previewZoom}%
+                      </span>
+                    </div>
                     <Button
                       variant="ghost"
                       size="icon"
-                      className="h-8 w-8"
-                      onClick={toggleFullscreen}
+                      className="h-8 w-8 touch-manipulation"
+                      onClick={() => setPreviewZoom(Math.min(150, previewZoom + 10))}
+                      disabled={previewZoom >= 150}
                     >
-                      <Maximize2 className="w-4 h-4" />
+                      <ZoomIn className="w-4 h-4" />
                     </Button>
                   </div>
                 </div>
-                {/* Preview Area */}
-                <div className="flex-1 flex items-start justify-center p-2 sm:p-3 overflow-auto relative scroll-touch">
+                {/* Preview Area - with proper spacing for toolbar */}
+                <div className="flex-1 flex items-start justify-center p-3 overflow-auto relative scroll-touch scroll-smooth-mobile">
                   <ThemeCanvasEffects
                     themeId={emailTheme}
                     className="absolute inset-0 overflow-hidden"
                   />
-                  <div className="relative z-10 w-full max-w-full sm:max-w-md mx-auto overflow-x-auto" style={{ transform: `scale(${Math.min(previewZoom / 100, 0.75)})`, transformOrigin: 'top center' }}>
+                  {/* Preview container with responsive sizing */}
+                  <div 
+                    className="relative z-10 w-full mx-auto" 
+                    style={{ 
+                      transform: `scale(${previewZoom / 100})`, 
+                      transformOrigin: 'top center',
+                      maxWidth: previewZoom > 100 ? 'none' : '100%',
+                    }}
+                  >
                     <div 
                       className={clsx(
                         "canvas-container rounded-xl shadow-2xl overflow-hidden transition-all relative",
@@ -1183,86 +1230,113 @@ function HomeContent({
           onClick={(e) => e.target === e.currentTarget && setIsFullscreen(false)}
         >
           <div className="relative w-full h-full flex flex-col">
-            {/* Fullscreen Header */}
-            <div className="h-14 bg-background/95 backdrop-blur-xl border-b border-border flex items-center justify-between px-6 relative z-10">
-              <div className="flex items-center gap-4">
-                <span className="text-sm font-medium">Email Preview</span>
-                <span className="text-xs text-muted-foreground px-2 py-0.5 bg-secondary rounded border border-border capitalize">
-                  {selectedTemplate.replace(/-/g, " ")}
-                </span>
-                <EmailThemeSelector value={emailTheme} onChange={setEmailTheme} />
-                <div className="w-px h-5 bg-border" />
-                <DevicePreviewSwitcher value={previewDevice} onChange={setPreviewDevice} />
+            {/* Mobile Close Button - Floating at top right */}
+            {isMobile && (
+              <button
+                onClick={() => setIsFullscreen(false)}
+                className="absolute top-3 right-3 z-50 w-10 h-10 rounded-full bg-background/90 backdrop-blur-sm border border-border flex items-center justify-center shadow-lg active:scale-95 transition-transform"
+                aria-label="Close fullscreen"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            )}
+            {/* Fullscreen Header - Hidden on mobile for more space */}
+            <div className={clsx(
+              "bg-background/95 backdrop-blur-xl border-b border-border flex items-center justify-between px-4 md:px-6 relative z-10",
+              isMobile ? "h-12" : "h-14"
+            )}>
+              <div className="flex items-center gap-2 md:gap-4">
+                <span className="text-xs md:text-sm font-medium">{isMobile ? "Preview" : "Email Preview"}</span>
+                {!isMobile && (
+                  <>
+                    <span className="text-xs text-muted-foreground px-2 py-0.5 bg-secondary rounded border border-border capitalize">
+                      {selectedTemplate.replace(/-/g, " ")}
+                    </span>
+                    <EmailThemeSelector value={emailTheme} onChange={setEmailTheme} />
+                    <div className="w-px h-5 bg-border" />
+                    <DevicePreviewSwitcher value={previewDevice} onChange={setPreviewDevice} />
+                  </>
+                )}
               </div>
-              <div className="flex items-center gap-2">
-                {/* Visual Edit Mode Toggle in Fullscreen */}
-                <button
-                  onClick={() => setIsVisualEditMode(!isVisualEditMode)}
-                  className={clsx(
-                    "visual-edit-btn relative flex items-center gap-2 h-8 px-3 rounded-lg text-sm font-medium transition-all",
-                    isVisualEditMode 
-                      ? "visual-edit-btn-active" 
-                      : "visual-edit-btn-inactive"
-                  )}
-                >
-                  <MousePointerClick className={clsx(
-                    "w-4 h-4 transition-all",
-                    isVisualEditMode 
-                      ? "text-white animate-pulse" 
-                      : "text-[var(--gradient-mid-4)]"
-                  )} />
-                  <span className={clsx(
-                    "transition-all",
-                    isVisualEditMode ? "text-white" : "text-foreground"
-                  )}>
-                    {isVisualEditMode ? "Editing" : "Edit"}
-                  </span>
-                  {isVisualEditMode && (
-                    <>
-                      <span className="visual-edit-sparkle sparkle-1" />
-                      <span className="visual-edit-sparkle sparkle-2" />
-                      <span className="visual-edit-sparkle sparkle-3" />
-                    </>
-                  )}
-                </button>
-                <div className="w-px h-6 bg-border mx-1" />
+              <div className="flex items-center gap-1 md:gap-2">
+                {/* Visual Edit Mode Toggle in Fullscreen - Hidden on mobile */}
+                {!isMobile && (
+                  <>
+                    <button
+                      onClick={() => setIsVisualEditMode(!isVisualEditMode)}
+                      className={clsx(
+                        "visual-edit-btn relative flex items-center gap-2 h-8 px-3 rounded-lg text-sm font-medium transition-all",
+                        isVisualEditMode 
+                          ? "visual-edit-btn-active" 
+                          : "visual-edit-btn-inactive"
+                      )}
+                    >
+                      <MousePointerClick className={clsx(
+                        "w-4 h-4 transition-all",
+                        isVisualEditMode 
+                          ? "text-white animate-pulse" 
+                          : "text-[var(--gradient-mid-4)]"
+                      )} />
+                      <span className={clsx(
+                        "transition-all",
+                        isVisualEditMode ? "text-white" : "text-foreground"
+                      )}>
+                        {isVisualEditMode ? "Editing" : "Edit"}
+                      </span>
+                      {isVisualEditMode && (
+                        <>
+                          <span className="visual-edit-sparkle sparkle-1" />
+                          <span className="visual-edit-sparkle sparkle-2" />
+                          <span className="visual-edit-sparkle sparkle-3" />
+                        </>
+                      )}
+                    </button>
+                    <div className="w-px h-6 bg-border mx-1" />
+                  </>
+                )}
                 {/* Preview Theme Toggle in Fullscreen */}
                 <PreviewThemeSwitch
                   isDark={previewTheme === "dark"}
                   onChange={(isDark) => setPreviewTheme(isDark ? "dark" : "light")}
                 />
                 <div className="w-px h-6 bg-border mx-1" />
+                {/* Zoom Controls */}
                 <Button
                   variant="ghost"
                   size="icon"
-                  className="h-8 w-8"
+                  className="h-8 w-8 md:h-8 md:w-8"
                   onClick={() => setPreviewZoom(Math.max(50, previewZoom - 25))}
                   disabled={previewZoom <= 50}
                 >
                   <ZoomOut className="w-4 h-4" />
                 </Button>
-                <span className="text-xs text-muted-foreground w-12 text-center">
+                <span className="text-[10px] md:text-xs text-muted-foreground w-8 md:w-12 text-center">
                   {previewZoom}%
                 </span>
                 <Button
                   variant="ghost"
                   size="icon"
-                  className="h-8 w-8"
+                  className="h-8 w-8 md:h-8 md:w-8"
                   onClick={() => setPreviewZoom(Math.min(200, previewZoom + 25))}
                   disabled={previewZoom >= 200}
                 >
                   <ZoomIn className="w-4 h-4" />
                 </Button>
-                <div className="w-px h-6 bg-border" />
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={() => setIsFullscreen(false)}
-                  className="gap-2"
-                >
-                  <Minimize2 className="w-4 h-4" />
-                  <span className="text-xs">Exit</span>
-                </Button>
+                {/* Exit Button - Desktop only (mobile has floating button) */}
+                {!isMobile && (
+                  <>
+                    <div className="w-px h-6 bg-border" />
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => setIsFullscreen(false)}
+                      className="gap-2"
+                    >
+                      <Minimize2 className="w-4 h-4" />
+                      <span className="text-xs">Exit</span>
+                    </Button>
+                  </>
+                )}
               </div>
             </div>
             
@@ -1367,10 +1441,10 @@ function HomeContent({
               </div>
             </div>
             
-            {/* Hint */}
-            <div className="absolute bottom-4 left-1/2 -translate-x-1/2">
+            {/* Hint - Different for mobile vs desktop */}
+            <div className="absolute bottom-4 left-1/2 -translate-x-1/2 safe-area-bottom">
               <span className="text-xs text-muted-foreground bg-background/80 px-3 py-1.5 rounded-full border border-border">
-                Press ESC or click outside to exit
+                {isMobile ? "Tap ✕ or outside to exit" : "Press ESC or click outside to exit"}
               </span>
             </div>
           </div>

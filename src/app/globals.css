@@ -875,6 +875,17 @@ aside::-webkit-scrollbar-thumb:hover {
    MOBILE RESPONSIVE UTILITIES
    ======================================== */
 
+/* Mobile viewport height fix - uses dynamic viewport height */
+.h-screen-mobile {
+  height: 100vh;
+  height: 100dvh; /* Dynamic viewport height for mobile browsers */
+}
+
+.min-h-screen-mobile {
+  min-height: 100vh;
+  min-height: 100dvh;
+}
+
 /* Safe area padding for mobile devices with notches/home indicators */
 .safe-area-bottom {
   padding-bottom: env(safe-area-inset-bottom, 0px);
@@ -892,12 +903,60 @@ aside::-webkit-scrollbar-thumb:hover {
   padding-right: env(safe-area-inset-right, 0px);
 }
 
+/* Safe area margins */
+.mb-safe {
+  margin-bottom: env(safe-area-inset-bottom, 0px);
+}
+
+.mt-safe {
+  margin-top: env(safe-area-inset-top, 0px);
+}
+
+/* Full safe area inset */
+.inset-safe {
+  padding-top: env(safe-area-inset-top, 0px);
+  padding-right: env(safe-area-inset-right, 0px);
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+  padding-left: env(safe-area-inset-left, 0px);
+}
+
 /* Touch-friendly tap targets */
 @media (max-width: 768px) {
   .touch-target {
     min-height: 44px;
     min-width: 44px;
   }
+  
+  /* Explicitly marked touch-friendly buttons */
+  .btn-touch {
+    min-height: 44px;
+    min-width: 44px;
+  }
+  
+  /* Exception for compact buttons */
+  .btn-sm-touch {
+    min-height: 36px;
+    min-width: 36px;
+  }
+  
+  /* Mobile nav items should be adequately sized */
+  .mobile-nav-item {
+    min-height: 48px;
+    min-width: 48px;
+  }
+}
+
+/* Touch manipulation for better responsiveness */
+.touch-manipulation {
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* Prevent text selection on touch */
+.no-select-touch {
+  -webkit-user-select: none;
+  user-select: none;
+  -webkit-touch-callout: none;
 }
 
 /* Mobile-optimized scrollbars */
@@ -915,6 +974,12 @@ aside::-webkit-scrollbar-thumb:hover {
   .hide-scrollbar {
     -ms-overflow-style: none;
     scrollbar-width: none;
+  }
+  
+  /* Smooth momentum scrolling */
+  .scroll-smooth-mobile {
+    scroll-behavior: smooth;
+    -webkit-overflow-scrolling: touch;
   }
 }
 
@@ -1067,10 +1132,22 @@ html {
   }
 }
 
-/* Form input responsive */
+/* Form input responsive - prevent iOS zoom on focus */
 @media (max-width: 640px) {
-  .input-responsive {
-    font-size: 16px; /* Prevents iOS zoom on focus */
+  .input-responsive,
+  input,
+  textarea,
+  select {
+    font-size: 16px !important; /* Prevents iOS zoom on focus */
+  }
+  
+  /* Larger touch targets for form inputs */
+  input:not([type="checkbox"]):not([type="radio"]),
+  textarea,
+  select {
+    min-height: 44px;
+    padding-top: 10px;
+    padding-bottom: 10px;
   }
 }
 
