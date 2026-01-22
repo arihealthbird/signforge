@@ -1,0 +1,113 @@
+"use client";
+
+import { useState, useEffect } from "react";
+
+export type LayoutMode = "mobile" | "tablet" | "desktop";
+
+export interface ResponsiveState {
+  layoutMode: LayoutMode;
+  isMobile: boolean;
+  isTablet: boolean;
+  isDesktop: boolean;
+  width: number;
+}
+
+// Breakpoints aligned with Tailwind's defaults
+const BREAKPOINTS = {
+  mobile: 0,
+  tablet: 768,  // md
+  desktop: 1024, // lg
+} as const;
+
+/**
+ * Hook to detect responsive layout mode
+ * Uses window.matchMedia for efficient media query detection
+ */
+export function useResponsive(): ResponsiveState {
+  const [state, setState] = useState<ResponsiveState>(() => {
+    // Default to desktop for SSR
+    if (typeof window === "undefined") {
+      return {
+        layoutMode: "desktop",
+        isMobile: false,
+        isTablet: false,
+        isDesktop: true,
+        width: 1200,
+      };
+    }
+    return getResponsiveState();
+  });
+
+  useEffect(() => {
+    // Initial check - use functional update to avoid lint warning
+    const initialState = getResponsiveState();
+    setState(initialState);
+
+    // Create media queries
+    const mobileQuery = window.matchMedia(`(max-width: ${BREAKPOINTS.tablet - 1}px)`);
+    const tabletQuery = window.matchMedia(
+      `(min-width: ${BREAKPOINTS.tablet}px) and (max-width: ${BREAKPOINTS.desktop - 1}px)`
+    );
+    const desktopQuery = window.matchMedia(`(min-width: ${BREAKPOINTS.desktop}px)`);
+
+    const handleChange = () => {
+      setState(getResponsiveState());
+    };
+
+    // Modern API with fallback
+    if (mobileQuery.addEventListener) {
+      mobileQuery.addEventListener("change", handleChange);
+      tabletQuery.addEventListener("change", handleChange);
+      desktopQuery.addEventListener("change", handleChange);
+    } else {
+      // Fallback for older browsers
+      mobileQuery.addListener(handleChange);
+      tabletQuery.addListener(handleChange);
+      desktopQuery.addListener(handleChange);
+    }
+
+    // Also listen to resize for width updates
+    window.addEventListener("resize", handleChange);
+
+    return () => {
+      if (mobileQuery.removeEventListener) {
+        mobileQuery.removeEventListener("change", handleChange);
+        tabletQuery.removeEventListener("change", handleChange);
+        desktopQuery.removeEventListener("change", handleChange);
+      } else {
+        mobileQuery.removeListener(handleChange);
+        tabletQuery.removeListener(handleChange);
+        desktopQuery.removeListener(handleChange);
+      }
+      window.removeEventListener("resize", handleChange);
+    };
+  }, []);
+
+  return state;
+}
+
+function getResponsiveState(): ResponsiveState {
+  const width = typeof window !== "undefined" ? window.innerWidth : 1200;
+  
+  let layoutMode: LayoutMode;
+  if (width < BREAKPOINTS.tablet) {
+    layoutMode = "mobile";
+  } else if (width < BREAKPOINTS.desktop) {
+    layoutMode = "tablet";
+  } else {
+    layoutMode = "desktop";
+  }
+
+  return {
+    layoutMode,
+    isMobile: layoutMode === "mobile",
+    isTablet: layoutMode === "tablet",
+    isDesktop: layoutMode === "desktop",
+    width,
+  };
+}
+
+/**
+ * Export breakpoints for use in other components
+ */
+export { BREAKPOINTS };

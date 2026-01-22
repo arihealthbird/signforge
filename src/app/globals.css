@@ -1,0 +1,6311 @@
+@import "tailwindcss";
+
+/* ========================================
+   SOLOIST STAR WARS FONTS
+   ======================================== */
+@font-face {
+  font-family: 'Soloist';
+  src: url('/fonts/Soloist-Z6M8.otf') format('opentype');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Soloist Title';
+  src: url('/fonts/SoloistTitle-Gp7D.otf') format('opentype');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Soloist Condensed';
+  src: url('/fonts/SoloistCondensed-57oG.otf') format('opentype');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Soloist Outline';
+  src: url('/fonts/SoloistOutline-V6lw.otf') format('opentype');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Soloist Academy';
+  src: url('/fonts/SoloistAcademy-j65M.otf') format('opentype');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Soloist Expanded';
+  src: url('/fonts/SoloistExpanded-6m0D.otf') format('opentype');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* ========================================
+   THE AMAZING SPIDER-MAN FONT
+   ======================================== */
+@font-face {
+  font-family: 'Amazing Spider-Man';
+  src: url('/fonts/The Amazing Spider-Man.ttf') format('truetype');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* Luxury Cream Light Theme */
+:root {
+  --background: #faf8f5;
+  --foreground: #1a1a1a;
+  --card: #fffdfb;
+  --card-foreground: #1a1a1a;
+  --border: #e8e4de;
+  --input: #f0ece6;
+  --primary: #1a1a1a;
+  --primary-foreground: #faf8f5;
+  --secondary: #f5f2ed;
+  --secondary-foreground: #1a1a1a;
+  --muted: #f5f2ed;
+  --muted-foreground: #6b6560;
+  --accent: #e8e4de;
+  --accent-foreground: #1a1a1a;
+  --destructive: #dc4a4a;
+  --ring: #1a1a1a;
+  --radius: 0.625rem;
+  
+/* Unique brand rainbow - warm coral to cool violet flow */
+  --gradient-start: #ff6b4a;
+  --gradient-mid-1: #ff9f43;
+  --gradient-mid-2: #feca57;
+  --gradient-mid-3: #48dbfb;
+  --gradient-mid-4: #a55eea;
+  --gradient-end: #ff6b9d;
+  
+  /* Sparkle colors */
+  --sparkle-1: #fff9c4;
+  --sparkle-2: #e1f5fe;
+  --sparkle-3: #f3e5f5;
+}
+
+/* Elegant Dark Theme */
+.dark {
+  --background: #0c0c0c;
+  --foreground: #f5f5f4;
+  --card: #141414;
+  --card-foreground: #f5f5f4;
+  --border: #262626;
+  --input: #1f1f1f;
+  --primary: #f5f5f4;
+  --primary-foreground: #0c0c0c;
+  --secondary: #1a1a1a;
+  --secondary-foreground: #f5f5f4;
+  --muted: #1a1a1a;
+  --muted-foreground: #a3a3a3;
+  --accent: #262626;
+  --accent-foreground: #f5f5f4;
+  --destructive: #f87171;
+  --ring: #f5f5f4;
+  
+/* Unique brand rainbow - warm coral to cool violet flow (brighter for dark) */
+  --gradient-start: #ff7b5a;
+  --gradient-mid-1: #ffaf53;
+  --gradient-mid-2: #ffda67;
+  --gradient-mid-3: #58ebfb;
+  --gradient-mid-4: #b56efa;
+  --gradient-end: #ff7bad;
+  
+  /* Sparkle colors (brighter for dark mode) */
+  --sparkle-1: #fffde7;
+  --sparkle-2: #e3f2fd;
+  --sparkle-3: #fce4ec;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-ring: var(--ring);
+  --font-sans: var(--font-inter);
+  --font-mono: var(--font-mono);
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-sans), system-ui, sans-serif;
+}
+
+* {
+  border-color: var(--border);
+}
+
+/* Smooth transitions for theme switching */
+*, *::before, *::after {
+  transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--muted);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--muted-foreground);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--foreground);
+}
+
+/* Focus visible styles */
+:focus-visible {
+  outline: 2px solid var(--ring);
+  outline-offset: 2px;
+}
+
+/* Rainbow gradient text effect (like Height app) */
+.text-rainbow {
+  background: linear-gradient(
+    90deg,
+    var(--gradient-start) 0%,
+    var(--gradient-mid-1) 20%,
+    var(--gradient-mid-2) 40%,
+    var(--gradient-mid-3) 60%,
+    var(--gradient-mid-4) 80%,
+    var(--gradient-end) 100%
+  );
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* Animated rainbow gradient */
+.text-rainbow-animated {
+  background: linear-gradient(
+    90deg,
+    var(--gradient-start) 0%,
+    var(--gradient-mid-1) 16.67%,
+    var(--gradient-mid-2) 33.33%,
+    var(--gradient-mid-3) 50%,
+    var(--gradient-mid-4) 66.67%,
+    var(--gradient-end) 83.33%,
+    var(--gradient-start) 100%
+  );
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: rainbow-shift 8s linear infinite;
+}
+
+@keyframes rainbow-shift {
+  0% { background-position: 0% center; }
+  100% { background-position: 200% center; }
+}
+
+/* Rainbow border gradient */
+.border-rainbow {
+  position: relative;
+  border: none !important;
+}
+
+.border-rainbow::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  padding: 1.5px;
+  border-radius: inherit;
+  background: linear-gradient(
+    90deg,
+    var(--gradient-start),
+    var(--gradient-mid-1),
+    var(--gradient-mid-2),
+    var(--gradient-mid-3),
+    var(--gradient-mid-4),
+    var(--gradient-end),
+    var(--gradient-start)
+  );
+  background-size: 200% 100%;
+  animation: rainbow-border-shift 4s linear infinite;
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  pointer-events: none;
+}
+
+@keyframes rainbow-border-shift {
+  0% { background-position: 0% center; }
+  100% { background-position: 200% center; }
+}
+
+/* Animated rainbow border - more pronounced */
+.border-rainbow-animated {
+  position: relative;
+  border: none !important;
+}
+
+.border-rainbow-animated::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  padding: 2px;
+  border-radius: inherit;
+  background: linear-gradient(
+    90deg,
+    var(--gradient-start),
+    var(--gradient-mid-1),
+    var(--gradient-mid-2),
+    var(--gradient-mid-3),
+    var(--gradient-mid-4),
+    var(--gradient-end),
+    var(--gradient-start)
+  );
+  background-size: 200% 100%;
+  animation: rainbow-border-shift 3s linear infinite;
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  pointer-events: none;
+}
+
+/* Sparkle effect container */
+.sparkle-container {
+  position: relative;
+  overflow: visible;
+}
+
+/* Individual sparkle particles */
+@keyframes sparkle-float {
+  0%, 100% {
+    opacity: 0;
+    transform: translate(0, 0) scale(0);
+  }
+  10% {
+    opacity: 1;
+    transform: translate(0, 0) scale(1);
+  }
+  50% {
+    opacity: 0.8;
+  }
+  90% {
+    opacity: 0;
+    transform: translate(var(--sparkle-x, 10px), var(--sparkle-y, -15px)) scale(0.5);
+  }
+}
+
+.sparkle {
+  position: absolute;
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  pointer-events: none;
+  animation: sparkle-float 2s ease-in-out infinite;
+}
+
+.sparkle-1 {
+  background: var(--sparkle-1);
+  box-shadow: 0 0 4px var(--sparkle-1);
+  top: -2px;
+  right: -2px;
+  --sparkle-x: 8px;
+  --sparkle-y: -12px;
+  animation-delay: 0s;
+}
+
+.sparkle-2 {
+  background: var(--sparkle-2);
+  box-shadow: 0 0 4px var(--sparkle-2);
+  top: 50%;
+  right: -4px;
+  --sparkle-x: 12px;
+  --sparkle-y: -8px;
+  animation-delay: 0.4s;
+}
+
+.sparkle-3 {
+  background: var(--sparkle-3);
+  box-shadow: 0 0 4px var(--sparkle-3);
+  bottom: 0;
+  right: 20%;
+  --sparkle-x: 6px;
+  --sparkle-y: 10px;
+  animation-delay: 0.8s;
+}
+
+.sparkle-4 {
+  background: var(--gradient-mid-3);
+  box-shadow: 0 0 4px var(--gradient-mid-3);
+  top: 20%;
+  left: -2px;
+  --sparkle-x: -10px;
+  --sparkle-y: -8px;
+  animation-delay: 1.2s;
+}
+
+.sparkle-5 {
+  background: var(--gradient-mid-4);
+  box-shadow: 0 0 3px var(--gradient-mid-4);
+  bottom: -2px;
+  left: 30%;
+  --sparkle-x: -6px;
+  --sparkle-y: 12px;
+  animation-delay: 1.6s;
+}
+
+/* AI Generation - Elegant Rainbow Border Loading */
+@keyframes ai-border-glow {
+  0%, 100% {
+    opacity: 0.6;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+.ai-loading-border {
+  position: absolute;
+  inset: -3px;
+  border-radius: calc(var(--radius-lg) + 3px);
+  padding: 3px;
+  background: linear-gradient(
+    90deg,
+    var(--gradient-start),
+    var(--gradient-mid-1),
+    var(--gradient-mid-2),
+    var(--gradient-mid-3),
+    var(--gradient-mid-4),
+    var(--gradient-end),
+    var(--gradient-start)
+  );
+  background-size: 300% 100%;
+  animation: rainbow-border-shift 2s linear infinite, ai-border-glow 2s ease-in-out infinite;
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  pointer-events: none;
+  z-index: 20;
+}
+
+/* Subtle inner glow for AI loading */
+.ai-loading-inner-glow {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: radial-gradient(
+    ellipse at center,
+    transparent 40%,
+    rgba(255, 107, 74, 0.03) 60%,
+    rgba(72, 219, 251, 0.04) 80%,
+    rgba(165, 94, 234, 0.03) 100%
+  );
+  animation: ai-border-glow 2s ease-in-out infinite;
+  pointer-events: none;
+  z-index: 10;
+}
+
+.dark .ai-loading-inner-glow {
+  background: radial-gradient(
+    ellipse at center,
+    transparent 40%,
+    rgba(255, 123, 90, 0.05) 60%,
+    rgba(88, 235, 251, 0.06) 80%,
+    rgba(181, 110, 250, 0.05) 100%
+  );
+}
+
+/* Optional: shimmer overlay for extra polish */
+.ai-shimmer-subtle {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: linear-gradient(
+    110deg,
+    transparent 0%,
+    transparent 40%,
+    rgba(255, 255, 255, 0.03) 50%,
+    transparent 60%,
+    transparent 100%
+  );
+  background-size: 200% 100%;
+  animation: ai-shimmer-sweep 3s ease-in-out infinite;
+  pointer-events: none;
+  z-index: 15;
+}
+
+@keyframes ai-shimmer-sweep {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
+}
+
+/* Shimmer animation for donation banner */
+@keyframes shimmer {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(200%);
+  }
+}
+
+.animate-shimmer {
+  animation: shimmer 3s ease-in-out infinite;
+}
+
+/* Pulsing glow for AI active state */
+@keyframes pulse-glow {
+  0%, 100% {
+    box-shadow: 
+      0 0 8px rgba(255, 107, 74, 0.3),
+      0 0 16px rgba(165, 94, 234, 0.2);
+  }
+  50% {
+    box-shadow: 
+      0 0 16px rgba(255, 107, 74, 0.5),
+      0 0 32px rgba(165, 94, 234, 0.3),
+      0 0 48px rgba(72, 219, 251, 0.2);
+  }
+}
+
+.ai-pulse-glow {
+  animation: pulse-glow 2s ease-in-out infinite;
+}
+
+/* Rainbow underline for active elements */
+.rainbow-underline {
+  position: relative;
+}
+
+.rainbow-underline::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(
+    90deg,
+    var(--gradient-start),
+    var(--gradient-mid-1),
+    var(--gradient-mid-2),
+    var(--gradient-mid-3),
+    var(--gradient-mid-4),
+    var(--gradient-end),
+    var(--gradient-start)
+  );
+  background-size: 200% 100%;
+  animation: rainbow-border-shift 3s linear infinite;
+}
+
+/* Hover glow effect for interactive elements */
+.rainbow-hover-glow {
+  transition: box-shadow 0.3s ease;
+}
+
+.rainbow-hover-glow:hover {
+  box-shadow: 
+    0 2px 12px rgba(255, 107, 74, 0.15),
+    0 2px 8px rgba(165, 94, 234, 0.1);
+}
+
+.dark .rainbow-hover-glow:hover {
+  box-shadow: 
+    0 2px 16px rgba(255, 123, 90, 0.2),
+    0 2px 12px rgba(181, 110, 250, 0.15);
+}
+
+/* Rainbow text gradient on hover */
+.hover\:text-rainbow-animated:hover {
+  background: linear-gradient(
+    90deg,
+    var(--gradient-start) 0%,
+    var(--gradient-mid-1) 16.67%,
+    var(--gradient-mid-2) 33.33%,
+    var(--gradient-mid-3) 50%,
+    var(--gradient-mid-4) 66.67%,
+    var(--gradient-end) 83.33%,
+    var(--gradient-start) 100%
+  );
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: rainbow-shift 8s linear infinite;
+}
+
+/* Quick prompt pill rainbow border on hover */
+.quick-prompt-pill {
+  position: relative;
+  transition: all 0.2s ease;
+}
+
+.quick-prompt-pill:hover {
+  border-color: transparent;
+}
+
+.quick-prompt-pill:hover::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  padding: 1px;
+  border-radius: inherit;
+  background: linear-gradient(
+    90deg,
+    var(--gradient-start),
+    var(--gradient-mid-2),
+    var(--gradient-mid-4),
+    var(--gradient-end)
+  );
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  pointer-events: none;
+}
+
+/* Luxury card styling */
+.card-luxury {
+  background: var(--card);
+  border: 1px solid var(--border);
+  box-shadow: 
+    0 1px 2px rgba(0, 0, 0, 0.02),
+    0 4px 12px rgba(0, 0, 0, 0.03);
+}
+
+.dark .card-luxury {
+  box-shadow: 
+    0 1px 2px rgba(0, 0, 0, 0.2),
+    0 4px 12px rgba(0, 0, 0, 0.15),
+    inset 0 1px 0 rgba(255, 255, 255, 0.03);
+}
+
+/* Subtle glow effect */
+.glow-rainbow {
+  box-shadow: 
+    0 0 20px rgba(249, 115, 22, 0.1),
+    0 0 40px rgba(139, 92, 246, 0.1),
+    0 0 60px rgba(236, 72, 153, 0.05);
+}
+
+/* Share button rainbow icon animation */
+@keyframes rainbow-icon-color {
+  0% { color: var(--gradient-start); filter: drop-shadow(0 0 3px var(--gradient-start)); }
+  16.67% { color: var(--gradient-mid-1); filter: drop-shadow(0 0 3px var(--gradient-mid-1)); }
+  33.33% { color: var(--gradient-mid-2); filter: drop-shadow(0 0 3px var(--gradient-mid-2)); }
+  50% { color: var(--gradient-mid-3); filter: drop-shadow(0 0 3px var(--gradient-mid-3)); }
+  66.67% { color: var(--gradient-mid-4); filter: drop-shadow(0 0 3px var(--gradient-mid-4)); }
+  83.33% { color: var(--gradient-end); filter: drop-shadow(0 0 3px var(--gradient-end)); }
+  100% { color: var(--gradient-start); filter: drop-shadow(0 0 3px var(--gradient-start)); }
+}
+
+/* Share arrow fly/pulse animation */
+@keyframes share-arrow-pulse {
+  0%, 100% { transform: translateX(0) scale(1); }
+  25% { transform: translateX(3px) scale(1.05); }
+  50% { transform: translateX(5px) scale(1); }
+  75% { transform: translateX(3px) scale(1.05); }
+}
+
+/* Share button hover styles */
+.share-btn-hover .share-icon {
+  transition: all 0.3s ease;
+}
+
+.share-btn-hover:hover .share-icon {
+  animation: rainbow-icon-color 1.5s linear infinite, share-arrow-pulse 0.8s ease-in-out infinite;
+}
+
+/* Elegant button hover */
+.btn-elegant {
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.btn-elegant:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+.dark .btn-elegant:hover {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+/* Subtle gradient background for sections */
+.bg-gradient-subtle {
+  background: linear-gradient(
+    180deg,
+    transparent 0%,
+    rgba(249, 115, 22, 0.02) 25%,
+    rgba(139, 92, 246, 0.02) 50%,
+    rgba(236, 72, 153, 0.02) 75%,
+    transparent 100%
+  );
+}
+
+.dark .bg-gradient-subtle {
+  background: linear-gradient(
+    180deg,
+    transparent 0%,
+    rgba(251, 146, 60, 0.03) 25%,
+    rgba(167, 139, 250, 0.03) 50%,
+    rgba(244, 114, 182, 0.03) 75%,
+    transparent 100%
+  );
+}
+
+/* Canvas container for Canva-like preview */
+.canvas-container {
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.canvas-container:hover {
+  box-shadow: 
+    0 25px 50px -12px rgba(0, 0, 0, 0.15),
+    0 0 0 1px rgba(0, 0, 0, 0.05);
+}
+
+.dark .canvas-container:hover {
+  box-shadow: 
+    0 25px 50px -12px rgba(0, 0, 0, 0.5),
+    0 0 0 1px rgba(255, 255, 255, 0.05);
+}
+
+/* Custom range slider styling */
+input[type="range"] {
+  -webkit-appearance: none;
+  appearance: none;
+  background: transparent;
+  cursor: pointer;
+  height: 8px;
+}
+
+input[type="range"]::-webkit-slider-runnable-track {
+  height: 6px;
+  background: var(--secondary);
+  border-radius: 3px;
+}
+
+input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 16px;
+  height: 16px;
+  background: var(--foreground);
+  border-radius: 50%;
+  margin-top: -5px;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+input[type="range"]::-webkit-slider-thumb:hover {
+  transform: scale(1.1);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+input[type="range"]::-moz-range-track {
+  height: 6px;
+  background: var(--secondary);
+  border-radius: 3px;
+}
+
+input[type="range"]::-moz-range-thumb {
+  width: 16px;
+  height: 16px;
+  background: var(--foreground);
+  border-radius: 50%;
+  border: none;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+input[type="range"]::-moz-range-thumb:hover {
+  transform: scale(1.1);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+/* Color swatch animation */
+.color-swatch {
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.color-swatch:hover {
+  transform: scale(1.1);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+/* Font preview card animation */
+.font-preview-card {
+  transition: all 0.2s ease;
+}
+
+.font-preview-card:hover {
+  background: var(--secondary);
+}
+
+/* Sidebar scrollbar styling */
+aside::-webkit-scrollbar {
+  width: 6px;
+}
+
+aside::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+aside::-webkit-scrollbar-thumb {
+  background: var(--border);
+  border-radius: 3px;
+}
+
+aside::-webkit-scrollbar-thumb:hover {
+  background: var(--muted-foreground);
+}
+
+/* Email mock styling */
+.email-mock-skeleton {
+  background: linear-gradient(
+    90deg,
+    var(--secondary) 25%,
+    var(--muted) 50%,
+    var(--secondary) 75%
+  );
+  background-size: 200% 100%;
+  animation: skeleton-loading 1.5s infinite;
+}
+
+@keyframes skeleton-loading {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+/* Zoom controls styling */
+.zoom-control {
+  backdrop-filter: blur(8px);
+  background: var(--background)/80;
+}
+
+/* Panel transition */
+.panel-slide {
+  transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1), 
+              opacity 0.2s ease;
+}
+
+/* Active tab indicator animation */
+.tab-indicator {
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Theme card hover state */
+.theme-card {
+  transition: all 0.2s ease;
+}
+
+.theme-card:hover {
+  transform: translateY(-2px);
+}
+
+.theme-card:active {
+  transform: translateY(0);
+}
+
+/* Responsive adjustments for builder */
+@media (max-width: 1280px) {
+  .canvas-container {
+    transform-origin: top center !important;
+  }
+}
+
+@media (max-width: 1024px) {
+  .builder-sidebar {
+    position: fixed;
+    z-index: 40;
+    height: 100%;
+  }
+  
+  .builder-sidebar-left {
+    left: 0;
+  }
+  
+  .builder-sidebar-right {
+    right: 0;
+  }
+}
+
+@media (max-width: 768px) {
+  .canvas-container {
+    transform: scale(0.6) !important;
+    transform-origin: top center !important;
+  }
+}
+
+/* ========================================
+   MOBILE RESPONSIVE UTILITIES
+   ======================================== */
+
+/* Safe area padding for mobile devices with notches/home indicators */
+.safe-area-bottom {
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+}
+
+.safe-area-top {
+  padding-top: env(safe-area-inset-top, 0px);
+}
+
+.safe-area-left {
+  padding-left: env(safe-area-inset-left, 0px);
+}
+
+.safe-area-right {
+  padding-right: env(safe-area-inset-right, 0px);
+}
+
+/* Touch-friendly tap targets */
+@media (max-width: 768px) {
+  .touch-target {
+    min-height: 44px;
+    min-width: 44px;
+  }
+}
+
+/* Mobile-optimized scrollbars */
+@media (max-width: 768px) {
+  ::-webkit-scrollbar {
+    width: 4px;
+    height: 4px;
+  }
+  
+  /* Hide scrollbars on touch devices but keep functionality */
+  .hide-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+  
+  .hide-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+}
+
+/* Prevent text size adjustment on orientation change */
+html {
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+}
+
+/* Mobile-friendly touch scrolling */
+.scroll-touch {
+  -webkit-overflow-scrolling: touch;
+}
+
+/* Prevent pull-to-refresh on mobile when not wanted */
+.no-overscroll {
+  overscroll-behavior: none;
+}
+
+/* Mobile modal backdrop - prevents scroll underneath */
+.modal-open {
+  overflow: hidden;
+  position: fixed;
+  width: 100%;
+  height: 100%;
+}
+
+/* Mobile-first responsive text */
+@media (max-width: 480px) {
+  .text-responsive-sm {
+    font-size: 0.75rem;
+    line-height: 1rem;
+  }
+  
+  .text-responsive-base {
+    font-size: 0.875rem;
+    line-height: 1.25rem;
+  }
+}
+
+/* Responsive padding for mobile */
+@media (max-width: 640px) {
+  .px-responsive {
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+  
+  .py-responsive {
+    padding-top: 0.75rem;
+    padding-bottom: 0.75rem;
+  }
+}
+
+/* Full-width buttons on mobile */
+@media (max-width: 480px) {
+  .btn-mobile-full {
+    width: 100%;
+  }
+}
+
+/* Stack flex items on mobile */
+@media (max-width: 640px) {
+  .flex-mobile-col {
+    flex-direction: column;
+  }
+  
+  .gap-mobile-2 {
+    gap: 0.5rem;
+  }
+}
+
+/* Hide on mobile, show on tablet+ */
+@media (max-width: 767px) {
+  .hide-mobile {
+    display: none !important;
+  }
+}
+
+/* Show only on mobile */
+@media (min-width: 768px) {
+  .show-mobile-only {
+    display: none !important;
+  }
+}
+
+/* xs breakpoint support (extra small screens) */
+@media (min-width: 475px) {
+  .xs\:block {
+    display: block;
+  }
+  
+  .xs\:hidden {
+    display: none;
+  }
+  
+  .xs\:flex {
+    display: flex;
+  }
+  
+  .xs\:inline-flex {
+    display: inline-flex;
+  }
+}
+
+/* Mobile nav specific styles */
+.mobile-nav {
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+}
+
+.mobile-nav-item {
+  position: relative;
+}
+
+/* Responsive grids for form layouts */
+@media (max-width: 640px) {
+  .grid-cols-responsive-1 {
+    grid-template-columns: 1fr;
+  }
+  
+  .grid-cols-responsive-2 {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+/* Card responsive adjustments */
+@media (max-width: 640px) {
+  .card-responsive {
+    padding: 1rem;
+  }
+  
+  .card-header-responsive {
+    padding: 0.75rem 1rem;
+  }
+}
+
+/* Signature preview responsive scaling */
+@media (max-width: 640px) {
+  .signature-preview-mobile {
+    transform: scale(0.85);
+    transform-origin: top center;
+  }
+}
+
+/* Modal responsive fixes */
+@media (max-width: 480px) {
+  .modal-content-mobile {
+    max-width: calc(100vw - 2rem);
+    max-height: calc(100vh - 4rem);
+    margin: 1rem;
+  }
+}
+
+/* Form input responsive */
+@media (max-width: 640px) {
+  .input-responsive {
+    font-size: 16px; /* Prevents iOS zoom on focus */
+  }
+}
+
+/* Dropdown responsive positioning */
+@media (max-width: 640px) {
+  .dropdown-mobile {
+    position: fixed;
+    left: 1rem;
+    right: 1rem;
+    width: auto;
+    max-width: calc(100vw - 2rem);
+  }
+}
+
+/* Touch-friendly spacing */
+@media (max-width: 768px) {
+  .touch-spacing > * + * {
+    margin-top: 0.75rem;
+  }
+}
+
+/* Enhanced focus states for accessibility */
+button:focus-visible,
+a:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: 2px;
+}
+
+/* Smooth color transitions for theme elements */
+.theme-transition {
+  transition: background-color 0.3s ease, 
+              border-color 0.3s ease, 
+              color 0.3s ease,
+              box-shadow 0.3s ease;
+}
+
+/* ========================================
+   VISUAL EDITOR STYLES
+   ======================================== */
+
+/* Active visual editor mode indicator */
+.visual-editor-active {
+  cursor: crosshair;
+}
+
+/* Editable elements in edit mode */
+.visual-editor-editable {
+  position: relative;
+  border-radius: 2px;
+  transition: all 0.15s ease;
+}
+
+.visual-editor-editable:hover {
+  outline: 2px dashed var(--gradient-mid-3);
+  outline-offset: 2px;
+  background-color: rgba(72, 219, 251, 0.05);
+}
+
+.dark .visual-editor-editable:hover {
+  background-color: rgba(88, 235, 251, 0.08);
+}
+
+/* Selected element in edit mode */
+.visual-editor-selected {
+  outline: 2px solid var(--gradient-mid-4) !important;
+  outline-offset: 2px;
+  background-color: rgba(165, 94, 234, 0.08) !important;
+}
+
+.dark .visual-editor-selected {
+  background-color: rgba(181, 110, 250, 0.12) !important;
+}
+
+/* ========================================
+   VISUAL EDIT BUTTON - Enhanced Styling
+   ======================================== */
+
+/* Base button styles */
+.visual-edit-btn {
+  position: relative;
+  overflow: visible;
+  cursor: pointer;
+  border: none;
+  outline: none;
+}
+
+/* Inactive state - standout with animated rainbow border */
+.visual-edit-btn-inactive {
+  background: linear-gradient(
+    135deg,
+    rgba(255, 107, 74, 0.06),
+    rgba(165, 94, 234, 0.08),
+    rgba(72, 219, 251, 0.06)
+  );
+  border: none;
+  position: relative;
+}
+
+/* Rainbow animated border - always visible */
+.visual-edit-btn-inactive::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  padding: 1.5px;
+  border-radius: inherit;
+  background: linear-gradient(
+    90deg,
+    var(--gradient-start),
+    var(--gradient-mid-1),
+    var(--gradient-mid-3),
+    var(--gradient-mid-4),
+    var(--gradient-end),
+    var(--gradient-start)
+  );
+  background-size: 200% 100%;
+  animation: rainbow-border-shift 4s linear infinite;
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  pointer-events: none;
+  opacity: 0.7;
+  transition: opacity 0.2s ease;
+}
+
+/* Inner shimmer effect */
+.visual-edit-btn-inactive::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: linear-gradient(
+    110deg,
+    transparent 20%,
+    rgba(255, 255, 255, 0.1) 40%,
+    rgba(255, 255, 255, 0.15) 50%,
+    rgba(255, 255, 255, 0.1) 60%,
+    transparent 80%
+  );
+  background-size: 200% 100%;
+  animation: btn-shimmer 3s ease-in-out infinite;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.visual-edit-btn-inactive:hover::before {
+  opacity: 1;
+  animation: rainbow-border-shift 2s linear infinite;
+}
+
+.visual-edit-btn-inactive:hover::after {
+  opacity: 1;
+}
+
+.visual-edit-btn-inactive:hover {
+  background: linear-gradient(
+    135deg,
+    rgba(255, 107, 74, 0.1),
+    rgba(165, 94, 234, 0.15),
+    rgba(72, 219, 251, 0.1)
+  );
+  transform: translateY(-1px);
+  box-shadow: 
+    0 4px 15px rgba(165, 94, 234, 0.25),
+    0 2px 8px rgba(72, 219, 251, 0.2),
+    0 0 20px rgba(255, 107, 74, 0.1);
+}
+
+@keyframes btn-shimmer {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
+}
+
+/* Active state - full rainbow animated with multiple effects */
+.visual-edit-btn-active {
+  background: linear-gradient(
+    135deg,
+    var(--gradient-start),
+    var(--gradient-mid-1),
+    var(--gradient-mid-2),
+    var(--gradient-mid-3),
+    var(--gradient-mid-4),
+    var(--gradient-end),
+    var(--gradient-start)
+  );
+  background-size: 400% 400%;
+  animation: rainbow-bg-shift 3s ease infinite, edit-btn-pulse 2s ease-in-out infinite;
+  box-shadow: 
+    0 0 25px rgba(255, 107, 74, 0.5),
+    0 0 50px rgba(165, 94, 234, 0.4),
+    0 0 75px rgba(72, 219, 251, 0.3),
+    0 4px 20px rgba(255, 107, 157, 0.35),
+    inset 0 0 20px rgba(255, 255, 255, 0.1);
+}
+
+/* Outer rainbow glow */
+.visual-edit-btn-active::before {
+  content: "";
+  position: absolute;
+  inset: -3px;
+  border-radius: calc(0.5rem + 3px);
+  background: linear-gradient(
+    90deg,
+    var(--gradient-start),
+    var(--gradient-mid-1),
+    var(--gradient-mid-2),
+    var(--gradient-mid-3),
+    var(--gradient-mid-4),
+    var(--gradient-end),
+    var(--gradient-start)
+  );
+  background-size: 200% 100%;
+  animation: rainbow-border-shift 1.5s linear infinite;
+  z-index: -1;
+  filter: blur(8px);
+  opacity: 0.8;
+}
+
+/* Inner shimmer sweep */
+.visual-edit-btn-active::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: linear-gradient(
+    110deg,
+    transparent 0%,
+    transparent 40%,
+    rgba(255, 255, 255, 0.4) 50%,
+    transparent 60%,
+    transparent 100%
+  );
+  background-size: 200% 100%;
+  animation: active-shimmer 2s ease-in-out infinite;
+  pointer-events: none;
+}
+
+@keyframes rainbow-bg-shift {
+  0%, 100% {
+    background-position: 0% 50%;
+  }
+  25% {
+    background-position: 50% 100%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  75% {
+    background-position: 50% 0%;
+  }
+}
+
+@keyframes edit-btn-pulse {
+  0%, 100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.03);
+  }
+}
+
+@keyframes active-shimmer {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
+}
+
+/* Sparkle effects for active button */
+.visual-edit-sparkle {
+  position: absolute;
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  pointer-events: none;
+}
+
+.visual-edit-sparkle.sparkle-1 {
+  top: -4px;
+  right: 10%;
+  background: var(--sparkle-1);
+  box-shadow: 0 0 6px var(--sparkle-1);
+  animation: sparkle-float 1.5s ease-in-out infinite;
+  --sparkle-x: 8px;
+  --sparkle-y: -10px;
+}
+
+.visual-edit-sparkle.sparkle-2 {
+  top: 50%;
+  right: -4px;
+  background: var(--sparkle-2);
+  box-shadow: 0 0 6px var(--sparkle-2);
+  animation: sparkle-float 1.5s ease-in-out infinite 0.5s;
+  --sparkle-x: 10px;
+  --sparkle-y: -6px;
+}
+
+.visual-edit-sparkle.sparkle-3 {
+  bottom: -4px;
+  left: 20%;
+  background: var(--sparkle-3);
+  box-shadow: 0 0 6px var(--sparkle-3);
+  animation: sparkle-float 1.5s ease-in-out infinite 1s;
+  --sparkle-x: -6px;
+  --sparkle-y: 8px;
+}
+
+/* Dark mode adjustments */
+.dark .visual-edit-btn-inactive {
+  background: linear-gradient(
+    135deg,
+    rgba(181, 110, 250, 0.12),
+    rgba(88, 235, 251, 0.12)
+  );
+}
+
+.dark .visual-edit-btn-inactive:hover {
+  background: linear-gradient(
+    135deg,
+    rgba(181, 110, 250, 0.2),
+    rgba(88, 235, 251, 0.2)
+  );
+  box-shadow: 
+    0 4px 16px rgba(181, 110, 250, 0.3),
+    0 2px 8px rgba(88, 235, 251, 0.2);
+}
+
+.dark .visual-edit-btn-active {
+  box-shadow: 
+    0 0 25px rgba(181, 110, 250, 0.5),
+    0 0 50px rgba(88, 235, 251, 0.3),
+    0 4px 20px rgba(255, 123, 90, 0.3);
+}
+
+/* Toolbar animation */
+@keyframes toolbar-appear {
+  from {
+    opacity: 0;
+    transform: translateY(8px) scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.visual-editor-toolbar {
+  animation: toolbar-appear 0.15s ease-out;
+}
+
+/* ========================================
+   THE OFFICE THEME - Paper/Pencil Aesthetic
+   ======================================== */
+
+/* Paper texture variables */
+[data-email-theme="the-office"] {
+  --paper-bg: #f5f0e6;
+  --paper-bg-dark: #ebe4d4;
+  --paper-lines: #e8e0d0;
+  --pencil-gray: #4a4a4a;
+  --coffee-stain: rgba(139, 115, 85, 0.08);
+  --paper-shadow: rgba(90, 70, 50, 0.1);
+  --paper-edge: #c4b8a8;
+  --notebook-red: #dc4a4a;
+  --post-it-yellow: #fff9c4;
+  --post-it-pink: #fce4ec;
+  --post-it-blue: #e3f2fd;
+  --post-it-green: #e8f5e9;
+}
+
+.dark[data-email-theme="the-office"] {
+  --paper-bg: #2a2520;
+  --paper-bg-dark: #1f1c18;
+  --paper-lines: #332e28;
+  --pencil-gray: #d4c8b8;
+  --coffee-stain: rgba(139, 115, 85, 0.12);
+  --paper-shadow: rgba(0, 0, 0, 0.3);
+  --paper-edge: #4a4035;
+  --notebook-red: #ef6b6b;
+  --post-it-yellow: #4a4538;
+  --post-it-pink: #3d2e35;
+  --post-it-blue: #2e3540;
+  --post-it-green: #2e3d30;
+}
+
+/* Subtle paper texture - lighter lines */
+[data-email-theme="the-office"] .bg-card {
+  background-image: 
+    repeating-linear-gradient(
+      0deg,
+      transparent,
+      transparent 31px,
+      var(--paper-lines) 31px,
+      var(--paper-lines) 32px
+    ),
+    linear-gradient(
+      90deg,
+      var(--paper-bg) 0%,
+      var(--paper-bg-dark) 100%
+    );
+  background-size: 100% 32px, 100% 100%;
+}
+
+/* Header styled as notebook top */
+[data-email-theme="the-office"] header {
+  background: linear-gradient(
+    180deg,
+    var(--paper-bg) 0%,
+    var(--paper-bg-dark) 100%
+  ) !important;
+  border-bottom: 3px solid var(--paper-edge) !important;
+  box-shadow: 
+    inset 0 -4px 8px var(--paper-shadow),
+    0 2px 4px var(--paper-shadow);
+}
+
+/* Sidebar paper edge effect */
+[data-email-theme="the-office"] aside {
+  background: linear-gradient(
+    90deg,
+    var(--paper-bg-dark) 0%,
+    var(--paper-bg) 3%,
+    var(--paper-bg) 100%
+  ) !important;
+  border-right-color: var(--paper-edge) !important;
+  box-shadow: 
+    inset -4px 0 8px var(--paper-shadow),
+    2px 0 4px var(--paper-shadow);
+}
+
+/* Cards look like paper notes */
+[data-email-theme="the-office"] .card-luxury,
+[data-email-theme="the-office"] [class*="Card"] {
+  background: var(--paper-bg) !important;
+  border: 1px solid var(--paper-edge) !important;
+  box-shadow: 
+    2px 2px 0 var(--paper-shadow),
+    4px 4px 8px var(--paper-shadow),
+    inset 0 0 30px var(--coffee-stain);
+  position: relative;
+}
+
+/* Paper corner fold effect on cards */
+[data-email-theme="the-office"] .card-luxury::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 0;
+  height: 0;
+  border-style: solid;
+  border-width: 0 20px 20px 0;
+  border-color: transparent var(--paper-bg-dark) transparent transparent;
+  filter: drop-shadow(-1px 1px 1px var(--paper-shadow));
+}
+
+/* Inputs look like pencil-written fields */
+[data-email-theme="the-office"] input:not([type="color"]):not([type="range"]),
+[data-email-theme="the-office"] textarea,
+[data-email-theme="the-office"] select {
+  background: transparent !important;
+  border: none !important;
+  border-bottom: 2px solid var(--pencil-gray) !important;
+  border-radius: 0 !important;
+  font-family: 'Comic Sans MS', 'Segoe Print', cursive !important;
+}
+
+[data-email-theme="the-office"] input:focus,
+[data-email-theme="the-office"] textarea:focus,
+[data-email-theme="the-office"] select:focus {
+  border-bottom-color: var(--notebook-red) !important;
+  box-shadow: none !important;
+  outline: none !important;
+}
+
+/* Buttons look like sticky notes */
+[data-email-theme="the-office"] button:not([class*="ghost"]) {
+  font-family: 'Comic Sans MS', 'Segoe Print', cursive !important;
+}
+
+[data-email-theme="the-office"] button[class*="primary"],
+[data-email-theme="the-office"] button[class*="default"] {
+  background: var(--post-it-yellow) !important;
+  border: 1px solid #e6d9a8 !important;
+  color: #4a4a4a !important;
+  box-shadow: 
+    2px 2px 0 rgba(0,0,0,0.1),
+    -1px -1px 0 rgba(255,255,255,0.5) inset;
+  transform: rotate(-1deg);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+[data-email-theme="the-office"] button[class*="primary"]:hover,
+[data-email-theme="the-office"] button[class*="default"]:hover {
+  transform: rotate(0deg) scale(1.02);
+  box-shadow: 
+    3px 3px 0 rgba(0,0,0,0.15),
+    -1px -1px 0 rgba(255,255,255,0.5) inset;
+}
+
+/* Tabs look like folder tabs */
+[data-email-theme="the-office"] [role="tablist"],
+[data-email-theme="the-office"] .tabs-container {
+  background: var(--paper-bg-dark) !important;
+  border-radius: 0 !important;
+  border-bottom: 2px solid var(--paper-edge);
+}
+
+[data-email-theme="the-office"] [role="tab"],
+[data-email-theme="the-office"] .tab-item {
+  border-radius: 8px 8px 0 0 !important;
+  border: 1px solid transparent;
+  border-bottom: none;
+  margin-bottom: -2px;
+  font-family: 'Comic Sans MS', 'Segoe Print', cursive !important;
+}
+
+[data-email-theme="the-office"] [role="tab"][aria-selected="true"],
+[data-email-theme="the-office"] .tab-item.active {
+  background: var(--paper-bg) !important;
+  border-color: var(--paper-edge) !important;
+  border-bottom: 2px solid var(--paper-bg) !important;
+}
+
+/* Scrollbar looks like paper edge */
+[data-email-theme="the-office"] ::-webkit-scrollbar {
+  width: 12px;
+  background: var(--paper-bg-dark);
+}
+
+[data-email-theme="the-office"] ::-webkit-scrollbar-thumb {
+  background: linear-gradient(
+    90deg,
+    var(--paper-edge) 0%,
+    #a89880 50%,
+    var(--paper-edge) 100%
+  );
+  border: 2px solid var(--paper-bg-dark);
+  border-radius: 6px;
+}
+
+[data-email-theme="the-office"] ::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(
+    90deg,
+    #9a8a7a 0%,
+    #8a7a6a 50%,
+    #9a8a7a 100%
+  );
+}
+
+/* Labels look handwritten */
+[data-email-theme="the-office"] label,
+[data-email-theme="the-office"] .label {
+  font-family: 'Comic Sans MS', 'Segoe Print', cursive !important;
+  color: var(--pencil-gray) !important;
+}
+
+/* Headings with underline like notebook titles */
+[data-email-theme="the-office"] h1,
+[data-email-theme="the-office"] h2,
+[data-email-theme="the-office"] h3 {
+  font-family: 'Comic Sans MS', 'Segoe Print', cursive !important;
+  position: relative;
+  display: inline-block;
+}
+
+[data-email-theme="the-office"] h1::after,
+[data-email-theme="the-office"] h2::after {
+  content: "";
+  position: absolute;
+  bottom: -4px;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: linear-gradient(
+    90deg,
+    var(--pencil-gray) 0%,
+    var(--pencil-gray) 70%,
+    transparent 100%
+  );
+  opacity: 0.3;
+}
+
+/* Coffee stain decoration */
+[data-email-theme="the-office"] .preview-container::before {
+  content: "";
+  position: absolute;
+  top: 15%;
+  right: 10%;
+  width: 60px;
+  height: 60px;
+  background: radial-gradient(
+    ellipse at center,
+    transparent 30%,
+    var(--coffee-stain) 35%,
+    var(--coffee-stain) 45%,
+    transparent 50%
+  );
+  border-radius: 50%;
+  transform: rotate(15deg);
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* Paper clip decoration on cards */
+[data-email-theme="the-office"] .card-luxury::before {
+  content: "";
+  position: absolute;
+  top: -8px;
+  right: 20px;
+  width: 16px;
+  height: 40px;
+  background: linear-gradient(
+    180deg,
+    #c0c0c0 0%,
+    #e0e0e0 50%,
+    #c0c0c0 100%
+  );
+  border-radius: 8px 8px 0 0;
+  transform: rotate(5deg);
+  box-shadow: 1px 1px 2px rgba(0,0,0,0.2);
+  z-index: 10;
+}
+
+/* Selection looks like highlighter */
+[data-email-theme="the-office"] ::selection {
+  background: rgba(255, 235, 59, 0.5);
+  color: #333;
+}
+
+/* Post-it note style tooltips */
+[data-email-theme="the-office"] [role="tooltip"],
+[data-email-theme="the-office"] .tooltip {
+  background: var(--post-it-yellow) !important;
+  border: 1px solid #e6d9a8 !important;
+  color: #4a4a4a !important;
+  font-family: 'Comic Sans MS', 'Segoe Print', cursive !important;
+  box-shadow: 2px 2px 4px rgba(0,0,0,0.15);
+  transform: rotate(-2deg);
+}
+
+/* Checkbox looks like pencil drawn */
+[data-email-theme="the-office"] input[type="checkbox"] {
+  appearance: none;
+  width: 18px;
+  height: 18px;
+  border: 2px solid var(--pencil-gray) !important;
+  border-radius: 2px;
+  background: transparent;
+  position: relative;
+}
+
+[data-email-theme="the-office"] input[type="checkbox"]:checked::after {
+  content: "✓";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 14px;
+  color: var(--pencil-gray);
+  font-family: 'Comic Sans MS', cursive;
+}
+
+/* Range slider looks like a ruler */
+[data-email-theme="the-office"] input[type="range"]::-webkit-slider-runnable-track {
+  background: linear-gradient(
+    180deg,
+    var(--paper-bg) 0%,
+    var(--paper-edge) 100%
+  );
+  height: 8px;
+  border: 1px solid var(--paper-edge);
+  border-radius: 4px;
+}
+
+[data-email-theme="the-office"] input[type="range"]::-webkit-slider-thumb {
+  background: linear-gradient(
+    180deg,
+    #f4d03f 0%,
+    #c9a227 100%
+  );
+  border: 2px solid #2c2c2c;
+  width: 12px;
+  height: 20px;
+  border-radius: 2px;
+  margin-top: -7px;
+}
+
+/* Animation for paper flutter */
+@keyframes paper-flutter {
+  0%, 100% { transform: rotate(-1deg); }
+  50% { transform: rotate(1deg); }
+}
+
+[data-email-theme="the-office"] .card-luxury:hover {
+  animation: paper-flutter 0.5s ease-in-out;
+}
+
+/* Muted text looks like faded pencil */
+[data-email-theme="the-office"] .text-muted-foreground {
+  color: #8a8070 !important;
+}
+
+.dark[data-email-theme="the-office"] .text-muted-foreground {
+  color: #a89880 !important;
+}
+
+/* Dark mode text fixes for readability */
+.dark[data-email-theme="the-office"] label,
+.dark[data-email-theme="the-office"] .label {
+  color: #d4c8b8 !important;
+}
+
+.dark[data-email-theme="the-office"] h1,
+.dark[data-email-theme="the-office"] h2,
+.dark[data-email-theme="the-office"] h3 {
+  color: #e8dcc8 !important;
+}
+
+/* Fix tab text in dark mode */
+.dark[data-email-theme="the-office"] [role="tab"],
+.dark[data-email-theme="the-office"] .tab-item,
+.dark[data-email-theme="the-office"] button {
+  color: #d4c8b8 !important;
+}
+
+.dark[data-email-theme="the-office"] [role="tab"][aria-selected="true"],
+.dark[data-email-theme="the-office"] .tab-item.active {
+  color: #f5efe5 !important;
+}
+
+/* Fix button text in dark mode */
+.dark[data-email-theme="the-office"] button[class*="primary"],
+.dark[data-email-theme="the-office"] button[class*="default"] {
+  background: var(--post-it-yellow) !important;
+  color: #f5efe5 !important;
+}
+
+/* Fix input text in dark mode */
+.dark[data-email-theme="the-office"] input,
+.dark[data-email-theme="the-office"] textarea,
+.dark[data-email-theme="the-office"] select {
+  color: #e8dcc8 !important;
+}
+
+.dark[data-email-theme="the-office"] input::placeholder,
+.dark[data-email-theme="the-office"] textarea::placeholder {
+  color: #8a7a6a !important;
+}
+
+/* ========================================
+   THE OFFICE - CORK BOARD & STICKY NOTE
+   ======================================== */
+
+/* Cork board container */
+.office-cork-board {
+  position: relative;
+  overflow: visible !important;
+}
+
+.office-cork-board::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image: 
+    radial-gradient(circle at 10% 20%, rgba(0,0,0,0.03) 0%, transparent 20%),
+    radial-gradient(circle at 80% 40%, rgba(0,0,0,0.02) 0%, transparent 15%),
+    radial-gradient(circle at 30% 80%, rgba(0,0,0,0.03) 0%, transparent 25%),
+    radial-gradient(circle at 90% 90%, rgba(0,0,0,0.02) 0%, transparent 10%);
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* Wooden frame effect for cork board */
+.office-cork-board {
+  box-shadow: 
+    inset 0 0 30px rgba(0,0,0,0.15),
+    0 4px 20px rgba(0,0,0,0.3),
+    0 0 0 8px #8B4513,
+    0 0 0 10px #654321,
+    0 0 0 12px rgba(0,0,0,0.3) !important;
+  border-radius: 4px !important;
+}
+
+/* Push pins decoration on cork board corners */
+.office-cork-board::after {
+  content: "📌";
+  position: absolute;
+  top: -8px;
+  left: 20px;
+  font-size: 20px;
+  transform: rotate(-20deg);
+  z-index: 100;
+  filter: drop-shadow(1px 2px 2px rgba(0,0,0,0.3));
+}
+
+/* Override any unwanted styles within Office sticky note */
+[data-email-theme="the-office"] .office-cork-board .canvas-container {
+  background: transparent !important;
+}
+
+/* ========================================
+   PARKS AND RECREATION THEME
+   Warm Government/Midwestern Aesthetic
+   Based on the show's palette: yellow, green, cyan
+   ======================================== */
+
+/* Parks theme - warm cream/tan with gold accents */
+[data-email-theme="parks-and-recreation"] {
+  --parks-bg: #faf8f5;
+  --parks-bg-secondary: #f5f2ed;
+  --parks-accent: #b8860b;  /* Golden rod - waffle/optimism */
+  --parks-accent-light: #daa520;
+  --parks-green: #2d5a27;  /* Forest green - nature touch */
+  --parks-green-light: #4ade80;
+  --parks-border: #d4c4a8;
+  --parks-text: #3d3428;
+  --parks-text-secondary: #6b5d4d;
+  --parks-text-muted: #8b7d6b;
+}
+
+.dark[data-email-theme="parks-and-recreation"] {
+  --parks-bg: #1c1915;
+  --parks-bg-secondary: #242019;
+  --parks-accent: #daa520;
+  --parks-accent-light: #fbbf24;
+  --parks-green: #4ade80;
+  --parks-green-light: #86efac;
+  --parks-border: #3d3428;
+  --parks-text: #f5f2ed;
+  --parks-text-secondary: #d4c4a8;
+  --parks-text-muted: #a89880;
+}
+
+/* Subtle warm background */
+[data-email-theme="parks-and-recreation"] .bg-card {
+  background: var(--parks-bg) !important;
+}
+
+/* Header - warm government building style */
+[data-email-theme="parks-and-recreation"] header {
+  background: linear-gradient(
+    180deg,
+    var(--parks-bg) 0%,
+    var(--parks-bg-secondary) 100%
+  ) !important;
+  border-bottom: 2px solid var(--parks-border) !important;
+}
+
+/* Sidebar - clean and readable */
+[data-email-theme="parks-and-recreation"] aside {
+  background: var(--parks-bg) !important;
+  border-right: 2px solid var(--parks-border) !important;
+}
+
+/* Cards - subtle document style */
+[data-email-theme="parks-and-recreation"] .card-luxury,
+[data-email-theme="parks-and-recreation"] [class*="Card"] {
+  background: var(--parks-bg) !important;
+  border: 1px solid var(--parks-border) !important;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+}
+
+/* Inputs - clean with gold focus */
+[data-email-theme="parks-and-recreation"] input:not([type="color"]):not([type="range"]),
+[data-email-theme="parks-and-recreation"] textarea,
+[data-email-theme="parks-and-recreation"] select {
+  background: var(--parks-bg-secondary) !important;
+  border: 1px solid var(--parks-border) !important;
+  color: var(--parks-text) !important;
+}
+
+[data-email-theme="parks-and-recreation"] input:focus,
+[data-email-theme="parks-and-recreation"] textarea:focus,
+[data-email-theme="parks-and-recreation"] select:focus {
+  border-color: var(--parks-accent) !important;
+  box-shadow: 0 0 0 2px rgba(218, 165, 32, 0.2) !important;
+  outline: none !important;
+}
+
+/* Buttons - gold/yellow (Leslie's optimism + waffles) */
+[data-email-theme="parks-and-recreation"] button[class*="primary"],
+[data-email-theme="parks-and-recreation"] button[class*="default"] {
+  background: linear-gradient(180deg, #fbbf24 0%, #f59e0b 100%) !important;
+  border: 1px solid #d97706 !important;
+  color: #1c1915 !important;
+  font-weight: 600 !important;
+}
+
+[data-email-theme="parks-and-recreation"] button[class*="primary"]:hover,
+[data-email-theme="parks-and-recreation"] button[class*="default"]:hover {
+  background: linear-gradient(180deg, #fcd34d 0%, #fbbf24 100%) !important;
+}
+
+/* Tabs - folder style */
+[data-email-theme="parks-and-recreation"] [role="tablist"],
+[data-email-theme="parks-and-recreation"] .tabs-container {
+  background: var(--parks-bg-secondary) !important;
+  border-bottom: 2px solid var(--parks-border);
+}
+
+[data-email-theme="parks-and-recreation"] [role="tab"][aria-selected="true"],
+[data-email-theme="parks-and-recreation"] .tab-item.active {
+  background: var(--parks-bg) !important;
+  border-color: var(--parks-border) !important;
+  color: var(--parks-accent) !important;
+}
+
+/* Scrollbar */
+[data-email-theme="parks-and-recreation"] ::-webkit-scrollbar {
+  width: 8px;
+  background: var(--parks-bg-secondary);
+}
+
+[data-email-theme="parks-and-recreation"] ::-webkit-scrollbar-thumb {
+  background: var(--parks-border);
+  border-radius: 4px;
+}
+
+[data-email-theme="parks-and-recreation"] ::-webkit-scrollbar-thumb:hover {
+  background: var(--parks-accent);
+}
+
+/* Labels */
+[data-email-theme="parks-and-recreation"] label,
+[data-email-theme="parks-and-recreation"] .label {
+  color: var(--parks-text-secondary) !important;
+}
+
+/* Headings - with subtle gold underline */
+[data-email-theme="parks-and-recreation"] h1,
+[data-email-theme="parks-and-recreation"] h2,
+[data-email-theme="parks-and-recreation"] h3 {
+  color: var(--parks-text) !important;
+}
+
+/* Selection */
+[data-email-theme="parks-and-recreation"] ::selection {
+  background: rgba(251, 191, 36, 0.3);
+  color: var(--parks-text);
+}
+
+/* Muted text */
+[data-email-theme="parks-and-recreation"] .text-muted-foreground {
+  color: var(--parks-text-muted) !important;
+}
+
+/* Dark mode specific overrides for readability */
+.dark[data-email-theme="parks-and-recreation"] label,
+.dark[data-email-theme="parks-and-recreation"] .label {
+  color: var(--parks-text-secondary) !important;
+}
+
+.dark[data-email-theme="parks-and-recreation"] [role="tab"],
+.dark[data-email-theme="parks-and-recreation"] .tab-item {
+  color: var(--parks-text-secondary) !important;
+}
+
+.dark[data-email-theme="parks-and-recreation"] [role="tab"][aria-selected="true"],
+.dark[data-email-theme="parks-and-recreation"] .tab-item.active {
+  color: var(--parks-accent-light) !important;
+}
+
+.dark[data-email-theme="parks-and-recreation"] button {
+  color: var(--parks-text) !important;
+}
+
+.dark[data-email-theme="parks-and-recreation"] input,
+.dark[data-email-theme="parks-and-recreation"] textarea,
+.dark[data-email-theme="parks-and-recreation"] select {
+  color: var(--parks-text) !important;
+}
+
+.dark[data-email-theme="parks-and-recreation"] input::placeholder,
+.dark[data-email-theme="parks-and-recreation"] textarea::placeholder {
+  color: var(--parks-text-muted) !important;
+}
+
+/* ========================================
+   PARKS - DOCUMENT FRAME CONTAINER
+   ======================================== */
+
+.parks-document-frame {
+  position: relative;
+  overflow: visible !important;
+}
+
+/* Warm golden border frame */
+.parks-document-frame {
+  box-shadow: 
+    0 4px 20px rgba(0,0,0,0.1),
+    0 0 0 3px var(--parks-accent, #b8860b),
+    0 0 0 5px rgba(0,0,0,0.1) !important;
+  border-radius: 4px !important;
+}
+
+/* ========================================
+   DARTH VADER THEME - Imperial Sith Aesthetic
+   Dark chrome, red accents, angular designs
+   ======================================== */
+
+[data-email-theme="darth-vader"] {
+  --vader-bg: #0a0a0f;
+  --vader-bg-secondary: #12121a;
+  --vader-bg-tertiary: #1a1a25;
+  --vader-accent: #ef4444;
+  --vader-accent-light: #f87171;
+  --vader-accent-dark: #991b1b;
+  --vader-chrome: #2a2a35;
+  --vader-chrome-light: #3a3a48;
+  --vader-chrome-dark: #18181f;
+  --vader-border: #2a2a35;
+  --vader-border-glow: rgba(239, 68, 68, 0.3);
+  --vader-text: #e5e5e8;
+  --vader-text-secondary: #a1a1aa;
+  --vader-text-muted: #71717a;
+  --vader-glow: rgba(239, 68, 68, 0.15);
+  --vader-hologram: rgba(239, 68, 68, 0.08);
+}
+
+/* Light mode overrides for Darth Vader theme */
+:root[data-email-theme="darth-vader"]:not(.dark) {
+  --vader-bg: #f8f8fa;
+  --vader-bg-secondary: #f0f0f5;
+  --vader-bg-tertiary: #e8e8f0;
+  --vader-chrome: #e0e0e8;
+  --vader-chrome-light: #f0f0f5;
+  --vader-chrome-dark: #d0d0d8;
+  --vader-border: #d0d0d8;
+  --vader-border-glow: rgba(239, 68, 68, 0.25);
+  --vader-text: #1a1a25;
+  --vader-text-secondary: #4a4a55;
+  --vader-text-muted: #6a6a78;
+  --vader-glow: rgba(239, 68, 68, 0.12);
+  --vader-hologram: rgba(239, 68, 68, 0.06);
+}
+
+.dark[data-email-theme="darth-vader"] {
+  --vader-bg: #050508;
+  --vader-bg-secondary: #0a0a0f;
+  --vader-bg-tertiary: #12121a;
+  --vader-chrome: #1a1a22;
+  --vader-chrome-light: #252530;
+  --vader-border: #252530;
+}
+
+/* Imperial dark background */
+[data-email-theme="darth-vader"] .bg-card {
+  background: linear-gradient(
+    135deg,
+    var(--vader-bg) 0%,
+    var(--vader-bg-secondary) 50%,
+    var(--vader-bg) 100%
+  ) !important;
+}
+
+/* Header - Death Star command bridge */
+[data-email-theme="darth-vader"] header {
+  background: linear-gradient(
+    180deg,
+    var(--vader-chrome-dark) 0%,
+    var(--vader-chrome) 100%
+  ) !important;
+  border-bottom: 2px solid var(--vader-accent-dark) !important;
+  box-shadow: 
+    0 2px 20px var(--vader-glow),
+    inset 0 -1px 0 var(--vader-border-glow);
+}
+
+/* Light mode header text - ensure readability */
+:root[data-email-theme="darth-vader"]:not(.dark) header h1,
+:root[data-email-theme="darth-vader"]:not(.dark) header a,
+:root[data-email-theme="darth-vader"]:not(.dark) header span {
+  color: var(--vader-text) !important;
+}
+
+:root[data-email-theme="darth-vader"]:not(.dark) header .text-muted-foreground {
+  color: var(--vader-text-secondary) !important;
+}
+
+/* Light mode header buttons */
+:root[data-email-theme="darth-vader"]:not(.dark) header button {
+  color: var(--vader-text) !important;
+}
+
+:root[data-email-theme="darth-vader"]:not(.dark) header button:hover {
+  background: var(--vader-chrome) !important;
+}
+
+/* Light mode sidebar tabs - both left (Templates/Style) and right (Content/AI/Export) */
+/* Inactive tabs - dark readable text */
+:root[data-email-theme="darth-vader"]:not(.dark) aside .border-b button {
+  color: var(--vader-text-muted) !important;
+}
+
+:root[data-email-theme="darth-vader"]:not(.dark) aside .border-b button svg {
+  color: var(--vader-text-muted) !important;
+}
+
+/* ACTIVE/SELECTED tabs - red background with white text */
+:root[data-email-theme="darth-vader"]:not(.dark) aside .border-b button.border-primary,
+:root[data-email-theme="darth-vader"]:not(.dark) aside .border-b button.bg-background {
+  background: linear-gradient(180deg, #ef4444 0%, #b91c1c 100%) !important;
+  color: #ffffff !important;
+  border-bottom-color: #ef4444 !important;
+}
+
+:root[data-email-theme="darth-vader"]:not(.dark) aside .border-b button.border-primary svg,
+:root[data-email-theme="darth-vader"]:not(.dark) aside .border-b button.border-primary span,
+:root[data-email-theme="darth-vader"]:not(.dark) aside .border-b button.bg-background svg,
+:root[data-email-theme="darth-vader"]:not(.dark) aside .border-b button.bg-background span {
+  color: #ffffff !important;
+}
+
+/* Also handle the rainbow-underline AI tab */
+:root[data-email-theme="darth-vader"]:not(.dark) aside .border-b button.rainbow-underline {
+  background: linear-gradient(180deg, #ef4444 0%, #b91c1c 100%) !important;
+  color: #ffffff !important;
+}
+
+:root[data-email-theme="darth-vader"]:not(.dark) aside .border-b button.rainbow-underline svg,
+:root[data-email-theme="darth-vader"]:not(.dark) aside .border-b button.rainbow-underline span {
+  color: #ffffff !important;
+}
+
+/* Attribute selector fallbacks for active tabs */
+:root[data-email-theme="darth-vader"]:not(.dark) aside > div > button[class*="border-primary"],
+:root[data-email-theme="darth-vader"]:not(.dark) aside > div > button[class*="bg-background"][class*="text-foreground"],
+:root[data-email-theme="darth-vader"]:not(.dark) aside div[class*="border-b"] button[class*="border-primary"],
+:root[data-email-theme="darth-vader"]:not(.dark) aside div[class*="border-b"] button[class*="bg-background"][class*="text-foreground"] {
+  background: linear-gradient(180deg, #ef4444 0%, #b91c1c 100%) !important;
+  color: #ffffff !important;
+  border-bottom-color: #ef4444 !important;
+}
+
+:root[data-email-theme="darth-vader"]:not(.dark) aside div[class*="border-b"] button[class*="border-primary"] svg,
+:root[data-email-theme="darth-vader"]:not(.dark) aside div[class*="border-b"] button[class*="border-primary"] span,
+:root[data-email-theme="darth-vader"]:not(.dark) aside div[class*="border-b"] button[class*="bg-background"][class*="text-foreground"] svg,
+:root[data-email-theme="darth-vader"]:not(.dark) aside div[class*="border-b"] button[class*="bg-background"][class*="text-foreground"] span {
+  color: #ffffff !important;
+}
+
+/* Sidebar - Imperial console styling - scoped to direct app sidebars only */
+[data-email-theme="darth-vader"] > div > .flex > aside.border-r,
+[data-email-theme="darth-vader"] > div > .flex > aside.border-l {
+  background: linear-gradient(
+    90deg,
+    #0a0a0f 0%,
+    #12121a 100%
+  );
+}
+
+/* Light mode sidebar background */
+:root[data-email-theme="darth-vader"]:not(.dark) > div > .flex > aside.border-r,
+:root[data-email-theme="darth-vader"]:not(.dark) > div > .flex > aside.border-l,
+:root[data-email-theme="darth-vader"]:not(.dark) aside.border-r,
+:root[data-email-theme="darth-vader"]:not(.dark) aside.border-l {
+  background: linear-gradient(
+    90deg,
+    var(--vader-bg) 0%,
+    var(--vader-bg-secondary) 100%
+  ) !important;
+}
+
+/* Cards - Imperial data panels - only target specific card classes */
+[data-email-theme="darth-vader"] .card-luxury {
+  background: linear-gradient(
+    145deg,
+    #18181f 0%,
+    #2a2a35 100%
+  ) !important;
+  border: 1px solid #3a3a48 !important;
+  border-top: 2px solid #991b1b !important;
+  box-shadow: 
+    0 4px 20px rgba(0,0,0,0.4),
+    0 -2px 10px rgba(239, 68, 68, 0.15),
+    inset 0 1px 0 rgba(255,255,255,0.03);
+  border-radius: 4px !important;
+}
+
+/* Inputs - Imperial terminal style - only in sidebar forms */
+[data-email-theme="darth-vader"] aside input:not([type="color"]):not([type="range"]),
+[data-email-theme="darth-vader"] aside textarea,
+[data-email-theme="darth-vader"] aside select {
+  background: var(--vader-bg) !important;
+  border: 1px solid var(--vader-border) !important;
+  color: var(--vader-text) !important;
+}
+
+[data-email-theme="darth-vader"] aside input:focus,
+[data-email-theme="darth-vader"] aside textarea:focus,
+[data-email-theme="darth-vader"] aside select:focus {
+  border-color: var(--vader-accent) !important;
+  box-shadow: 0 0 15px var(--vader-glow), 0 0 0 1px var(--vader-accent-dark) !important;
+  outline: none !important;
+}
+
+/* Buttons - Imperial command buttons - only in sidebar areas */
+[data-email-theme="darth-vader"] aside button[class*="primary"],
+[data-email-theme="darth-vader"] aside button[class*="default"],
+[data-email-theme="darth-vader"] header button[class*="primary"] {
+  background: linear-gradient(180deg, var(--vader-accent-dark) 0%, #7f1d1d 100%) !important;
+  border: 1px solid var(--vader-accent) !important;
+  color: #fff !important;
+  transition: all 0.2s ease;
+}
+
+[data-email-theme="darth-vader"] aside button[class*="primary"]:hover,
+[data-email-theme="darth-vader"] aside button[class*="default"]:hover {
+  background: linear-gradient(180deg, var(--vader-accent) 0%, var(--vader-accent-dark) 100%) !important;
+}
+
+/* Scrollbar - Imperial style */
+[data-email-theme="darth-vader"] ::-webkit-scrollbar {
+  width: 8px;
+  background: var(--vader-bg);
+}
+
+[data-email-theme="darth-vader"] ::-webkit-scrollbar-thumb {
+  background: linear-gradient(
+    180deg,
+    var(--vader-chrome-light) 0%,
+    var(--vader-chrome) 100%
+  );
+  border-radius: 4px;
+  border: 1px solid var(--vader-border);
+}
+
+[data-email-theme="darth-vader"] ::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(
+    180deg,
+    var(--vader-accent-dark) 0%,
+    #7f1d1d 100%
+  );
+  box-shadow: 0 0 10px var(--vader-glow);
+}
+
+/* Labels - Imperial insignia style - only in sidebar forms */
+[data-email-theme="darth-vader"] aside label,
+[data-email-theme="darth-vader"] aside .label {
+  color: var(--vader-text-secondary) !important;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  font-size: 0.7rem;
+}
+
+/* Headings - Imperial command style - only for sidebar headings, not preview */
+[data-email-theme="darth-vader"] aside h1,
+[data-email-theme="darth-vader"] aside h2,
+[data-email-theme="darth-vader"] aside h3 {
+  font-family: 'Orbitron', 'Rajdhani', 'Arial Black', sans-serif !important;
+  color: var(--vader-text) !important;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+
+/* Selection - Red lightsaber glow */
+[data-email-theme="darth-vader"] ::selection {
+  background: var(--vader-accent);
+  color: #fff;
+  text-shadow: 0 0 10px var(--vader-accent);
+}
+
+/* Muted text */
+[data-email-theme="darth-vader"] .text-muted-foreground {
+  color: var(--vader-text-muted) !important;
+}
+
+/* Light mode specific text fixes for dropdowns and selectors */
+:root[data-email-theme="darth-vader"]:not(.dark) .bg-card:not(.canvas-container *) {
+  background: var(--vader-bg-secondary) !important;
+}
+
+/* Scope text-foreground to UI areas, not preview */
+:root[data-email-theme="darth-vader"]:not(.dark) header .text-foreground,
+:root[data-email-theme="darth-vader"]:not(.dark) aside .text-foreground,
+:root[data-email-theme="darth-vader"]:not(.dark) footer .text-foreground {
+  color: var(--vader-text) !important;
+}
+
+:root[data-email-theme="darth-vader"]:not(.dark) aside .text-muted-foreground,
+:root[data-email-theme="darth-vader"]:not(.dark) aside span,
+:root[data-email-theme="darth-vader"]:not(.dark) aside p {
+  color: var(--vader-text-secondary) !important;
+}
+
+:root[data-email-theme="darth-vader"]:not(.dark) aside h4,
+:root[data-email-theme="darth-vader"]:not(.dark) aside .font-semibold,
+:root[data-email-theme="darth-vader"]:not(.dark) aside .font-medium {
+  color: var(--vader-text) !important;
+}
+
+/* Light mode dropdown fixes */
+:root[data-email-theme="darth-vader"]:not(.dark) [class*="border-border"] {
+  border-color: var(--vader-border) !important;
+}
+
+:root[data-email-theme="darth-vader"]:not(.dark) .bg-secondary\/50,
+:root[data-email-theme="darth-vader"]:not(.dark) .bg-secondary\/30 {
+  background: var(--vader-chrome-light) !important;
+}
+
+:root[data-email-theme="darth-vader"]:not(.dark) button.hover\:bg-secondary\/70:hover {
+  background: var(--vader-chrome) !important;
+}
+
+/* Light mode canvas toolbar text fixes - only for the toolbar area, NOT the preview */
+:root[data-email-theme="darth-vader"]:not(.dark) main > .h-12 .text-xs,
+:root[data-email-theme="darth-vader"]:not(.dark) main > .h-12 .text-sm,
+:root[data-email-theme="darth-vader"]:not(.dark) main > .h-12 .font-medium,
+:root[data-email-theme="darth-vader"]:not(.dark) main > div:first-child .text-xs,
+:root[data-email-theme="darth-vader"]:not(.dark) main > div:first-child .text-sm {
+  color: var(--vader-text) !important;
+}
+
+:root[data-email-theme="darth-vader"]:not(.dark) main > .h-12 .text-muted-foreground,
+:root[data-email-theme="darth-vader"]:not(.dark) main > div:first-child .text-muted-foreground {
+  color: var(--vader-text-secondary) !important;
+}
+
+/* IMPORTANT: Keep preview text light since Darth Vader preview always has dark bg */
+:root[data-email-theme="darth-vader"]:not(.dark) .canvas-container .text-xs,
+:root[data-email-theme="darth-vader"]:not(.dark) .canvas-container .text-sm,
+:root[data-email-theme="darth-vader"]:not(.dark) .canvas-container p,
+:root[data-email-theme="darth-vader"]:not(.dark) .canvas-container span:not([class*="bg-"]) {
+  color: rgba(255, 255, 255, 0.85) !important;
+}
+
+:root[data-email-theme="darth-vader"]:not(.dark) .canvas-container .font-medium,
+:root[data-email-theme="darth-vader"]:not(.dark) .canvas-container .font-semibold {
+  color: rgba(255, 255, 255, 0.95) !important;
+}
+
+/* Light mode dropdown menu styling */
+:root[data-email-theme="darth-vader"]:not(.dark) [class*="z-50"].bg-card {
+  background: var(--vader-bg) !important;
+  border-color: var(--vader-border) !important;
+}
+
+:root[data-email-theme="darth-vader"]:not(.dark) [class*="z-50"] p,
+:root[data-email-theme="darth-vader"]:not(.dark) [class*="z-50"] span {
+  color: var(--vader-text-secondary) !important;
+}
+
+:root[data-email-theme="darth-vader"]:not(.dark) [class*="z-50"] .font-semibold,
+:root[data-email-theme="darth-vader"]:not(.dark) [class*="z-50"] .font-medium {
+  color: var(--vader-text) !important;
+}
+
+/* Light mode template card styling */
+:root[data-email-theme="darth-vader"]:not(.dark) aside .rounded-xl.bg-card {
+  background: var(--vader-bg) !important;
+  border-color: var(--vader-border) !important;
+}
+
+:root[data-email-theme="darth-vader"]:not(.dark) aside .bg-muted\/50 {
+  background: var(--vader-chrome-light) !important;
+}
+
+/* Light mode - ensure primary button text stays white on red */
+:root[data-email-theme="darth-vader"]:not(.dark) header button[class*="primary"] span,
+:root[data-email-theme="darth-vader"]:not(.dark) header .btn-elegant span {
+  color: white !important;
+}
+
+/* Light mode footer text */
+:root[data-email-theme="darth-vader"]:not(.dark) footer,
+:root[data-email-theme="darth-vader"]:not(.dark) footer span,
+:root[data-email-theme="darth-vader"]:not(.dark) footer a {
+  color: var(--vader-text-secondary) !important;
+}
+
+/* Imperial breathing effect on hover */
+@keyframes vader-breathe {
+  0%, 100% { opacity: 0.8; }
+  50% { opacity: 1; }
+}
+
+[data-email-theme="darth-vader"] .card-luxury:hover {
+  animation: vader-breathe 4s ease-in-out infinite;
+  box-shadow: 
+    0 4px 30px rgba(0,0,0,0.5),
+    0 0 2px var(--vader-border-glow),
+    inset 0 1px 0 rgba(255,255,255,0.05);
+}
+
+/* Red ambient glow effect */
+[data-email-theme="darth-vader"] .preview-container::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(
+    ellipse at 50% 0%,
+    var(--vader-glow) 0%,
+    transparent 50%
+  );
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* Imperial grid pattern - removed to prevent layout issues */
+
+/* Range slider and checkbox styles - scoped to sidebar */
+[data-email-theme="darth-vader"] aside input[type="range"]::-webkit-slider-runnable-track {
+  background: linear-gradient(90deg, var(--vader-accent-dark) 0%, var(--vader-chrome) 100%);
+  height: 6px;
+  border: 1px solid var(--vader-border);
+}
+
+[data-email-theme="darth-vader"] aside input[type="range"]::-webkit-slider-thumb {
+  background: var(--vader-accent);
+  border: 2px solid var(--vader-accent-dark);
+  box-shadow: 0 0 10px var(--vader-glow);
+}
+
+/* ========================================
+   DARTH VADER - HOLOGRAM FRAME CONTAINER
+   ======================================== */
+
+.vader-hologram-frame {
+  position: relative;
+  overflow: visible !important;
+}
+
+/* Hologram scanlines effect */
+.vader-hologram-frame::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: repeating-linear-gradient(
+    0deg,
+    transparent,
+    transparent 2px,
+    rgba(239, 68, 68, 0.03) 2px,
+    rgba(239, 68, 68, 0.03) 4px
+  );
+  pointer-events: none;
+  z-index: 5;
+  animation: vader-scanlines 8s linear infinite;
+}
+
+@keyframes vader-scanlines {
+  0% { transform: translateY(0); }
+  100% { transform: translateY(4px); }
+}
+
+/* Red glow frame */
+.vader-hologram-frame {
+  box-shadow: 
+    0 0 30px rgba(239, 68, 68, 0.2),
+    0 0 60px rgba(239, 68, 68, 0.1),
+    inset 0 0 30px rgba(0,0,0,0.5),
+    0 0 0 2px #991b1b,
+    0 0 0 4px #7f1d1d,
+    0 0 0 6px rgba(0,0,0,0.5) !important;
+  border-radius: 0 !important;
+}
+
+/* Imperial emblem decoration */
+.vader-hologram-frame::after {
+  content: "⬢";
+  position: absolute;
+  top: -12px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 24px;
+  color: #ef4444;
+  text-shadow: 0 0 10px rgba(239, 68, 68, 0.8);
+  z-index: 20;
+}
+
+/* Vader hologram frame - ensure content text is visible */
+.vader-hologram-frame .text-zinc-300 {
+  color: #e5e5e8 !important;
+}
+
+.vader-hologram-frame .text-gray-700 {
+  color: #d4d4d8 !important;
+}
+
+/* Ensure email body content is properly visible in Vader theme */
+.vader-hologram-frame > div {
+  position: relative;
+  z-index: 10;
+}
+
+/* Light mode - Vader hologram frame MUST keep light text (dark bg in preview) */
+:root[data-email-theme="darth-vader"]:not(.dark) .vader-hologram-frame p,
+:root[data-email-theme="darth-vader"]:not(.dark) .vader-hologram-frame span,
+:root[data-email-theme="darth-vader"]:not(.dark) .vader-hologram-frame div:not([class*="bg-"]),
+:root[data-email-theme="darth-vader"]:not(.dark) .vader-hologram-frame .text-xs,
+:root[data-email-theme="darth-vader"]:not(.dark) .vader-hologram-frame .text-sm {
+  color: rgba(255, 255, 255, 0.85) !important;
+}
+
+:root[data-email-theme="darth-vader"]:not(.dark) .vader-hologram-frame .font-medium,
+:root[data-email-theme="darth-vader"]:not(.dark) .vader-hologram-frame .font-semibold,
+:root[data-email-theme="darth-vader"]:not(.dark) .vader-hologram-frame .font-bold {
+  color: #ffffff !important;
+}
+
+/* ========================================
+   YODA THEME - Zen Garden / Wisdom of the Force
+   Bamboo greens, stone grays, nature connection
+   ======================================== */
+
+/* Light Mode - Serene Zen Garden */
+[data-email-theme="yoda"] {
+  /* Bamboo & Nature Palette */
+  --yoda-bg: #f7f9f4;
+  --yoda-bg-secondary: #eef3e8;
+  --yoda-bg-tertiary: #e5ede0;
+  --yoda-paper: #fdfef9;
+  --yoda-paper-aged: #f5f7f0;
+  
+  /* Bamboo Greens */
+  --yoda-bamboo: #5a7c4c;
+  --yoda-bamboo-light: #7a9e6a;
+  --yoda-bamboo-dark: #3d5a32;
+  --yoda-bamboo-muted: #8ba87d;
+  
+  /* Stone & Earth */
+  --yoda-stone: #6b7b6a;
+  --yoda-stone-light: #8a9a89;
+  --yoda-stone-dark: #4a5a49;
+  --yoda-earth: #5c5040;
+  
+  /* Force Energy */
+  --yoda-force: #4ade80;
+  --yoda-force-glow: rgba(74, 222, 128, 0.2);
+  --yoda-force-soft: rgba(74, 222, 128, 0.1);
+  
+  /* Accent Gold - Wisdom */
+  --yoda-gold: #c9a227;
+  --yoda-gold-light: #e5c24a;
+  
+  /* Borders */
+  --yoda-border: #c5d4bf;
+  --yoda-border-bamboo: #8ba87d;
+  
+  /* Text */
+  --yoda-text: #2a3a28;
+  --yoda-text-secondary: #4a5a48;
+  --yoda-text-muted: #6b7b6a;
+}
+
+/* Dark Mode - Mystical Forest Night */
+.dark[data-email-theme="yoda"] {
+  --yoda-bg: #0d1a12;
+  --yoda-bg-secondary: #12231a;
+  --yoda-bg-tertiary: #182d20;
+  --yoda-paper: #152a1d;
+  --yoda-paper-aged: #1a3525;
+  
+  --yoda-bamboo: #5a8a50;
+  --yoda-bamboo-light: #7aaa70;
+  --yoda-bamboo-dark: #3a6a35;
+  --yoda-bamboo-muted: #4a7a45;
+  
+  --yoda-stone: #4a5a48;
+  --yoda-stone-light: #5a6a58;
+  --yoda-stone-dark: #3a4a38;
+  
+  --yoda-force-glow: rgba(74, 222, 128, 0.15);
+  --yoda-force-soft: rgba(74, 222, 128, 0.08);
+  
+  --yoda-border: #2a4a35;
+  --yoda-border-bamboo: #3a5a40;
+  
+  --yoda-text: #e5f0ea;
+  --yoda-text-secondary: #b5d0c0;
+  --yoda-text-muted: #7a9a85;
+}
+
+/* ========================================
+   ZEN GARDEN BACKGROUNDS
+   ======================================== */
+
+[data-email-theme="yoda"] .bg-card {
+  background: linear-gradient(
+    165deg,
+    var(--yoda-bg) 0%,
+    var(--yoda-bg-secondary) 100%
+  ) !important;
+}
+
+/* Header - Clean, no bottom border line */
+[data-email-theme="yoda"] header {
+  background: linear-gradient(
+    180deg,
+    var(--yoda-bg-secondary) 0%,
+    var(--yoda-bg) 100%
+  ) !important;
+  border-bottom: none !important;
+  box-shadow: 0 2px 20px rgba(0,0,0,0.06);
+}
+
+.dark[data-email-theme="yoda"] header {
+  box-shadow: 0 2px 20px rgba(0,0,0,0.2);
+}
+
+/* Sidebar - Zen scroll aesthetic */
+[data-email-theme="yoda"] aside {
+  background: linear-gradient(
+    90deg,
+    var(--yoda-bg) 0%,
+    var(--yoda-bg-secondary) 100%
+  ) !important;
+  border-right: 1px solid var(--yoda-border) !important;
+}
+
+/* ========================================
+   ZEN CARDS WITH BAMBOO CORNERS
+   ======================================== */
+
+[data-email-theme="yoda"] .card-luxury,
+[data-email-theme="yoda"] [class*="Card"] {
+  background: var(--yoda-paper) !important;
+  border: 1px solid var(--yoda-border) !important;
+  box-shadow: 
+    0 4px 20px rgba(0,0,0,0.05),
+    0 1px 3px rgba(0,0,0,0.03);
+  border-radius: 4px !important;
+  position: relative;
+}
+
+.dark[data-email-theme="yoda"] .card-luxury,
+.dark[data-email-theme="yoda"] [class*="Card"] {
+  background: var(--yoda-paper) !important;
+  box-shadow: 
+    0 4px 20px rgba(0,0,0,0.3),
+    0 1px 3px rgba(0,0,0,0.2);
+}
+
+/* Bamboo corner accents on cards */
+[data-email-theme="yoda"] .card-luxury::before,
+[data-email-theme="yoda"] .card-luxury::after {
+  content: "";
+  position: absolute;
+  width: 24px;
+  height: 24px;
+  pointer-events: none;
+  z-index: 1;
+}
+
+[data-email-theme="yoda"] .card-luxury::before {
+  top: -1px;
+  left: -1px;
+  border-top: 3px solid var(--yoda-bamboo-muted);
+  border-left: 3px solid var(--yoda-bamboo-muted);
+  border-radius: 4px 0 0 0;
+}
+
+[data-email-theme="yoda"] .card-luxury::after {
+  bottom: -1px;
+  right: -1px;
+  border-bottom: 3px solid var(--yoda-bamboo-muted);
+  border-right: 3px solid var(--yoda-bamboo-muted);
+  border-radius: 0 0 4px 0;
+}
+
+/* ========================================
+   ZEN INPUTS
+   ======================================== */
+
+[data-email-theme="yoda"] input:not([type="color"]):not([type="range"]),
+[data-email-theme="yoda"] textarea,
+[data-email-theme="yoda"] select {
+  background: var(--yoda-paper) !important;
+  border: 1px solid var(--yoda-border) !important;
+  color: var(--yoda-text) !important;
+  border-radius: 4px !important;
+  font-family: Georgia, 'Times New Roman', serif !important;
+}
+
+[data-email-theme="yoda"] input:focus,
+[data-email-theme="yoda"] textarea:focus,
+[data-email-theme="yoda"] select:focus {
+  border-color: var(--yoda-bamboo) !important;
+  box-shadow: 0 0 0 3px var(--yoda-force-soft) !important;
+  outline: none !important;
+}
+
+/* ========================================
+   ZEN BUTTONS
+   ======================================== */
+
+[data-email-theme="yoda"] button[class*="primary"],
+[data-email-theme="yoda"] button[class*="default"] {
+  background: linear-gradient(180deg, var(--yoda-bamboo) 0%, var(--yoda-bamboo-dark) 100%) !important;
+  border: 1px solid var(--yoda-bamboo-dark) !important;
+  color: #fff !important;
+  font-family: Georgia, serif !important;
+  font-weight: 500 !important;
+  letter-spacing: 0.02em;
+  border-radius: 4px !important;
+  transition: all 0.2s ease;
+}
+
+[data-email-theme="yoda"] button[class*="primary"]:hover,
+[data-email-theme="yoda"] button[class*="default"]:hover {
+  background: linear-gradient(180deg, var(--yoda-bamboo-light) 0%, var(--yoda-bamboo) 100%) !important;
+  box-shadow: 0 4px 12px rgba(90, 124, 76, 0.3);
+  transform: translateY(-1px);
+}
+
+/* ========================================
+   ZEN TABS - Elegant Stone Tablets
+   ======================================== */
+
+[data-email-theme="yoda"] [role="tablist"],
+[data-email-theme="yoda"] .tabs-container,
+[data-email-theme="yoda"] .flex.border-b {
+  background: var(--yoda-bg-secondary) !important;
+  border-bottom: none !important;
+  position: relative;
+}
+
+/* Subtle bamboo line under tabs */
+[data-email-theme="yoda"] [role="tablist"]::after,
+[data-email-theme="yoda"] .flex.border-b::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 16px;
+  right: 16px;
+  height: 2px;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    var(--yoda-border) 10%,
+    var(--yoda-border) 90%,
+    transparent 100%
+  );
+}
+
+[data-email-theme="yoda"] [role="tab"],
+[data-email-theme="yoda"] .tab-item,
+[data-email-theme="yoda"] button[class*="flex-1"] {
+  color: var(--yoda-text-muted) !important;
+  font-family: Georgia, serif !important;
+  letter-spacing: 0.03em;
+  border-bottom: 2px solid transparent !important;
+  transition: all 0.2s ease;
+}
+
+[data-email-theme="yoda"] [role="tab"]:hover,
+[data-email-theme="yoda"] button[class*="flex-1"]:hover {
+  color: var(--yoda-text-secondary) !important;
+  background: var(--yoda-force-soft) !important;
+}
+
+[data-email-theme="yoda"] [role="tab"][aria-selected="true"],
+[data-email-theme="yoda"] .tab-item.active,
+[data-email-theme="yoda"] button[class*="flex-1"][class*="border-b-2"] {
+  background: var(--yoda-paper) !important;
+  color: var(--yoda-bamboo) !important;
+  border-bottom: 2px solid var(--yoda-bamboo) !important;
+  font-weight: 500;
+}
+
+/* ========================================
+   ZEN SCROLLBAR - Bamboo Style
+   ======================================== */
+
+[data-email-theme="yoda"] ::-webkit-scrollbar {
+  width: 8px;
+  background: var(--yoda-bg-secondary);
+}
+
+[data-email-theme="yoda"] ::-webkit-scrollbar-thumb {
+  background: linear-gradient(
+    180deg,
+    var(--yoda-bamboo-muted) 0%,
+    var(--yoda-stone-light) 50%,
+    var(--yoda-bamboo-muted) 100%
+  );
+  border-radius: 4px;
+  border: 2px solid var(--yoda-bg-secondary);
+}
+
+[data-email-theme="yoda"] ::-webkit-scrollbar-thumb:hover {
+  background: var(--yoda-bamboo);
+}
+
+/* ========================================
+   ZEN TYPOGRAPHY
+   ======================================== */
+
+[data-email-theme="yoda"] label,
+[data-email-theme="yoda"] .label {
+  color: var(--yoda-text-secondary) !important;
+  font-family: Georgia, serif !important;
+  letter-spacing: 0.02em;
+}
+
+[data-email-theme="yoda"] h1,
+[data-email-theme="yoda"] h2,
+[data-email-theme="yoda"] h3 {
+  font-family: 'Soloist Title', 'Soloist', Georgia, serif !important;
+  color: var(--yoda-text) !important;
+  letter-spacing: 0.08em;
+}
+
+/* Remove underlines from headings */
+[data-email-theme="yoda"] h1::after,
+[data-email-theme="yoda"] h2::after {
+  display: none;
+}
+
+/* Selection */
+[data-email-theme="yoda"] ::selection {
+  background: var(--yoda-bamboo);
+  color: #fff;
+}
+
+[data-email-theme="yoda"] .text-muted-foreground {
+  color: var(--yoda-text-muted) !important;
+}
+
+/* ========================================
+   ZEN FORM ELEMENTS
+   ======================================== */
+
+[data-email-theme="yoda"] input[type="range"]::-webkit-slider-runnable-track {
+  background: linear-gradient(
+    90deg,
+    var(--yoda-bg-tertiary) 0%,
+    var(--yoda-bamboo-muted) 50%,
+    var(--yoda-bg-tertiary) 100%
+  );
+  height: 6px;
+  border: 1px solid var(--yoda-border);
+  border-radius: 3px;
+}
+
+[data-email-theme="yoda"] input[type="range"]::-webkit-slider-thumb {
+  background: var(--yoda-bamboo);
+  border: 2px solid var(--yoda-paper);
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  margin-top: -6px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+}
+
+[data-email-theme="yoda"] input[type="checkbox"] {
+  appearance: none;
+  width: 18px;
+  height: 18px;
+  border: 2px solid var(--yoda-border) !important;
+  border-radius: 4px;
+  background: var(--yoda-paper);
+  position: relative;
+}
+
+[data-email-theme="yoda"] input[type="checkbox"]:checked {
+  background: var(--yoda-bamboo);
+  border-color: var(--yoda-bamboo-dark) !important;
+}
+
+[data-email-theme="yoda"] input[type="checkbox"]:checked::after {
+  content: "✓";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 12px;
+  color: #fff;
+  font-weight: bold;
+}
+
+/* ========================================
+   YODA ZEN FRAME - Bamboo Border Preview
+   ======================================== */
+
+.yoda-dagobah-frame {
+  position: relative;
+  overflow: visible !important;
+  border-radius: 8px !important;
+}
+
+/* Bamboo corner decorations */
+.yoda-dagobah-frame::before {
+  content: "";
+  position: absolute;
+  inset: -8px;
+  border: 4px solid transparent;
+  border-image: linear-gradient(
+    135deg,
+    #7a9e6a 0%,
+    #5a7c4c 20%,
+    transparent 40%,
+    transparent 60%,
+    #5a7c4c 80%,
+    #7a9e6a 100%
+  ) 1;
+  pointer-events: none;
+  z-index: -1;
+}
+
+/* Zen glow frame */
+.yoda-dagobah-frame {
+  box-shadow: 
+    0 8px 32px rgba(90, 124, 76, 0.12),
+    0 2px 8px rgba(0,0,0,0.08),
+    inset 0 0 0 1px var(--yoda-border, #c5d4bf) !important;
+}
+
+.dark .yoda-dagobah-frame {
+  box-shadow: 
+    0 8px 32px rgba(74, 222, 128, 0.08),
+    0 4px 16px rgba(0,0,0,0.3),
+    inset 0 0 0 1px var(--yoda-border, #2a4a35) !important;
+}
+
+/* Bamboo corner pieces */
+.yoda-dagobah-frame::after {
+  content: "";
+  position: absolute;
+  top: -4px;
+  left: -4px;
+  right: -4px;
+  bottom: -4px;
+  pointer-events: none;
+  z-index: 101;
+  background:
+    /* Top-left bamboo corner */
+    linear-gradient(135deg, #5a7c4c 0%, #5a7c4c 50%, transparent 50%) no-repeat 0 0 / 20px 20px,
+    /* Top-right bamboo corner */
+    linear-gradient(225deg, #5a7c4c 0%, #5a7c4c 50%, transparent 50%) no-repeat 100% 0 / 20px 20px,
+    /* Bottom-left bamboo corner */
+    linear-gradient(45deg, #5a7c4c 0%, #5a7c4c 50%, transparent 50%) no-repeat 0 100% / 20px 20px,
+    /* Bottom-right bamboo corner */
+    linear-gradient(-45deg, #5a7c4c 0%, #5a7c4c 50%, transparent 50%) no-repeat 100% 100% / 20px 20px;
+  border-radius: 10px;
+}
+
+.dark .yoda-dagobah-frame::after {
+  background:
+    linear-gradient(135deg, #3a6a35 0%, #3a6a35 50%, transparent 50%) no-repeat 0 0 / 20px 20px,
+    linear-gradient(225deg, #3a6a35 0%, #3a6a35 50%, transparent 50%) no-repeat 100% 0 / 20px 20px,
+    linear-gradient(45deg, #3a6a35 0%, #3a6a35 50%, transparent 50%) no-repeat 0 100% / 20px 20px,
+    linear-gradient(-45deg, #3a6a35 0%, #3a6a35 50%, transparent 50%) no-repeat 100% 100% / 20px 20px;
+}
+
+/* ========================================
+   SPIDER-MAN THEME - Marvel Gaming Aesthetic
+   Based on Marvel's Spider-Man PS5 UI
+   Dark navy + Red accents + Web patterns
+   ======================================== */
+
+/* Light Mode - City Day */
+[data-email-theme="spider-man"] {
+  /* Core Colors */
+  --spidey-bg: #f0f4f8;
+  --spidey-bg-secondary: #e8eef5;
+  --spidey-bg-tertiary: #dce5f0;
+  --spidey-card: #ffffff;
+  --spidey-card-secondary: #f8fafc;
+  
+  /* Spider-Man Red */
+  --spidey-red: #dc2626;
+  --spidey-red-light: #ef4444;
+  --spidey-red-dark: #b91c1c;
+  --spidey-red-glow: rgba(220, 38, 38, 0.2);
+  
+  /* Spider-Man Blue */
+  --spidey-blue: #1e40af;
+  --spidey-blue-light: #2563eb;
+  --spidey-blue-dark: #1e3a8a;
+  --spidey-navy: #0a1628;
+  --spidey-navy-light: #1a2744;
+  
+  /* Web/Silver */
+  --spidey-web: #94a3b8;
+  --spidey-web-light: #cbd5e1;
+  --spidey-web-dark: #64748b;
+  
+  /* Borders */
+  --spidey-border: #cbd5e1;
+  --spidey-border-red: rgba(220, 38, 38, 0.3);
+  
+  /* Text */
+  --spidey-text: #0f172a;
+  --spidey-text-secondary: #334155;
+  --spidey-text-muted: #64748b;
+  
+  /* Effects */
+  --spidey-glow: rgba(220, 38, 38, 0.15);
+  --spidey-shadow: rgba(30, 64, 175, 0.1);
+}
+
+/* Dark Mode - Night Patrol */
+.dark[data-email-theme="spider-man"] {
+  --spidey-bg: #050a14;
+  --spidey-bg-secondary: #0a1628;
+  --spidey-bg-tertiary: #0f1f38;
+  --spidey-card: #0a1628;
+  --spidey-card-secondary: #0f1f38;
+  
+  --spidey-red: #ef4444;
+  --spidey-red-light: #f87171;
+  --spidey-red-dark: #dc2626;
+  --spidey-red-glow: rgba(239, 68, 68, 0.25);
+  
+  --spidey-blue: #3b82f6;
+  --spidey-blue-light: #60a5fa;
+  --spidey-blue-dark: #2563eb;
+  --spidey-navy: #020617;
+  --spidey-navy-light: #0a1628;
+  
+  --spidey-web: #475569;
+  --spidey-web-light: #64748b;
+  --spidey-web-dark: #334155;
+  
+  --spidey-border: #1e3a5f;
+  --spidey-border-red: rgba(239, 68, 68, 0.4);
+  
+  --spidey-text: #f1f5f9;
+  --spidey-text-secondary: #cbd5e1;
+  --spidey-text-muted: #94a3b8;
+  
+  --spidey-glow: rgba(239, 68, 68, 0.2);
+  --spidey-shadow: rgba(0, 0, 0, 0.4);
+}
+
+/* ========================================
+   SPIDER-MAN BACKGROUNDS
+   ======================================== */
+
+[data-email-theme="spider-man"] .bg-card {
+  background: linear-gradient(
+    135deg,
+    var(--spidey-bg) 0%,
+    var(--spidey-bg-secondary) 50%,
+    var(--spidey-bg) 100%
+  ) !important;
+}
+
+/* Header - Game Menu Bar Style */
+[data-email-theme="spider-man"] header {
+  background: linear-gradient(
+    180deg,
+    var(--spidey-bg-secondary) 0%,
+    var(--spidey-bg) 100%
+  ) !important;
+  border-bottom: 2px solid var(--spidey-red) !important;
+  box-shadow: 
+    0 2px 20px var(--spidey-red-glow),
+    inset 0 -1px 0 var(--spidey-border-red);
+}
+
+.dark[data-email-theme="spider-man"] header {
+  background: linear-gradient(
+    180deg,
+    var(--spidey-navy-light) 0%,
+    var(--spidey-navy) 100%
+  ) !important;
+  box-shadow: 
+    0 4px 30px var(--spidey-red-glow),
+    inset 0 -1px 0 var(--spidey-red);
+}
+
+/* Sidebar - Command Console Style */
+[data-email-theme="spider-man"] aside {
+  background: linear-gradient(
+    90deg,
+    var(--spidey-bg) 0%,
+    var(--spidey-bg-secondary) 100%
+  ) !important;
+  border-right: 1px solid var(--spidey-border) !important;
+}
+
+.dark[data-email-theme="spider-man"] aside {
+  background: linear-gradient(
+    90deg,
+    var(--spidey-navy) 0%,
+    var(--spidey-navy-light) 100%
+  ) !important;
+  border-right: 1px solid var(--spidey-border) !important;
+}
+
+/* ========================================
+   SPIDER-MAN CARDS - Hexagonal Accent Style
+   ======================================== */
+
+[data-email-theme="spider-man"] .card-luxury,
+[data-email-theme="spider-man"] [class*="Card"] {
+  background: var(--spidey-card) !important;
+  border: 1px solid var(--spidey-border) !important;
+  border-left: 4px solid var(--spidey-red) !important;
+  box-shadow: 
+    0 4px 20px var(--spidey-shadow),
+    0 0 0 1px var(--spidey-border-red);
+  border-radius: 4px !important;
+  position: relative;
+  transition: all 0.2s ease;
+}
+
+[data-email-theme="spider-man"] .card-luxury:hover {
+  border-left-color: var(--spidey-red-light) !important;
+  box-shadow: 
+    0 8px 30px var(--spidey-shadow),
+    0 0 20px var(--spidey-red-glow),
+    0 0 0 1px var(--spidey-border-red);
+  transform: translateY(-2px);
+}
+
+.dark[data-email-theme="spider-man"] .card-luxury,
+.dark[data-email-theme="spider-man"] [class*="Card"] {
+  background: var(--spidey-card) !important;
+  box-shadow: 
+    0 4px 30px rgba(0,0,0,0.4),
+    0 0 20px var(--spidey-red-glow),
+    inset 0 1px 0 rgba(255,255,255,0.03);
+}
+
+/* ========================================
+   SPIDER-MAN INPUTS - Tech Terminal Style
+   ======================================== */
+
+[data-email-theme="spider-man"] input:not([type="color"]):not([type="range"]),
+[data-email-theme="spider-man"] textarea,
+[data-email-theme="spider-man"] select {
+  background: var(--spidey-card) !important;
+  border: 1px solid var(--spidey-border) !important;
+  color: var(--spidey-text) !important;
+  border-radius: 4px !important;
+  font-family: 'Inter', 'Segoe UI', system-ui, sans-serif !important;
+}
+
+[data-email-theme="spider-man"] input:focus,
+[data-email-theme="spider-man"] textarea:focus,
+[data-email-theme="spider-man"] select:focus {
+  border-color: var(--spidey-red) !important;
+  box-shadow: 0 0 0 3px var(--spidey-red-glow), 0 0 15px var(--spidey-red-glow) !important;
+  outline: none !important;
+}
+
+.dark[data-email-theme="spider-man"] input:not([type="color"]):not([type="range"]),
+.dark[data-email-theme="spider-man"] textarea,
+.dark[data-email-theme="spider-man"] select {
+  background: var(--spidey-navy-light) !important;
+  border: 1px solid var(--spidey-border) !important;
+}
+
+/* ========================================
+   SPIDER-MAN BUTTONS - Web Action Style
+   ======================================== */
+
+[data-email-theme="spider-man"] button[class*="primary"],
+[data-email-theme="spider-man"] button[class*="default"] {
+  background: linear-gradient(180deg, var(--spidey-red) 0%, var(--spidey-red-dark) 100%) !important;
+  border: 1px solid var(--spidey-red-dark) !important;
+  color: #fff !important;
+  font-weight: 600 !important;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  font-size: 0.75rem;
+  border-radius: 4px !important;
+  transition: all 0.2s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+[data-email-theme="spider-man"] button[class*="primary"]::before,
+[data-email-theme="spider-man"] button[class*="default"]::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.2),
+    transparent
+  );
+  transition: left 0.4s ease;
+}
+
+[data-email-theme="spider-man"] button[class*="primary"]:hover::before,
+[data-email-theme="spider-man"] button[class*="default"]:hover::before {
+  left: 100%;
+}
+
+[data-email-theme="spider-man"] button[class*="primary"]:hover,
+[data-email-theme="spider-man"] button[class*="default"]:hover {
+  background: linear-gradient(180deg, var(--spidey-red-light) 0%, var(--spidey-red) 100%) !important;
+  box-shadow: 0 4px 20px var(--spidey-red-glow), 0 0 30px var(--spidey-red-glow);
+  transform: translateY(-1px);
+}
+
+/* Ghost/Secondary buttons */
+[data-email-theme="spider-man"] button[class*="ghost"],
+[data-email-theme="spider-man"] button[class*="outline"] {
+  color: var(--spidey-text) !important;
+  border: 1px solid var(--spidey-border) !important;
+  background: transparent !important;
+}
+
+[data-email-theme="spider-man"] button[class*="ghost"]:hover,
+[data-email-theme="spider-man"] button[class*="outline"]:hover {
+  background: var(--spidey-red-glow) !important;
+  border-color: var(--spidey-red) !important;
+  color: var(--spidey-red) !important;
+}
+
+.dark[data-email-theme="spider-man"] button[class*="ghost"],
+.dark[data-email-theme="spider-man"] button[class*="outline"] {
+  color: var(--spidey-text) !important;
+}
+
+/* ========================================
+   SPIDER-MAN TABS - Clean Minimalist Style
+   With animated red highlight + spider indicator
+   ======================================== */
+
+/* Tab container - clean with subtle border */
+[data-email-theme="spider-man"] [role="tablist"],
+[data-email-theme="spider-man"] .tabs-container,
+[data-email-theme="spider-man"] aside .flex.border-b {
+  background: var(--spidey-card) !important;
+  border-bottom: 1px solid var(--spidey-border) !important;
+  padding: 0 !important;
+  gap: 0 !important;
+  position: relative;
+}
+
+.dark[data-email-theme="spider-man"] [role="tablist"],
+.dark[data-email-theme="spider-man"] .tabs-container,
+.dark[data-email-theme="spider-man"] aside .flex.border-b {
+  background: var(--spidey-navy-light) !important;
+  border-bottom: 1px solid var(--spidey-border) !important;
+}
+
+/* Inactive tabs - clean text */
+[data-email-theme="spider-man"] [role="tab"],
+[data-email-theme="spider-man"] .tab-item,
+[data-email-theme="spider-man"] button[class*="flex-1"] {
+  color: var(--spidey-text-muted) !important;
+  font-weight: 600 !important;
+  text-transform: none !important;
+  letter-spacing: 0.01em !important;
+  font-size: 0.8rem !important;
+  border: none !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  padding: 14px 16px !important;
+  margin: 0 !important;
+  transition: all 0.2s ease;
+  position: relative;
+}
+
+/* IMPORTANT: Hide indicators on ALL tabs by default */
+[data-email-theme="spider-man"] [role="tab"]::before,
+[data-email-theme="spider-man"] [role="tab"]::after,
+[data-email-theme="spider-man"] .tab-item::before,
+[data-email-theme="spider-man"] .tab-item::after,
+[data-email-theme="spider-man"] button[class*="flex-1"]::before,
+[data-email-theme="spider-man"] button[class*="flex-1"]::after,
+[data-email-theme="spider-man"] aside .border-b button::before,
+[data-email-theme="spider-man"] aside .border-b button::after {
+  content: none !important;
+  display: none !important;
+}
+
+[data-email-theme="spider-man"] [role="tab"]:hover,
+[data-email-theme="spider-man"] button[class*="flex-1"]:hover {
+  color: var(--spidey-text) !important;
+  background: transparent !important;
+}
+
+/* Active tab - animated red underline with spider cutout indicator */
+[data-email-theme="spider-man"] [role="tab"][aria-selected="true"],
+[data-email-theme="spider-man"] .tab-item.active,
+[data-email-theme="spider-man"] button[class*="flex-1"][class*="border-b-2"],
+[data-email-theme="spider-man"] button[class*="flex-1"].border-primary,
+[data-email-theme="spider-man"] aside .border-b button.border-primary,
+[data-email-theme="spider-man"] aside .border-b button.bg-background {
+  color: var(--spidey-red) !important;
+  /* Red gradient background for selected state */
+  background: linear-gradient(
+    180deg,
+    var(--spidey-red-glow) 0%,
+    rgba(239, 68, 68, 0.12) 50%,
+    transparent 100%
+  ) !important;
+  border: none !important;
+  /* Subtle pulsing animation */
+  animation: spidey-tab-pulse 2.5s ease-in-out infinite !important;
+}
+
+/* Animated red highlight bar under active tab */
+[data-email-theme="spider-man"] [role="tab"][aria-selected="true"]::after,
+[data-email-theme="spider-man"] .tab-item.active::after,
+[data-email-theme="spider-man"] button[class*="flex-1"][class*="border-b-2"]::after,
+[data-email-theme="spider-man"] button[class*="flex-1"].border-primary::after,
+[data-email-theme="spider-man"] aside .border-b button.border-primary::after,
+[data-email-theme="spider-man"] aside .border-b button.bg-background::after {
+  content: "" !important;
+  display: block !important;
+  position: absolute !important;
+  bottom: -1px !important;
+  left: 8px !important;
+  right: 8px !important;
+  height: 3px !important;
+  background: var(--spidey-red) !important;
+  border-radius: 3px 3px 0 0 !important;
+  animation: spidey-tab-glow 2s ease-in-out infinite !important;
+  box-shadow: 0 0 8px var(--spidey-red-glow), 0 0 16px var(--spidey-red-glow) !important;
+}
+
+/* Spider icon indicator above active tab */
+[data-email-theme="spider-man"] [role="tab"][aria-selected="true"]::before,
+[data-email-theme="spider-man"] .tab-item.active::before,
+[data-email-theme="spider-man"] button[class*="flex-1"][class*="border-b-2"]::before,
+[data-email-theme="spider-man"] button[class*="flex-1"].border-primary::before,
+[data-email-theme="spider-man"] aside .border-b button.border-primary::before,
+[data-email-theme="spider-man"] aside .border-b button.bg-background::before {
+  content: "" !important;
+  display: block !important;
+  position: absolute !important;
+  top: 2px !important;
+  left: 50% !important;
+  transform: translateX(-50%) !important;
+  width: 14px !important;
+  height: 12px !important;
+  background: var(--spidey-red) !important;
+  /* Spider silhouette using mask-image */
+  -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='currentColor'%3E%3Cpath d='M12 1C11.2 1 10.5 1.7 10.5 2.5V4L8 3L6 5L9 6.5L7 8L4 7L3 9.5L6.5 10L5 12L2 12L2 15L5 14.5L6 17L3.5 19L5.5 21L8 18.5L10 20V22.5C10 23.3 10.7 24 11.5 24H12.5C13.3 24 14 23.3 14 22.5V20L16 18.5L18.5 21L20.5 19L18 17L19 14.5L22 15V12L19 12L17.5 10L21 9.5L20 7L16 8L14 6.5L17 5L15 3L12.5 4V2.5C12.5 1.7 11.8 1 11 1H12ZM12 8C13.7 8 15 9.3 15 11C15 12.7 13.7 14 12 14C10.3 14 9 12.7 9 11C9 9.3 10.3 8 12 8Z'/%3E%3C/svg%3E") !important;
+  -webkit-mask-size: contain !important;
+  -webkit-mask-repeat: no-repeat !important;
+  -webkit-mask-position: center !important;
+  mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='currentColor'%3E%3Cpath d='M12 1C11.2 1 10.5 1.7 10.5 2.5V4L8 3L6 5L9 6.5L7 8L4 7L3 9.5L6.5 10L5 12L2 12L2 15L5 14.5L6 17L3.5 19L5.5 21L8 18.5L10 20V22.5C10 23.3 10.7 24 11.5 24H12.5C13.3 24 14 23.3 14 22.5V20L16 18.5L18.5 21L20.5 19L18 17L19 14.5L22 15V12L19 12L17.5 10L21 9.5L20 7L16 8L14 6.5L17 5L15 3L12.5 4V2.5C12.5 1.7 11.8 1 11 1H12ZM12 8C13.7 8 15 9.3 15 11C15 12.7 13.7 14 12 14C10.3 14 9 12.7 9 11C9 9.3 10.3 8 12 8Z'/%3E%3C/svg%3E") !important;
+  mask-size: contain !important;
+  mask-repeat: no-repeat !important;
+  mask-position: center !important;
+  opacity: 1 !important;
+}
+
+/* Also style the icons in active tabs */
+[data-email-theme="spider-man"] [role="tab"][aria-selected="true"] svg,
+[data-email-theme="spider-man"] button[class*="flex-1"].border-primary svg,
+[data-email-theme="spider-man"] aside .border-b button.border-primary svg,
+[data-email-theme="spider-man"] aside .border-b button.bg-background svg {
+  color: var(--spidey-red) !important;
+}
+
+/* Rainbow underline override for AI tab when active */
+[data-email-theme="spider-man"] button.rainbow-underline.border-primary,
+[data-email-theme="spider-man"] button.rainbow-underline[class*="border-b-2"] {
+  border: none !important;
+  box-shadow: none !important;
+}
+
+[data-email-theme="spider-man"] button.rainbow-underline.border-primary::after,
+[data-email-theme="spider-man"] button.rainbow-underline[class*="border-b-2"]::after {
+  content: "" !important;
+  position: absolute !important;
+  bottom: -1px !important;
+  left: 8px !important;
+  right: 8px !important;
+  height: 3px !important;
+  background: var(--spidey-red) !important;
+  border-radius: 3px 3px 0 0 !important;
+  animation: spidey-tab-glow 2s ease-in-out infinite !important;
+  box-shadow: 0 0 8px var(--spidey-red-glow), 0 0 16px var(--spidey-red-glow) !important;
+  display: block !important;
+}
+
+.dark[data-email-theme="spider-man"] [role="tab"][aria-selected="true"],
+.dark[data-email-theme="spider-man"] .tab-item.active,
+.dark[data-email-theme="spider-man"] button[class*="flex-1"][class*="border-b-2"],
+.dark[data-email-theme="spider-man"] button[class*="flex-1"].border-primary,
+.dark[data-email-theme="spider-man"] aside .border-b button.border-primary,
+.dark[data-email-theme="spider-man"] aside .border-b button.bg-background {
+  color: var(--spidey-red-light) !important;
+  background: linear-gradient(
+    180deg,
+    rgba(239, 68, 68, 0.25) 0%,
+    rgba(239, 68, 68, 0.15) 50%,
+    transparent 100%
+  ) !important;
+}
+
+/* Pulsing background animation for active tabs */
+@keyframes spidey-tab-pulse {
+  0%, 100% {
+    background: linear-gradient(
+      180deg,
+      var(--spidey-red-glow) 0%,
+      rgba(239, 68, 68, 0.12) 50%,
+      transparent 100%
+    );
+  }
+  50% {
+    background: linear-gradient(
+      180deg,
+      rgba(239, 68, 68, 0.2) 0%,
+      rgba(239, 68, 68, 0.08) 50%,
+      transparent 100%
+    );
+  }
+}
+
+.dark[data-email-theme="spider-man"] [role="tab"][aria-selected="true"],
+.dark[data-email-theme="spider-man"] .tab-item.active,
+.dark[data-email-theme="spider-man"] button[class*="flex-1"][class*="border-b-2"],
+.dark[data-email-theme="spider-man"] button[class*="flex-1"].border-primary,
+.dark[data-email-theme="spider-man"] aside .border-b button.border-primary,
+.dark[data-email-theme="spider-man"] aside .border-b button.bg-background {
+  animation: spidey-tab-pulse-dark 2.5s ease-in-out infinite !important;
+}
+
+@keyframes spidey-tab-pulse-dark {
+  0%, 100% {
+    background: linear-gradient(
+      180deg,
+      rgba(239, 68, 68, 0.25) 0%,
+      rgba(239, 68, 68, 0.15) 50%,
+      transparent 100%
+    );
+  }
+  50% {
+    background: linear-gradient(
+      180deg,
+      rgba(239, 68, 68, 0.35) 0%,
+      rgba(239, 68, 68, 0.2) 50%,
+      transparent 100%
+    );
+  }
+}
+
+@keyframes spidey-tab-glow {
+  0%, 100% {
+    box-shadow: 0 0 8px var(--spidey-red-glow), 0 0 16px var(--spidey-red-glow);
+    opacity: 1;
+  }
+  50% {
+    box-shadow: 0 0 12px var(--spidey-red-glow), 0 0 24px var(--spidey-red-glow);
+    opacity: 0.85;
+  }
+}
+
+/* ========================================
+   SPIDER-MAN SCROLLBAR - Web Thread Style
+   ======================================== */
+
+[data-email-theme="spider-man"] ::-webkit-scrollbar {
+  width: 8px;
+  background: var(--spidey-bg-secondary);
+}
+
+[data-email-theme="spider-man"] ::-webkit-scrollbar-thumb {
+  background: linear-gradient(
+    180deg,
+    var(--spidey-web) 0%,
+    var(--spidey-web-dark) 50%,
+    var(--spidey-web) 100%
+  );
+  border-radius: 4px;
+  border: 2px solid var(--spidey-bg-secondary);
+}
+
+[data-email-theme="spider-man"] ::-webkit-scrollbar-thumb:hover {
+  background: var(--spidey-red);
+  box-shadow: 0 0 10px var(--spidey-red-glow);
+}
+
+.dark[data-email-theme="spider-man"] ::-webkit-scrollbar {
+  background: var(--spidey-navy);
+}
+
+.dark[data-email-theme="spider-man"] ::-webkit-scrollbar-thumb {
+  border-color: var(--spidey-navy);
+}
+
+/* ========================================
+   SPIDER-MAN TYPOGRAPHY
+   ======================================== */
+
+[data-email-theme="spider-man"] label,
+[data-email-theme="spider-man"] .label {
+  color: var(--spidey-text-secondary) !important;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  font-size: 0.7rem;
+  font-weight: 600;
+}
+
+/* Main titles - Amazing Spider-Man font */
+[data-email-theme="spider-man"] h1,
+[data-email-theme="spider-man"] h2 {
+  font-family: 'Amazing Spider-Man', 'Impact', 'Arial Black', sans-serif !important;
+  color: var(--spidey-red) !important;
+  font-weight: 400;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+/* Subheadings - slightly smaller titles */
+[data-email-theme="spider-man"] h3 {
+  font-family: 'Amazing Spider-Man', 'Impact', 'Arial Black', sans-serif !important;
+  color: var(--spidey-text) !important;
+  font-weight: 400;
+  letter-spacing: 0.03em;
+}
+
+/* Labels and companion text with Spider-Man font flair */
+[data-email-theme="spider-man"] .spidey-title,
+[data-email-theme="spider-man"] [data-spidey-font] {
+  font-family: 'Amazing Spider-Man', 'Impact', 'Arial Black', sans-serif !important;
+}
+
+/* Selection - Web red */
+[data-email-theme="spider-man"] ::selection {
+  background: var(--spidey-red);
+  color: #fff;
+}
+
+[data-email-theme="spider-man"] .text-muted-foreground {
+  color: var(--spidey-text-muted) !important;
+}
+
+/* ========================================
+   SPIDER-MAN FORM ELEMENTS
+   ======================================== */
+
+[data-email-theme="spider-man"] input[type="range"]::-webkit-slider-runnable-track {
+  background: linear-gradient(
+    90deg,
+    var(--spidey-red) 0%,
+    var(--spidey-red-dark) 50%,
+    var(--spidey-navy) 100%
+  );
+  height: 6px;
+  border: 1px solid var(--spidey-border);
+  border-radius: 3px;
+}
+
+[data-email-theme="spider-man"] input[type="range"]::-webkit-slider-thumb {
+  background: var(--spidey-red);
+  border: 2px solid var(--spidey-card);
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  margin-top: -7px;
+  box-shadow: 0 2px 8px var(--spidey-red-glow), 0 0 10px var(--spidey-red-glow);
+}
+
+[data-email-theme="spider-man"] input[type="checkbox"] {
+  appearance: none;
+  width: 18px;
+  height: 18px;
+  border: 2px solid var(--spidey-border) !important;
+  border-radius: 4px;
+  background: var(--spidey-card);
+  position: relative;
+  transition: all 0.2s ease;
+}
+
+[data-email-theme="spider-man"] input[type="checkbox"]:checked {
+  background: var(--spidey-red);
+  border-color: var(--spidey-red-dark) !important;
+  box-shadow: 0 0 10px var(--spidey-red-glow);
+}
+
+[data-email-theme="spider-man"] input[type="checkbox"]:checked::after {
+  content: "✓";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 12px;
+  color: #fff;
+  font-weight: bold;
+}
+
+/* ========================================
+   SPIDER-MAN WEB PATTERN OVERLAY
+   ======================================== */
+
+/* Subtle web pattern on cards */
+[data-email-theme="spider-man"] .card-luxury::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 80px;
+  height: 80px;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 80 80' fill='none' stroke='%23dc262620' xmlns='http://www.w3.org/2000/svg'%3E%3Ccircle cx='0' cy='0' r='20' stroke-width='0.5'/%3E%3Ccircle cx='0' cy='0' r='40' stroke-width='0.5'/%3E%3Ccircle cx='0' cy='0' r='60' stroke-width='0.5'/%3E%3Cline x1='0' y1='0' x2='80' y2='0' stroke-width='0.5'/%3E%3Cline x1='0' y1='0' x2='56' y2='56' stroke-width='0.5'/%3E%3Cline x1='0' y1='0' x2='0' y2='80' stroke-width='0.5'/%3E%3Cline x1='0' y1='0' x2='28' y2='72' stroke-width='0.5'/%3E%3Cline x1='0' y1='0' x2='72' y2='28' stroke-width='0.5'/%3E%3C/svg%3E");
+  background-size: contain;
+  background-repeat: no-repeat;
+  pointer-events: none;
+  opacity: 0.5;
+  z-index: 0;
+}
+
+.dark[data-email-theme="spider-man"] .card-luxury::after {
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 80 80' fill='none' stroke='%23ef444430' xmlns='http://www.w3.org/2000/svg'%3E%3Ccircle cx='0' cy='0' r='20' stroke-width='0.5'/%3E%3Ccircle cx='0' cy='0' r='40' stroke-width='0.5'/%3E%3Ccircle cx='0' cy='0' r='60' stroke-width='0.5'/%3E%3Cline x1='0' y1='0' x2='80' y2='0' stroke-width='0.5'/%3E%3Cline x1='0' y1='0' x2='56' y2='56' stroke-width='0.5'/%3E%3Cline x1='0' y1='0' x2='0' y2='80' stroke-width='0.5'/%3E%3Cline x1='0' y1='0' x2='28' y2='72' stroke-width='0.5'/%3E%3Cline x1='0' y1='0' x2='72' y2='28' stroke-width='0.5'/%3E%3C/svg%3E");
+}
+
+/* ========================================
+   SPIDER-MAN ANIMATIONS
+   ======================================== */
+
+@keyframes spidey-swing {
+  0%, 100% { transform: rotate(-2deg); }
+  50% { transform: rotate(2deg); }
+}
+
+@keyframes spidey-web-pulse {
+  0%, 100% { opacity: 0.3; }
+  50% { opacity: 0.6; }
+}
+
+@keyframes spidey-glow {
+  0%, 100% { 
+    box-shadow: 0 0 10px var(--spidey-red-glow);
+  }
+  50% { 
+    box-shadow: 0 0 25px var(--spidey-red-glow), 0 0 40px var(--spidey-red-glow);
+  }
+}
+
+[data-email-theme="spider-man"] .card-luxury:hover {
+  animation: spidey-swing 0.5s ease-in-out;
+}
+
+/* ========================================
+   SPIDER-MAN FRAME - NOTEBOOK PAPER STYLE
+   Peter Parker is in high school!
+   ======================================== */
+
+/* Light mode notebook paper */
+[data-email-theme="spider-man"] .spidey-web-frame,
+[data-email-theme="spider-man"] .canvas-container.spidey-web-frame {
+  position: relative !important;
+  overflow: visible !important;
+  border-radius: 2px !important;
+  border: none !important;
+  /* Notebook paper off-white background */
+  background: 
+    /* Red margin line */
+    linear-gradient(90deg, transparent 38px, #ef4444 38px, #ef4444 40px, transparent 40px),
+    /* Horizontal ruled lines */
+    repeating-linear-gradient(
+      180deg,
+      transparent 0px,
+      transparent 27px,
+      #cbd5e1 27px,
+      #cbd5e1 28px
+    ),
+    /* Paper base */
+    #fefefe !important;
+  background-attachment: local !important;
+  /* Paper shadow and depth - layered paper effect */
+  box-shadow: 
+    4px 4px 0 -1px #f5f5f5,
+    4px 4px 0 0 #cbd5e1,
+    8px 8px 0 -1px #efefef,
+    8px 8px 0 0 #94a3b8,
+    12px 12px 24px rgba(0, 0, 0, 0.15) !important;
+}
+
+/* Red header bar - like a notebook binding */
+[data-email-theme="spider-man"] .spidey-web-frame::before,
+[data-email-theme="spider-man"] .canvas-container.spidey-web-frame::before {
+  content: "" !important;
+  position: absolute !important;
+  top: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  height: 28px !important;
+  background: linear-gradient(180deg, #dc2626 0%, #b91c1c 100%) !important;
+  pointer-events: none !important;
+  z-index: 100 !important;
+  border-radius: 2px 2px 0 0 !important;
+  box-shadow: 0 2px 4px rgba(220, 38, 38, 0.3) !important;
+}
+
+/* Spiral binding holes */
+[data-email-theme="spider-man"] .spidey-web-frame::after,
+[data-email-theme="spider-man"] .canvas-container.spidey-web-frame::after {
+  content: "" !important;
+  position: absolute !important;
+  top: 8px !important;
+  left: 10px !important;
+  width: calc(100% - 20px) !important;
+  height: 12px !important;
+  background-image: 
+    radial-gradient(circle at 20px 6px, #0a1628 4px, transparent 4px),
+    radial-gradient(circle at 60px 6px, #0a1628 4px, transparent 4px),
+    radial-gradient(circle at 100px 6px, #0a1628 4px, transparent 4px),
+    radial-gradient(circle at 140px 6px, #0a1628 4px, transparent 4px),
+    radial-gradient(circle at 180px 6px, #0a1628 4px, transparent 4px),
+    radial-gradient(circle at 220px 6px, #0a1628 4px, transparent 4px),
+    radial-gradient(circle at 260px 6px, #0a1628 4px, transparent 4px),
+    radial-gradient(circle at 300px 6px, #0a1628 4px, transparent 4px),
+    radial-gradient(circle at 340px 6px, #0a1628 4px, transparent 4px),
+    radial-gradient(circle at 380px 6px, #0a1628 4px, transparent 4px),
+    radial-gradient(circle at 420px 6px, #0a1628 4px, transparent 4px),
+    radial-gradient(circle at 460px 6px, #0a1628 4px, transparent 4px),
+    radial-gradient(circle at 500px 6px, #0a1628 4px, transparent 4px) !important;
+  pointer-events: none !important;
+  z-index: 101 !important;
+}
+
+/* Dark mode notebook - darker paper */
+.dark[data-email-theme="spider-man"] .spidey-web-frame,
+.dark[data-email-theme="spider-man"] .canvas-container.spidey-web-frame {
+  background: 
+    /* Red margin line */
+    linear-gradient(90deg, transparent 38px, #ef4444 38px, #ef4444 40px, transparent 40px),
+    /* Horizontal ruled lines - subtle in dark */
+    repeating-linear-gradient(
+      180deg,
+      transparent 0px,
+      transparent 27px,
+      #475569 27px,
+      #475569 28px
+    ),
+    /* Dark paper base */
+    #1e293b !important;
+  box-shadow: 
+    4px 4px 0 -1px #1a2234,
+    4px 4px 0 0 #0f172a,
+    8px 8px 0 -1px #151d2e,
+    8px 8px 0 0 #0a1020,
+    12px 12px 32px rgba(0, 0, 0, 0.5) !important;
+}
+
+.dark[data-email-theme="spider-man"] .spidey-web-frame::before,
+.dark[data-email-theme="spider-man"] .canvas-container.spidey-web-frame::before {
+  background: linear-gradient(180deg, #ef4444 0%, #dc2626 100%) !important;
+  box-shadow: 0 2px 8px rgba(239, 68, 68, 0.4) !important;
+}
+
+.dark[data-email-theme="spider-man"] .spidey-web-frame::after,
+.dark[data-email-theme="spider-man"] .canvas-container.spidey-web-frame::after {
+  background-image: 
+    radial-gradient(circle at 20px 6px, #0f172a 4px, transparent 4px),
+    radial-gradient(circle at 60px 6px, #0f172a 4px, transparent 4px),
+    radial-gradient(circle at 100px 6px, #0f172a 4px, transparent 4px),
+    radial-gradient(circle at 140px 6px, #0f172a 4px, transparent 4px),
+    radial-gradient(circle at 180px 6px, #0f172a 4px, transparent 4px),
+    radial-gradient(circle at 220px 6px, #0f172a 4px, transparent 4px),
+    radial-gradient(circle at 260px 6px, #0f172a 4px, transparent 4px),
+    radial-gradient(circle at 300px 6px, #0f172a 4px, transparent 4px),
+    radial-gradient(circle at 340px 6px, #0f172a 4px, transparent 4px),
+    radial-gradient(circle at 380px 6px, #0f172a 4px, transparent 4px),
+    radial-gradient(circle at 420px 6px, #0f172a 4px, transparent 4px),
+    radial-gradient(circle at 460px 6px, #0f172a 4px, transparent 4px),
+    radial-gradient(circle at 500px 6px, #0f172a 4px, transparent 4px) !important;
+}
+
+/* Progress bar accent */
+[data-email-theme="spider-man"] .progress-bar,
+[data-email-theme="spider-man"] [role="progressbar"] {
+  background: var(--spidey-border) !important;
+  border-radius: 2px;
+  overflow: hidden;
+}
+
+[data-email-theme="spider-man"] .progress-bar > div,
+[data-email-theme="spider-man"] [role="progressbar"] > div {
+  background: linear-gradient(90deg, var(--spidey-red-dark) 0%, var(--spidey-red) 100%) !important;
+  box-shadow: 0 0 10px var(--spidey-red-glow);
+}
+
+/* ========================================
+   SPIDER-MAN HEXAGONAL BADGES
+   Like the character select screen
+   ======================================== */
+
+[data-email-theme="spider-man"] .badge,
+[data-email-theme="spider-man"] .chip {
+  background: linear-gradient(135deg, var(--spidey-navy) 0%, var(--spidey-navy-light) 100%) !important;
+  color: var(--spidey-text) !important;
+  border: 1px solid var(--spidey-red) !important;
+  font-weight: 600;
+  text-transform: uppercase;
+  font-size: 0.65rem;
+  letter-spacing: 0.1em;
+}
+
+/* Red accent badges */
+[data-email-theme="spider-man"] .badge-red,
+[data-email-theme="spider-man"] .badge[data-variant="destructive"] {
+  background: linear-gradient(135deg, var(--spidey-red-dark) 0%, var(--spidey-red) 100%) !important;
+  border-color: var(--spidey-red-light) !important;
+  color: #fff !important;
+}
+
+/* ========================================
+   SPIDER-MAN TOOLTIPS & POPOVERS
+   ======================================== */
+
+[data-email-theme="spider-man"] [role="tooltip"],
+[data-email-theme="spider-man"] .tooltip,
+[data-email-theme="spider-man"] [data-radix-popper-content-wrapper] {
+  background: var(--spidey-navy) !important;
+  border: 1px solid var(--spidey-red) !important;
+  color: #fff !important;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.3), 0 0 20px var(--spidey-red-glow);
+}
+
+/* ========================================
+   DARK MODE SPECIFIC ADJUSTMENTS
+   ======================================== */
+
+.dark[data-email-theme="spider-man"] label,
+.dark[data-email-theme="spider-man"] .label {
+  color: var(--spidey-text-secondary) !important;
+}
+
+.dark[data-email-theme="spider-man"] h1,
+.dark[data-email-theme="spider-man"] h2,
+.dark[data-email-theme="spider-man"] h3 {
+  color: var(--spidey-text) !important;
+}
+
+.dark[data-email-theme="spider-man"] button {
+  color: var(--spidey-text) !important;
+}
+
+.dark[data-email-theme="spider-man"] input::placeholder,
+.dark[data-email-theme="spider-man"] textarea::placeholder {
+  color: var(--spidey-text-muted) !important;
+}
+
+/* ========================================
+   SPIDER-MAN NOTEBOOK PREVIEW - COMPLETE REWRITE
+   Text colors controlled ONLY by data-preview-theme
+   This uses ultra-high specificity to override everything
+   ======================================== */
+
+/* 
+   CRITICAL: These rules must override ALL other text rules
+   including the old .spidey-web-frame rules.
+   Uses repeated specificity to ensure highest priority.
+*/
+
+/* ==========================================
+   LIGHT PREVIEW MODE - Dark text on white paper  
+   ========================================== */
+
+.spidey-notebook[data-preview-theme="light"],
+.spidey-notebook[data-preview-theme="light"] *:not(.spidey-red):not(a),
+.spidey-notebook[data-preview-theme="light"] div,
+.spidey-notebook[data-preview-theme="light"] span,
+.spidey-notebook[data-preview-theme="light"] p,
+.spidey-notebook[data-preview-theme="light"] td,
+.spidey-notebook[data-preview-theme="light"] table,
+.spidey-notebook[data-preview-theme="light"] #signature-preview,
+.spidey-notebook[data-preview-theme="light"] #signature-preview *:not(a) {
+  color: #1f2937 !important;
+}
+
+/* Light preview - links */
+.spidey-notebook[data-preview-theme="light"] a,
+.spidey-notebook[data-preview-theme="light"] #signature-preview a {
+  color: #1e40af !important;
+}
+
+/* Light preview - red accents */
+.spidey-notebook[data-preview-theme="light"] .spidey-red {
+  color: #dc2626 !important;
+}
+
+/* Light preview - muted text */
+.spidey-notebook[data-preview-theme="light"] .spidey-muted {
+  color: #6b7280 !important;
+}
+
+/* ==========================================
+   DARK PREVIEW MODE - Light text on dark paper
+   ========================================== */
+
+.spidey-notebook[data-preview-theme="dark"],
+.spidey-notebook[data-preview-theme="dark"] *:not(.spidey-red):not(a),
+.spidey-notebook[data-preview-theme="dark"] div,
+.spidey-notebook[data-preview-theme="dark"] span,
+.spidey-notebook[data-preview-theme="dark"] p,
+.spidey-notebook[data-preview-theme="dark"] td,
+.spidey-notebook[data-preview-theme="dark"] table,
+.spidey-notebook[data-preview-theme="dark"] #signature-preview,
+.spidey-notebook[data-preview-theme="dark"] #signature-preview *:not(a) {
+  color: #f1f5f9 !important;
+}
+
+/* Dark preview - links */
+.spidey-notebook[data-preview-theme="dark"] a,
+.spidey-notebook[data-preview-theme="dark"] #signature-preview a {
+  color: #60a5fa !important;
+}
+
+/* Dark preview - red accents */
+.spidey-notebook[data-preview-theme="dark"] .spidey-red {
+  color: #ef4444 !important;
+}
+
+/* Dark preview - muted text */
+.spidey-notebook[data-preview-theme="dark"] .spidey-muted {
+  color: #94a3b8 !important;
+}
+
+/* Make signature preview bg transparent */
+.spidey-notebook #signature-preview,
+.spidey-notebook #signature-preview.bg-white,
+.spidey-notebook #signature-preview.bg-zinc-900,
+.spidey-notebook .spidey-signature-content {
+  background: transparent !important;
+  background-color: transparent !important;
+}
+
+:root[data-email-theme="spider-man"]:not(.dark) aside h4,
+:root[data-email-theme="spider-man"]:not(.dark) aside .font-semibold,
+:root[data-email-theme="spider-man"]:not(.dark) aside .font-medium {
+  color: var(--spidey-text) !important;
+}
+
+:root[data-email-theme="spider-man"]:not(.dark) aside .text-muted-foreground,
+:root[data-email-theme="spider-man"]:not(.dark) aside span,
+:root[data-email-theme="spider-man"]:not(.dark) aside p {
+  color: var(--spidey-text-secondary) !important;
+}
+
+/* ========================================
+   SPIDER-MAN FINAL OVERRIDES
+   High specificity to ensure styles apply
+   ======================================== */
+
+/* Override canvas-container hover shadow for notebook paper */
+[data-email-theme="spider-man"] .canvas-container.spidey-web-frame:hover,
+html[data-email-theme="spider-man"] .spidey-web-frame:hover {
+  box-shadow: 
+    4px 4px 0 -1px #f5f5f5,
+    4px 4px 0 0 #cbd5e1,
+    8px 8px 0 -1px #efefef,
+    8px 8px 0 0 #94a3b8,
+    12px 12px 24px rgba(0, 0, 0, 0.2) !important;
+}
+
+html.dark[data-email-theme="spider-man"] .spidey-web-frame:hover,
+.dark[data-email-theme="spider-man"] .canvas-container.spidey-web-frame:hover {
+  box-shadow: 
+    4px 4px 0 -1px #1a2234,
+    4px 4px 0 0 #0f172a,
+    8px 8px 0 -1px #151d2e,
+    8px 8px 0 0 #0a1020,
+    12px 12px 32px rgba(0, 0, 0, 0.6) !important;
+}
+
+/* Force notebook paper background - highest specificity */
+html[data-email-theme="spider-man"] .spidey-web-frame {
+  background: 
+    linear-gradient(90deg, transparent 38px, #ef4444 38px, #ef4444 40px, transparent 40px),
+    repeating-linear-gradient(
+      180deg,
+      transparent 0px,
+      transparent 27px,
+      #cbd5e1 27px,
+      #cbd5e1 28px
+    ),
+    #fefefe !important;
+  border: none !important;
+  border-radius: 2px !important;
+}
+
+html.dark[data-email-theme="spider-man"] .spidey-web-frame {
+  background: 
+    linear-gradient(90deg, transparent 38px, #ef4444 38px, #ef4444 40px, transparent 40px),
+    repeating-linear-gradient(
+      180deg,
+      transparent 0px,
+      transparent 27px,
+      #475569 27px,
+      #475569 28px
+    ),
+    #1e293b !important;
+}
+
+/* Force tabs styling in sidebars */
+html[data-email-theme="spider-man"] aside .flex.border-b,
+html[data-email-theme="spider-man"] aside > .flex.border-b {
+  background: var(--spidey-card) !important;
+  border-bottom-color: var(--spidey-border) !important;
+}
+
+html.dark[data-email-theme="spider-man"] aside .flex.border-b,
+html.dark[data-email-theme="spider-man"] aside > .flex.border-b {
+  background: var(--spidey-navy-light) !important;
+}
+
+/* Inactive tab text */
+html[data-email-theme="spider-man"] aside .border-b button {
+  color: var(--spidey-text-muted) !important;
+  border-color: transparent !important;
+  position: relative;
+}
+
+html[data-email-theme="spider-man"] aside .border-b button:hover {
+  color: var(--spidey-text) !important;
+}
+
+/* Force active tab styling */
+html[data-email-theme="spider-man"] aside .border-b button.border-primary,
+html[data-email-theme="spider-man"] aside .border-b button.bg-background {
+  color: var(--spidey-red) !important;
+  background: transparent !important;
+  border-color: transparent !important;
+}
+
+html.dark[data-email-theme="spider-man"] aside .border-b button.border-primary,
+html.dark[data-email-theme="spider-man"] aside .border-b button.bg-background {
+  color: var(--spidey-red-light) !important;
+}
+
+/* Ensure the red underline shows */
+html[data-email-theme="spider-man"] aside .border-b button.border-primary::after,
+html[data-email-theme="spider-man"] aside .border-b button.bg-background::after {
+  content: "" !important;
+  display: block !important;
+  position: absolute !important;
+  bottom: -1px !important;
+  left: 8px !important;
+  right: 8px !important;
+  height: 3px !important;
+  background: var(--spidey-red) !important;
+  border-radius: 3px 3px 0 0 !important;
+  animation: spidey-tab-glow 2s ease-in-out infinite !important;
+  box-shadow: 0 0 8px var(--spidey-red-glow), 0 0 16px var(--spidey-red-glow) !important;
+}
+
+/* Ensure the spider indicator shows */
+html[data-email-theme="spider-man"] aside .border-b button.border-primary::before,
+html[data-email-theme="spider-man"] aside .border-b button.bg-background::before {
+  content: "" !important;
+  display: block !important;
+  position: absolute !important;
+  top: 2px !important;
+  left: 50% !important;
+  transform: translateX(-50%) !important;
+  width: 14px !important;
+  height: 12px !important;
+  background: var(--spidey-red) !important;
+  -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='currentColor'%3E%3Cpath d='M12 1C11.2 1 10.5 1.7 10.5 2.5V4L8 3L6 5L9 6.5L7 8L4 7L3 9.5L6.5 10L5 12L2 12L2 15L5 14.5L6 17L3.5 19L5.5 21L8 18.5L10 20V22.5C10 23.3 10.7 24 11.5 24H12.5C13.3 24 14 23.3 14 22.5V20L16 18.5L18.5 21L20.5 19L18 17L19 14.5L22 15V12L19 12L17.5 10L21 9.5L20 7L16 8L14 6.5L17 5L15 3L12.5 4V2.5C12.5 1.7 11.8 1 11 1H12ZM12 8C13.7 8 15 9.3 15 11C15 12.7 13.7 14 12 14C10.3 14 9 12.7 9 11C9 9.3 10.3 8 12 8Z'/%3E%3C/svg%3E") !important;
+  -webkit-mask-size: contain !important;
+  -webkit-mask-repeat: no-repeat !important;
+  -webkit-mask-position: center !important;
+  mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='currentColor'%3E%3Cpath d='M12 1C11.2 1 10.5 1.7 10.5 2.5V4L8 3L6 5L9 6.5L7 8L4 7L3 9.5L6.5 10L5 12L2 12L2 15L5 14.5L6 17L3.5 19L5.5 21L8 18.5L10 20V22.5C10 23.3 10.7 24 11.5 24H12.5C13.3 24 14 23.3 14 22.5V20L16 18.5L18.5 21L20.5 19L18 17L19 14.5L22 15V12L19 12L17.5 10L21 9.5L20 7L16 8L14 6.5L17 5L15 3L12.5 4V2.5C12.5 1.7 11.8 1 11 1H12ZM12 8C13.7 8 15 9.3 15 11C15 12.7 13.7 14 12 14C10.3 14 9 12.7 9 11C9 9.3 10.3 8 12 8Z'/%3E%3C/svg%3E") !important;
+  mask-size: contain !important;
+  mask-repeat: no-repeat !important;
+  mask-position: center !important;
+}
+
+/* Active tab icons */
+html[data-email-theme="spider-man"] aside .border-b button.border-primary svg,
+html[data-email-theme="spider-man"] aside .border-b button.bg-background svg {
+  color: var(--spidey-red) !important;
+}
+
+/* ========================================
+   SHAKESPEARE THEME
+   Renaissance Parchment & Elizabethan Style
+   ======================================== */
+
+/* Shakespeare theme - aged parchment with royal purple accents */
+[data-email-theme="shakespeare"] {
+  --shakespeare-bg: #faf6eb;
+  --shakespeare-bg-secondary: #f5efe0;
+  --shakespeare-bg-tertiary: #ebe4d0;
+  --shakespeare-parchment: #f5efe0;
+  --shakespeare-parchment-dark: #e8e0ca;
+  --shakespeare-accent: #6b2d8f;
+  --shakespeare-accent-light: #9333ea;
+  --shakespeare-accent-muted: rgba(107, 45, 143, 0.15);
+  --shakespeare-gold: #8b6914;
+  --shakespeare-gold-light: #d4af37;
+  --shakespeare-wax: #8b2942;
+  --shakespeare-ink: #1a0f08;
+  --shakespeare-border: #c4a86a;
+  --shakespeare-border-light: #d9c99b;
+  --shakespeare-text: #2c1810;
+  --shakespeare-text-secondary: #5c4a38;
+  --shakespeare-text-muted: #7a6850;
+}
+
+.dark[data-email-theme="shakespeare"] {
+  --shakespeare-bg: #1a1510;
+  --shakespeare-bg-secondary: #231e17;
+  --shakespeare-bg-tertiary: #2a241c;
+  --shakespeare-parchment: #2a241c;
+  --shakespeare-parchment-dark: #1f1a14;
+  --shakespeare-accent: #b794f6;
+  --shakespeare-accent-light: #c4b5fd;
+  --shakespeare-accent-muted: rgba(183, 148, 246, 0.15);
+  --shakespeare-gold: #d4af37;
+  --shakespeare-gold-light: #f5d45a;
+  --shakespeare-wax: #b83a5a;
+  --shakespeare-ink: #e8e0d0;
+  --shakespeare-border: #4a3d2e;
+  --shakespeare-border-light: #5c4d3c;
+  --shakespeare-text: #e8e0d0;
+  --shakespeare-text-secondary: #c4b8a8;
+  --shakespeare-text-muted: #a89880;
+}
+
+/* Parchment-style background */
+[data-email-theme="shakespeare"] .bg-card {
+  background: var(--shakespeare-bg) !important;
+}
+
+/* Header - Renaissance scroll style */
+[data-email-theme="shakespeare"] header {
+  background: linear-gradient(
+    180deg,
+    var(--shakespeare-parchment) 0%,
+    var(--shakespeare-parchment-dark) 100%
+  ) !important;
+  border-bottom: 2px solid var(--shakespeare-border) !important;
+  /* Note: Do not override position - keep sticky behavior from base styles */
+}
+
+/* Add subtle flourish to header */
+[data-email-theme="shakespeare"] header::after {
+  content: "";
+  position: absolute;
+  bottom: -2px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 60px;
+  height: 4px;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    var(--shakespeare-gold) 50%,
+    transparent 100%
+  );
+  border-radius: 2px;
+}
+
+/* Sidebar - aged paper look */
+[data-email-theme="shakespeare"] aside {
+  background: var(--shakespeare-bg) !important;
+  border-right: 2px solid var(--shakespeare-border) !important;
+}
+
+/* Cards - parchment document style */
+[data-email-theme="shakespeare"] .card-luxury,
+[data-email-theme="shakespeare"] [class*="Card"] {
+  background: var(--shakespeare-parchment) !important;
+  border: 2px solid var(--shakespeare-border) !important;
+  border-radius: 4px !important;
+  box-shadow: 
+    inset 0 0 30px rgba(0,0,0,0.03),
+    0 4px 12px rgba(0,0,0,0.1);
+}
+
+/* Inputs - quill-written style */
+[data-email-theme="shakespeare"] input:not([type="color"]):not([type="range"]),
+[data-email-theme="shakespeare"] textarea,
+[data-email-theme="shakespeare"] select {
+  background: var(--shakespeare-bg-secondary) !important;
+  border: 1px solid var(--shakespeare-border) !important;
+  border-bottom: 2px solid var(--shakespeare-border) !important;
+  color: var(--shakespeare-text) !important;
+  font-family: 'Palatino Linotype', 'Book Antiqua', Georgia, serif !important;
+}
+
+[data-email-theme="shakespeare"] input:focus,
+[data-email-theme="shakespeare"] textarea:focus,
+[data-email-theme="shakespeare"] select:focus {
+  border-color: var(--shakespeare-accent) !important;
+  box-shadow: 0 0 0 2px var(--shakespeare-accent-muted) !important;
+  outline: none !important;
+}
+
+[data-email-theme="shakespeare"] input::placeholder,
+[data-email-theme="shakespeare"] textarea::placeholder {
+  color: var(--shakespeare-text-muted) !important;
+  font-style: italic !important;
+}
+
+/* Buttons - royal purple with gold accents */
+[data-email-theme="shakespeare"] button[class*="primary"],
+[data-email-theme="shakespeare"] button[class*="default"] {
+  background: linear-gradient(180deg, var(--shakespeare-accent) 0%, #581c87 100%) !important;
+  border: 1px solid var(--shakespeare-accent) !important;
+  color: #ffffff !important;
+  font-family: 'Palatino Linotype', Georgia, serif !important;
+  font-weight: 500 !important;
+  letter-spacing: 0.02em;
+}
+
+[data-email-theme="shakespeare"] button[class*="primary"]:hover,
+[data-email-theme="shakespeare"] button[class*="default"]:hover {
+  background: linear-gradient(180deg, var(--shakespeare-accent-light) 0%, var(--shakespeare-accent) 100%) !important;
+  box-shadow: 0 4px 12px rgba(107, 45, 143, 0.3) !important;
+}
+
+/* Secondary/outline buttons */
+[data-email-theme="shakespeare"] button[class*="outline"],
+[data-email-theme="shakespeare"] button[class*="ghost"] {
+  border-color: var(--shakespeare-border) !important;
+  color: var(--shakespeare-text-secondary) !important;
+}
+
+[data-email-theme="shakespeare"] button[class*="outline"]:hover,
+[data-email-theme="shakespeare"] button[class*="ghost"]:hover {
+  background: var(--shakespeare-accent-muted) !important;
+  border-color: var(--shakespeare-accent) !important;
+  color: var(--shakespeare-accent) !important;
+}
+
+/* Tabs - bookmark/scroll tab style */
+[data-email-theme="shakespeare"] [role="tablist"],
+[data-email-theme="shakespeare"] .tabs-container {
+  background: var(--shakespeare-bg-secondary) !important;
+  border-bottom: 2px solid var(--shakespeare-border);
+}
+
+[data-email-theme="shakespeare"] [role="tab"] {
+  color: var(--shakespeare-text-muted) !important;
+  font-family: 'Palatino Linotype', Georgia, serif !important;
+}
+
+[data-email-theme="shakespeare"] [role="tab"][aria-selected="true"],
+[data-email-theme="shakespeare"] .tab-item.active {
+  background: var(--shakespeare-parchment) !important;
+  border-color: var(--shakespeare-border) !important;
+  color: var(--shakespeare-accent) !important;
+}
+
+/* Scrollbar - parchment colored */
+[data-email-theme="shakespeare"] ::-webkit-scrollbar {
+  width: 10px;
+  background: var(--shakespeare-bg-secondary);
+}
+
+[data-email-theme="shakespeare"] ::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, var(--shakespeare-border) 0%, var(--shakespeare-border-light) 100%);
+  border-radius: 5px;
+  border: 2px solid var(--shakespeare-bg-secondary);
+}
+
+[data-email-theme="shakespeare"] ::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(180deg, var(--shakespeare-accent) 0%, var(--shakespeare-accent-light) 100%);
+}
+
+/* Labels - elegant script style */
+[data-email-theme="shakespeare"] label,
+[data-email-theme="shakespeare"] .label {
+  color: var(--shakespeare-text-secondary) !important;
+  font-family: 'Palatino Linotype', Georgia, serif !important;
+  letter-spacing: 0.01em;
+}
+
+/* Headings - dramatic Renaissance typography */
+[data-email-theme="shakespeare"] h1,
+[data-email-theme="shakespeare"] h2,
+[data-email-theme="shakespeare"] h3 {
+  color: var(--shakespeare-text) !important;
+  font-family: 'Palatino Linotype', 'Book Antiqua', Georgia, serif !important;
+  letter-spacing: 0.02em;
+}
+
+/* Selection - royal purple highlight */
+[data-email-theme="shakespeare"] ::selection {
+  background: var(--shakespeare-accent-muted);
+  color: var(--shakespeare-text);
+}
+
+/* Muted text */
+[data-email-theme="shakespeare"] .text-muted-foreground {
+  color: var(--shakespeare-text-muted) !important;
+}
+
+/* Dark mode specific overrides */
+.dark[data-email-theme="shakespeare"] label,
+.dark[data-email-theme="shakespeare"] .label {
+  color: var(--shakespeare-text-secondary) !important;
+}
+
+.dark[data-email-theme="shakespeare"] [role="tab"],
+.dark[data-email-theme="shakespeare"] .tab-item {
+  color: var(--shakespeare-text-secondary) !important;
+}
+
+.dark[data-email-theme="shakespeare"] [role="tab"][aria-selected="true"],
+.dark[data-email-theme="shakespeare"] .tab-item.active {
+  color: var(--shakespeare-accent-light) !important;
+}
+
+.dark[data-email-theme="shakespeare"] button {
+  color: var(--shakespeare-text) !important;
+}
+
+.dark[data-email-theme="shakespeare"] input,
+.dark[data-email-theme="shakespeare"] textarea,
+.dark[data-email-theme="shakespeare"] select {
+  color: var(--shakespeare-text) !important;
+}
+
+.dark[data-email-theme="shakespeare"] input::placeholder,
+.dark[data-email-theme="shakespeare"] textarea::placeholder {
+  color: var(--shakespeare-text-muted) !important;
+}
+
+/* ========================================
+   SHAKESPEARE - PARCHMENT FRAME CONTAINER
+   ======================================== */
+
+.shakespeare-parchment {
+  position: relative;
+  overflow: visible !important;
+}
+
+/* Aged parchment border with wax seal appearance */
+.shakespeare-parchment {
+  box-shadow: 
+    inset 0 0 80px rgba(139, 105, 20, 0.06),
+    0 4px 20px rgba(0,0,0,0.15),
+    0 0 0 1px var(--shakespeare-border-light, #d9c99b) !important;
+  border-radius: 4px !important;
+}
+
+.dark .shakespeare-parchment {
+  box-shadow: 
+    inset 0 0 80px rgba(0, 0, 0, 0.3),
+    0 4px 24px rgba(0,0,0,0.4),
+    0 0 0 1px var(--shakespeare-border, #4a3d2e) !important;
+}
+
+/* Signature section within parchment */
+.shakespeare-signature-section {
+  font-family: 'Palatino Linotype', 'Book Antiqua', Georgia, serif !important;
+}
+
+.shakespeare-signature-section * {
+  font-family: inherit;
+}
+
+/* Quill/flourish decorative elements */
+[data-email-theme="shakespeare"] .flourish-divider {
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    var(--shakespeare-gold) 20%,
+    var(--shakespeare-gold) 80%,
+    transparent 100%
+  );
+  height: 1px;
+  position: relative;
+}
+
+[data-email-theme="shakespeare"] .flourish-divider::before {
+  content: "❧";
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  background: var(--shakespeare-parchment);
+  padding: 0 8px;
+  color: var(--shakespeare-gold);
+}
+
+/* Royal seal effect for badges/chips */
+[data-email-theme="shakespeare"] .badge,
+[data-email-theme="shakespeare"] [class*="badge"] {
+  background: var(--shakespeare-accent-muted) !important;
+  color: var(--shakespeare-accent) !important;
+  border: 1px solid var(--shakespeare-accent) !important;
+  border-radius: 2px !important;
+  font-family: 'Palatino Linotype', Georgia, serif !important;
+}
+
+/* Theater mask decoration for active states */
+[data-email-theme="shakespeare"] aside .border-b button.border-primary::before,
+[data-email-theme="shakespeare"] aside .border-b button.bg-background::before {
+  content: "🎭";
+  display: block;
+  position: absolute;
+  top: -6px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 12px;
+  opacity: 0.7;
+}
+
+/* Active tab underline - royal purple */
+[data-email-theme="shakespeare"] aside .border-b button.border-primary::after,
+[data-email-theme="shakespeare"] aside .border-b button.bg-background::after {
+  content: "";
+  display: block;
+  position: absolute;
+  bottom: -2px;
+  left: 8px;
+  right: 8px;
+  height: 3px;
+  background: linear-gradient(90deg, var(--shakespeare-gold) 0%, var(--shakespeare-accent) 50%, var(--shakespeare-gold) 100%);
+  border-radius: 2px 2px 0 0;
+}
+
+/* Sidebar tab styling */
+html[data-email-theme="shakespeare"] aside .border-b button {
+  color: var(--shakespeare-text-muted) !important;
+  position: relative;
+  font-family: 'Palatino Linotype', Georgia, serif !important;
+}
+
+html[data-email-theme="shakespeare"] aside .border-b button:hover {
+  color: var(--shakespeare-text) !important;
+}
+
+html[data-email-theme="shakespeare"] aside .border-b button.border-primary,
+html[data-email-theme="shakespeare"] aside .border-b button.bg-background {
+  color: var(--shakespeare-accent) !important;
+  background: transparent !important;
+}
+
+html.dark[data-email-theme="shakespeare"] aside .border-b button.border-primary,
+html.dark[data-email-theme="shakespeare"] aside .border-b button.bg-background {
+  color: var(--shakespeare-accent-light) !important;
+}
+
+/* Shakespeare theme uses --font-im-fell-english from layout.tsx */
+
+/* ========================================
+   CAPTAIN JACK PIRATE THEME
+   ======================================== */
+
+/* Pirate theme CSS variables */
+[data-email-theme="pirate"] {
+  --pirate-parchment: #f4e4c1;
+  --pirate-parchment-dark: #e8d4a8;
+  --pirate-gold: #c9a227;
+  --pirate-gold-light: #e8c547;
+  --pirate-wood: #5c4033;
+  --pirate-wood-dark: #3d2e1e;
+  --pirate-brass: #a89832;
+  --pirate-text: #2c1810;
+  --pirate-text-muted: #5c4a38;
+  --pirate-ink: #1a0f08;
+  --pirate-sea: #a8c8d8;
+  --pirate-border: rgba(139,69,19,0.2);
+}
+
+.dark[data-email-theme="pirate"] {
+  --pirate-parchment: #2d2418;
+  --pirate-parchment-dark: #241e14;
+  --pirate-gold: #d4af37;
+  --pirate-gold-light: #f4cf57;
+  --pirate-wood: #5a4530;
+  --pirate-wood-dark: #3d2e1e;
+  --pirate-brass: #b5a642;
+  --pirate-text: #e8dcc8;
+  --pirate-text-muted: #a89880;
+  --pirate-ink: #d4cfc0;
+  --pirate-sea: #1a3d4d;
+  --pirate-border: rgba(212,175,55,0.3);
+}
+
+/* Pirate theme main container */
+[data-email-theme="pirate"] .bg-card {
+  background: var(--pirate-parchment) !important;
+}
+
+/* Header styled with treasure map aesthetic */
+[data-email-theme="pirate"] header {
+  background: linear-gradient(
+    180deg,
+    var(--pirate-parchment) 0%,
+    var(--pirate-parchment-dark) 100%
+  ) !important;
+  border-bottom: 3px solid var(--pirate-gold) !important;
+  box-shadow: 
+    inset 0 -4px 8px rgba(139,69,19,0.1),
+    0 2px 4px rgba(0,0,0,0.15);
+}
+
+/* Header button contrast for light mode */
+html:not(.dark)[data-email-theme="pirate"] header button {
+  background: linear-gradient(
+    180deg,
+    #5c4033 0%,
+    #4a3525 100%
+  ) !important;
+  border: 2px solid var(--pirate-gold) !important;
+  color: #f4cf57 !important;
+  text-shadow: 0 1px 2px rgba(0,0,0,0.4);
+}
+
+/* All text inside header buttons - high specificity */
+html:not(.dark)[data-email-theme="pirate"] header button span,
+html:not(.dark)[data-email-theme="pirate"] header button *:not(svg) {
+  color: #f4cf57 !important;
+}
+
+html:not(.dark)[data-email-theme="pirate"] header button:hover {
+  background: linear-gradient(
+    180deg,
+    #6b5a45 0%,
+    #5c4033 100%
+  ) !important;
+  color: #fff8dc !important;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+}
+
+html:not(.dark)[data-email-theme="pirate"] header button:hover span,
+html:not(.dark)[data-email-theme="pirate"] header button:hover *:not(svg) {
+  color: #fff8dc !important;
+}
+
+/* Header button icons */
+html:not(.dark)[data-email-theme="pirate"] header button svg,
+html:not(.dark)[data-email-theme="pirate"] header button svg * {
+  color: #f4cf57 !important;
+}
+
+html:not(.dark)[data-email-theme="pirate"] header button:hover svg,
+html:not(.dark)[data-email-theme="pirate"] header button:hover svg * {
+  color: #fff8dc !important;
+}
+
+/* Ghost/icon-only buttons in header - subtler but still visible */
+html:not(.dark)[data-email-theme="pirate"] header button[class*="ghost"] {
+  background: rgba(92, 64, 51, 0.15) !important;
+  border: 1px solid rgba(92, 64, 51, 0.3) !important;
+  color: #4a3525 !important;
+}
+
+html:not(.dark)[data-email-theme="pirate"] header button[class*="ghost"] span,
+html:not(.dark)[data-email-theme="pirate"] header button[class*="ghost"] *:not(svg) {
+  color: #4a3525 !important;
+}
+
+html:not(.dark)[data-email-theme="pirate"] header button[class*="ghost"]:hover {
+  background: rgba(92, 64, 51, 0.25) !important;
+  border-color: var(--pirate-gold) !important;
+  color: #3d2e1e !important;
+}
+
+html:not(.dark)[data-email-theme="pirate"] header button[class*="ghost"]:hover span,
+html:not(.dark)[data-email-theme="pirate"] header button[class*="ghost"]:hover *:not(svg) {
+  color: #3d2e1e !important;
+}
+
+html:not(.dark)[data-email-theme="pirate"] header button[class*="ghost"] svg,
+html:not(.dark)[data-email-theme="pirate"] header button[class*="ghost"] svg * {
+  color: #4a3525 !important;
+}
+
+html:not(.dark)[data-email-theme="pirate"] header button[class*="ghost"]:hover svg,
+html:not(.dark)[data-email-theme="pirate"] header button[class*="ghost"]:hover svg * {
+  color: #3d2e1e !important;
+}
+
+/* Canvas toolbar buttons (Edit button, zoom, etc.) */
+html:not(.dark)[data-email-theme="pirate"] main button {
+  background: linear-gradient(
+    180deg,
+    #5c4033 0%,
+    #4a3525 100%
+  ) !important;
+  border: 2px solid var(--pirate-gold) !important;
+  color: #f4cf57 !important;
+}
+
+html:not(.dark)[data-email-theme="pirate"] main button span,
+html:not(.dark)[data-email-theme="pirate"] main button *:not(svg) {
+  color: #f4cf57 !important;
+}
+
+html:not(.dark)[data-email-theme="pirate"] main button svg,
+html:not(.dark)[data-email-theme="pirate"] main button svg * {
+  color: #f4cf57 !important;
+}
+
+html:not(.dark)[data-email-theme="pirate"] main button:hover {
+  background: linear-gradient(
+    180deg,
+    #6b5a45 0%,
+    #5c4033 100%
+  ) !important;
+  color: #fff8dc !important;
+}
+
+html:not(.dark)[data-email-theme="pirate"] main button:hover span,
+html:not(.dark)[data-email-theme="pirate"] main button:hover *:not(svg),
+html:not(.dark)[data-email-theme="pirate"] main button:hover svg,
+html:not(.dark)[data-email-theme="pirate"] main button:hover svg * {
+  color: #fff8dc !important;
+}
+
+/* Ghost buttons in canvas toolbar */
+html:not(.dark)[data-email-theme="pirate"] main button[class*="ghost"] {
+  background: rgba(92, 64, 51, 0.15) !important;
+  border: 1px solid rgba(92, 64, 51, 0.3) !important;
+  color: #4a3525 !important;
+}
+
+html:not(.dark)[data-email-theme="pirate"] main button[class*="ghost"] span,
+html:not(.dark)[data-email-theme="pirate"] main button[class*="ghost"] *:not(svg),
+html:not(.dark)[data-email-theme="pirate"] main button[class*="ghost"] svg {
+  color: #4a3525 !important;
+}
+
+html:not(.dark)[data-email-theme="pirate"] main button[class*="ghost"]:hover {
+  background: rgba(92, 64, 51, 0.25) !important;
+  color: #3d2e1e !important;
+}
+
+html:not(.dark)[data-email-theme="pirate"] main button[class*="ghost"]:hover span,
+html:not(.dark)[data-email-theme="pirate"] main button[class*="ghost"]:hover *:not(svg),
+html:not(.dark)[data-email-theme="pirate"] main button[class*="ghost"]:hover svg {
+  color: #3d2e1e !important;
+}
+
+/* Sidebar styled like aged wood */
+[data-email-theme="pirate"] aside {
+  background: linear-gradient(
+    90deg,
+    var(--pirate-wood-dark) 0%,
+    var(--pirate-wood) 3%,
+    var(--pirate-parchment-dark) 100%
+  ) !important;
+  border-right-color: var(--pirate-gold) !important;
+}
+
+/* Cards look like treasure maps/parchment */
+[data-email-theme="pirate"] .card-luxury,
+[data-email-theme="pirate"] [class*="Card"] {
+  background: var(--pirate-parchment) !important;
+  border: 2px solid var(--pirate-border) !important;
+  box-shadow: 
+    0 4px 12px rgba(0,0,0,0.2),
+    inset 0 0 40px rgba(139,69,19,0.05);
+  position: relative;
+}
+
+/* Text styling for pirate theme */
+[data-email-theme="pirate"] {
+  color: var(--pirate-text);
+}
+
+[data-email-theme="pirate"] h1,
+[data-email-theme="pirate"] h2,
+[data-email-theme="pirate"] h3,
+[data-email-theme="pirate"] h4 {
+  font-family: var(--font-pirata-one), 'Pirata One', cursive !important;
+  color: var(--pirate-text) !important;
+}
+
+[data-email-theme="pirate"] p,
+[data-email-theme="pirate"] span,
+[data-email-theme="pirate"] label {
+  font-family: 'IM Fell English', Georgia, serif !important;
+  color: var(--pirate-text) !important;
+}
+
+/* Parchment content text colors are defined at the end of pirate theme section for proper CSS specificity */
+
+/* Input styling for pirate theme */
+[data-email-theme="pirate"] input:not([type="color"]):not([type="range"]),
+[data-email-theme="pirate"] textarea,
+[data-email-theme="pirate"] select {
+  background: rgba(244,228,193,0.5) !important;
+  border: 1px solid var(--pirate-border) !important;
+  font-family: 'IM Fell English', Georgia, serif !important;
+  color: var(--pirate-ink) !important;
+}
+
+.dark[data-email-theme="pirate"] input:not([type="color"]):not([type="range"]),
+.dark[data-email-theme="pirate"] textarea,
+.dark[data-email-theme="pirate"] select {
+  background: rgba(45,36,24,0.5) !important;
+  color: var(--pirate-ink) !important;
+}
+
+/* Button styling for pirate theme - wooden plank style */
+[data-email-theme="pirate"] button {
+  background: linear-gradient(
+    180deg,
+    var(--pirate-wood) 0%,
+    var(--pirate-wood-dark) 100%
+  ) !important;
+  border: 2px solid var(--pirate-gold) !important;
+  color: var(--pirate-gold-light) !important;
+  font-family: var(--font-pirata-one), 'Pirata One', cursive !important;
+  text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
+  box-shadow: 
+    inset 0 1px 0 rgba(255,255,255,0.1),
+    inset 0 -1px 0 rgba(0,0,0,0.2),
+    0 2px 4px rgba(0,0,0,0.3);
+}
+
+[data-email-theme="pirate"] button:hover {
+  background: linear-gradient(
+    180deg,
+    var(--pirate-wood-dark) 0%,
+    var(--pirate-wood) 100%
+  ) !important;
+  border-color: var(--pirate-gold-light) !important;
+  box-shadow: 
+    inset 0 1px 0 rgba(255,255,255,0.15),
+    inset 0 -1px 0 rgba(0,0,0,0.3),
+    0 4px 8px rgba(0,0,0,0.4),
+    0 0 12px rgba(212,175,55,0.2);
+}
+
+/* Scroll-like decorative borders */
+[data-email-theme="pirate"] .scroll-border {
+  position: relative;
+  border-radius: 4px;
+  box-shadow: 
+    inset 0 0 20px rgba(139,69,19,0.1),
+    0 4px 12px rgba(0,0,0,0.2);
+}
+
+[data-email-theme="pirate"] .scroll-border::before,
+[data-email-theme="pirate"] .scroll-border::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 20px;
+  background: linear-gradient(
+    180deg,
+    var(--pirate-parchment-dark) 0%,
+    var(--pirate-parchment) 50%,
+    transparent 100%
+  );
+  border-radius: 10px 10px 0 0;
+}
+
+[data-email-theme="pirate"] .scroll-border::before {
+  top: 0;
+}
+
+[data-email-theme="pirate"] .scroll-border::after {
+  bottom: 0;
+  transform: rotate(180deg);
+}
+
+/* Gold accent for important elements */
+[data-email-theme="pirate"] .accent-gold {
+  color: var(--pirate-gold) !important;
+  text-shadow: 0 1px 2px rgba(0,0,0,0.3);
+}
+
+/* Treasure chest decoration element */
+[data-email-theme="pirate"] .treasure-chest::before {
+  content: "💰";
+  position: absolute;
+  bottom: 4px;
+  right: 4px;
+  font-size: 20px;
+  opacity: 0.5;
+}
+
+/* Compass rose decoration */
+[data-email-theme="pirate"] .compass-decoration::before {
+  content: "🧭";
+  position: absolute;
+  top: 4px;
+  left: 4px;
+  font-size: 16px;
+  opacity: 0.4;
+}
+
+/* Pirate anchor divider */
+[data-email-theme="pirate"] .anchor-divider {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 16px 0;
+}
+
+[data-email-theme="pirate"] .anchor-divider::before,
+[data-email-theme="pirate"] .anchor-divider::after {
+  content: "";
+  flex: 1;
+  height: 1px;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    var(--pirate-gold) 50%,
+    transparent 100%
+  );
+}
+
+/* Pirate theme signature section */
+.pirate-signature-section {
+  font-family: 'IM Fell English', Georgia, serif !important;
+  color: var(--pirate-ink) !important;
+}
+
+.pirate-signature-section * {
+  font-family: inherit;
+}
+
+/* Dark mode text overrides for pirate theme - general elements outside parchment */
+.dark[data-email-theme="pirate"] h1,
+.dark[data-email-theme="pirate"] h2,
+.dark[data-email-theme="pirate"] h3,
+.dark[data-email-theme="pirate"] h4 {
+  color: var(--pirate-text) !important;
+}
+
+.dark[data-email-theme="pirate"] p,
+.dark[data-email-theme="pirate"] span,
+.dark[data-email-theme="pirate"] label {
+  color: var(--pirate-text) !important;
+}
+
+/* Parchment content overrides - MUST come after general rules for specificity */
+/* Dark text is required on parchment because it's always a tan/brownish background */
+.dark[data-email-theme="pirate"] .pirate-parchment-content,
+.dark[data-email-theme="pirate"] .pirate-parchment-content p,
+.dark[data-email-theme="pirate"] .pirate-parchment-content span,
+.dark[data-email-theme="pirate"] .pirate-parchment-content label,
+.dark[data-email-theme="pirate"] .pirate-parchment-content h1,
+.dark[data-email-theme="pirate"] .pirate-parchment-content h2,
+.dark[data-email-theme="pirate"] .pirate-parchment-content h3,
+.dark[data-email-theme="pirate"] .pirate-parchment-content h4,
+.dark[data-email-theme="pirate"] .pirate-parchment-content a,
+.dark[data-email-theme="pirate"] .pirate-parchment-content div {
+  color: #2c1810 !important;
+}
+
+.dark[data-email-theme="pirate"] button {
+  color: var(--pirate-gold-light) !important;
+}
+
+/* ========================================
+   PIRATE TABS - Wood Plank Underline Style
+   ======================================== */
+
+/* Tab container - clean with subtle wood texture */
+[data-email-theme="pirate"] [role="tablist"],
+[data-email-theme="pirate"] .tabs-container,
+[data-email-theme="pirate"] aside .flex.border-b {
+  background: var(--pirate-parchment) !important;
+  border-bottom: none !important;
+  padding: 0 !important;
+  gap: 0 !important;
+  position: relative;
+}
+
+.dark[data-email-theme="pirate"] [role="tablist"],
+.dark[data-email-theme="pirate"] .tabs-container,
+.dark[data-email-theme="pirate"] aside .flex.border-b {
+  background: var(--pirate-wood-dark) !important;
+}
+
+/* Subtle wood grain line under tabs */
+[data-email-theme="pirate"] [role="tablist"]::after,
+[data-email-theme="pirate"] aside .flex.border-b::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 12px;
+  right: 12px;
+  height: 2px;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(92, 64, 51, 0.2) 10%,
+    rgba(92, 64, 51, 0.2) 90%,
+    transparent 100%
+  );
+}
+
+.dark[data-email-theme="pirate"] [role="tablist"]::after,
+.dark[data-email-theme="pirate"] aside .flex.border-b::after {
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(212, 175, 55, 0.2) 10%,
+    rgba(212, 175, 55, 0.2) 90%,
+    transparent 100%
+  );
+}
+
+/* Inactive tabs - clean with subtle underline */
+[data-email-theme="pirate"] [role="tab"],
+[data-email-theme="pirate"] .tab-item,
+[data-email-theme="pirate"] button[class*="flex-1"] {
+  color: var(--pirate-text-muted) !important;
+  font-family: var(--font-pirata-one), 'Pirata One', cursive !important;
+  font-weight: 500 !important;
+  letter-spacing: 0.02em !important;
+  font-size: 0.85rem !important;
+  border: none !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  padding: 14px 16px !important;
+  margin: 0 !important;
+  transition: all 0.2s ease;
+  position: relative;
+  text-shadow: none !important;
+  box-shadow: none !important;
+}
+
+/* Reset pirate button styles for tabs specifically */
+[data-email-theme="pirate"] aside .border-b button,
+[data-email-theme="pirate"] aside .flex.border-b button {
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+  text-shadow: none !important;
+}
+
+/* Wood grain underline - invisible by default */
+[data-email-theme="pirate"] [role="tab"]::after,
+[data-email-theme="pirate"] .tab-item::after,
+[data-email-theme="pirate"] button[class*="flex-1"]::after,
+[data-email-theme="pirate"] aside .border-b button::after {
+  content: "" !important;
+  display: block !important;
+  position: absolute;
+  bottom: 0;
+  left: 16px;
+  right: 16px;
+  height: 3px;
+  background: linear-gradient(
+    180deg,
+    rgba(92, 64, 51, 0) 0%,
+    rgba(92, 64, 51, 0.15) 50%,
+    rgba(92, 64, 51, 0.3) 100%
+  );
+  border-radius: 3px 3px 0 0;
+  opacity: 0;
+  transform: scaleX(0.5);
+  transition: all 0.25s ease;
+}
+
+.dark[data-email-theme="pirate"] [role="tab"]::after,
+.dark[data-email-theme="pirate"] .tab-item::after,
+.dark[data-email-theme="pirate"] button[class*="flex-1"]::after,
+.dark[data-email-theme="pirate"] aside .border-b button::after {
+  background: linear-gradient(
+    180deg,
+    rgba(212, 175, 55, 0) 0%,
+    rgba(212, 175, 55, 0.2) 50%,
+    rgba(212, 175, 55, 0.4) 100%
+  ) !important;
+}
+
+/* Hover state - subtle wood highlight appears */
+[data-email-theme="pirate"] [role="tab"]:hover,
+[data-email-theme="pirate"] button[class*="flex-1"]:hover,
+[data-email-theme="pirate"] aside .border-b button:hover {
+  color: var(--pirate-text) !important;
+  background: transparent !important;
+}
+
+[data-email-theme="pirate"] [role="tab"]:hover::after,
+[data-email-theme="pirate"] button[class*="flex-1"]:hover::after,
+[data-email-theme="pirate"] aside .border-b button:hover::after {
+  opacity: 0.5;
+  transform: scaleX(0.75);
+}
+
+/* Active tab - strong wood plank underline */
+[data-email-theme="pirate"] [role="tab"][aria-selected="true"],
+[data-email-theme="pirate"] .tab-item.active,
+[data-email-theme="pirate"] button[class*="flex-1"][class*="border-b-2"],
+[data-email-theme="pirate"] button[class*="flex-1"].border-primary,
+[data-email-theme="pirate"] aside .border-b button.border-primary,
+[data-email-theme="pirate"] aside .border-b button.bg-background {
+  color: var(--pirate-gold) !important;
+  background: transparent !important;
+  border: none !important;
+}
+
+/* Active tab wood highlight - fully visible and darker */
+[data-email-theme="pirate"] [role="tab"][aria-selected="true"]::after,
+[data-email-theme="pirate"] .tab-item.active::after,
+[data-email-theme="pirate"] button[class*="flex-1"][class*="border-b-2"]::after,
+[data-email-theme="pirate"] button[class*="flex-1"].border-primary::after,
+[data-email-theme="pirate"] aside .border-b button.border-primary::after,
+[data-email-theme="pirate"] aside .border-b button.bg-background::after {
+  opacity: 1 !important;
+  transform: scaleX(1) !important;
+  background: linear-gradient(
+    180deg,
+    rgba(92, 64, 51, 0.1) 0%,
+    rgba(92, 64, 51, 0.5) 40%,
+    rgba(92, 64, 51, 0.85) 100%
+  ) !important;
+  height: 4px;
+  box-shadow: 
+    0 -1px 0 rgba(255, 255, 255, 0.15),
+    0 1px 3px rgba(0, 0, 0, 0.2);
+}
+
+.dark[data-email-theme="pirate"] [role="tab"][aria-selected="true"]::after,
+.dark[data-email-theme="pirate"] .tab-item.active::after,
+.dark[data-email-theme="pirate"] button[class*="flex-1"][class*="border-b-2"]::after,
+.dark[data-email-theme="pirate"] button[class*="flex-1"].border-primary::after,
+.dark[data-email-theme="pirate"] aside .border-b button.border-primary::after,
+.dark[data-email-theme="pirate"] aside .border-b button.bg-background::after {
+  background: linear-gradient(
+    180deg,
+    rgba(212, 175, 55, 0.1) 0%,
+    rgba(212, 175, 55, 0.6) 40%,
+    rgba(212, 175, 55, 1) 100%
+  ) !important;
+  box-shadow: 
+    0 -1px 0 rgba(255, 255, 255, 0.1),
+    0 1px 4px rgba(0, 0, 0, 0.3),
+    0 0 8px rgba(212, 175, 55, 0.3);
+}
+
+/* ========================================
+   PIRATE LIGHT MODE CONTRAST IMPROVEMENTS
+   ======================================== */
+
+/* Improved sidebar background for light mode - more contrast */
+[data-email-theme="pirate"] aside {
+  background: linear-gradient(
+    90deg,
+    #4a3525 0%,
+    #5c4033 2%,
+    #8b6914 4%,
+    #c9a227 6%,
+    var(--pirate-parchment-dark) 8%,
+    var(--pirate-parchment) 20%,
+    var(--pirate-parchment) 100%
+  ) !important;
+  border-right: 3px solid var(--pirate-gold) !important;
+  box-shadow: 
+    inset -8px 0 16px rgba(139,69,19,0.08),
+    2px 0 8px rgba(0,0,0,0.1);
+}
+
+/* Sidebar text contrast for light mode ONLY */
+html:not(.dark)[data-email-theme="pirate"] aside label,
+html:not(.dark)[data-email-theme="pirate"] aside .label,
+html:not(.dark)[data-email-theme="pirate"] aside p,
+html:not(.dark)[data-email-theme="pirate"] aside span:not([class*="w-"]):not([class*="h-"]):not(button span) {
+  color: #3d2e1e !important;
+}
+
+html:not(.dark)[data-email-theme="pirate"] aside h1,
+html:not(.dark)[data-email-theme="pirate"] aside h2,
+html:not(.dark)[data-email-theme="pirate"] aside h3,
+html:not(.dark)[data-email-theme="pirate"] aside h4 {
+  color: #2c1810 !important;
+}
+
+/* Muted text in sidebar - light mode */
+html:not(.dark)[data-email-theme="pirate"] aside .text-muted-foreground {
+  color: #6b5a4a !important;
+}
+
+/* Cards in sidebar should have visible borders */
+[data-email-theme="pirate"] aside .card-luxury,
+[data-email-theme="pirate"] aside [class*="Card"],
+[data-email-theme="pirate"] aside .rounded-lg {
+  background: var(--pirate-parchment) !important;
+  border: 2px solid rgba(92, 64, 51, 0.25) !important;
+  box-shadow: 
+    0 2px 8px rgba(0,0,0,0.1),
+    inset 0 0 20px rgba(139,69,19,0.03);
+}
+
+/* Template selector cards in light mode - ensure readable text */
+html:not(.dark)[data-email-theme="pirate"] aside .rounded-lg,
+html:not(.dark)[data-email-theme="pirate"] aside .rounded-xl {
+  background: linear-gradient(
+    135deg,
+    rgba(92, 64, 51, 0.85) 0%,
+    rgba(74, 53, 37, 0.9) 100%
+  ) !important;
+  border: 2px solid var(--pirate-gold) !important;
+}
+
+/* Template card titles - bright gold */
+html:not(.dark)[data-email-theme="pirate"] aside .rounded-lg h3,
+html:not(.dark)[data-email-theme="pirate"] aside .rounded-lg h4,
+html:not(.dark)[data-email-theme="pirate"] aside .rounded-lg [class*="font-medium"],
+html:not(.dark)[data-email-theme="pirate"] aside .rounded-xl h3,
+html:not(.dark)[data-email-theme="pirate"] aside .rounded-xl h4,
+html:not(.dark)[data-email-theme="pirate"] aside .rounded-xl [class*="font-medium"] {
+  color: #f4cf57 !important;
+}
+
+/* Template card descriptions - light cream */
+html:not(.dark)[data-email-theme="pirate"] aside .rounded-lg p,
+html:not(.dark)[data-email-theme="pirate"] aside .rounded-lg [class*="text-muted"],
+html:not(.dark)[data-email-theme="pirate"] aside .rounded-lg [class*="text-sm"],
+html:not(.dark)[data-email-theme="pirate"] aside .rounded-xl p,
+html:not(.dark)[data-email-theme="pirate"] aside .rounded-xl [class*="text-muted"],
+html:not(.dark)[data-email-theme="pirate"] aside .rounded-xl [class*="text-sm"] {
+  color: #e8dcc8 !important;
+}
+
+/* Template badges/tags */
+html:not(.dark)[data-email-theme="pirate"] aside .rounded-lg span[class*="bg-"],
+html:not(.dark)[data-email-theme="pirate"] aside .rounded-xl span[class*="bg-"] {
+  background: var(--pirate-gold) !important;
+  color: #2c1810 !important;
+}
+
+/* Input fields in light mode - better contrast */
+[data-email-theme="pirate"] aside input:not([type="color"]):not([type="range"]),
+[data-email-theme="pirate"] aside textarea,
+[data-email-theme="pirate"] aside select {
+  background: rgba(255,255,255,0.6) !important;
+  border: 2px solid rgba(92, 64, 51, 0.3) !important;
+  color: #2c1810 !important;
+}
+
+[data-email-theme="pirate"] aside input:focus,
+[data-email-theme="pirate"] aside textarea:focus,
+[data-email-theme="pirate"] aside select:focus {
+  border-color: var(--pirate-gold) !important;
+  box-shadow: 0 0 0 3px rgba(201, 162, 39, 0.2) !important;
+}
+
+/* Placeholder text */
+[data-email-theme="pirate"] aside input::placeholder,
+[data-email-theme="pirate"] aside textarea::placeholder {
+  color: rgba(92, 64, 51, 0.5) !important;
+}
+
+/* Buttons in sidebar - maintain wooden look but with better contrast */
+[data-email-theme="pirate"] aside button:not([class*="ghost"]):not(.border-b button):not(.flex.border-b button) {
+  background: linear-gradient(
+    180deg,
+    #6b5a45 0%,
+    #5c4033 50%,
+    #4a3525 100%
+  ) !important;
+  border: 2px solid var(--pirate-gold) !important;
+  color: #f4cf57 !important; /* Explicit bright gold for readability */
+}
+
+[data-email-theme="pirate"] aside button:not([class*="ghost"]):not(.border-b button):not(.flex.border-b button):hover {
+  background: linear-gradient(
+    180deg,
+    #7a6a55 0%,
+    #6b5a45 50%,
+    #5c4033 100%
+  ) !important;
+  color: #fff8dc !important; /* Lighter on hover */
+  box-shadow: 
+    0 4px 12px rgba(0,0,0,0.3),
+    0 0 8px rgba(201, 162, 39, 0.2);
+}
+
+/* Dark mode sidebar adjustments */
+.dark[data-email-theme="pirate"] aside {
+  background: linear-gradient(
+    90deg,
+    #1a1410 0%,
+    #2d2418 2%,
+    #3d3020 4%,
+    var(--pirate-wood-dark) 8%,
+    var(--pirate-parchment-dark) 20%,
+    var(--pirate-parchment) 100%
+  ) !important;
+}
+
+.dark[data-email-theme="pirate"] aside .text-muted-foreground {
+  color: #a89880 !important;
+}
+
+/* Dark mode text colors for sidebar - light colored text */
+.dark[data-email-theme="pirate"] aside label,
+.dark[data-email-theme="pirate"] aside .label,
+.dark[data-email-theme="pirate"] aside p,
+.dark[data-email-theme="pirate"] aside span:not([class*="w-"]):not([class*="h-"]):not(button span) {
+  color: #e8dcc8 !important;
+}
+
+.dark[data-email-theme="pirate"] aside h1,
+.dark[data-email-theme="pirate"] aside h2,
+.dark[data-email-theme="pirate"] aside h3,
+.dark[data-email-theme="pirate"] aside h4 {
+  color: #f4e4c1 !important;
+}
+
+/* Dark mode tab text - ensure readable */
+.dark[data-email-theme="pirate"] aside .border-b button,
+.dark[data-email-theme="pirate"] aside .flex.border-b button {
+  color: #c9b896 !important;
+}
+
+.dark[data-email-theme="pirate"] aside .border-b button:hover,
+.dark[data-email-theme="pirate"] aside .flex.border-b button:hover {
+  color: #e8dcc8 !important;
+}
+
+.dark[data-email-theme="pirate"] aside .border-b button.border-primary,
+.dark[data-email-theme="pirate"] aside .border-b button.bg-background,
+.dark[data-email-theme="pirate"] aside .flex.border-b button.border-primary,
+.dark[data-email-theme="pirate"] aside .flex.border-b button.bg-background {
+  color: var(--pirate-gold-light) !important;
+}
+
+/* Pirate theme uses --font-pirata-one from layout.tsx */
+
+/* ========================================
+   SURFER DUDE HAWAIIAN THEME
+   Tropical beach vibes - ocean, sunset, hibiscus
+   Relaxed yet vibrant aesthetic
+   ======================================== */
+
+[data-email-theme="surfer-dude"] {
+  --surfer-ocean: #06b6d4;
+  --surfer-ocean-deep: #0891b2;
+  --surfer-ocean-light: #22d3ee;
+  --surfer-sunset: #f97316;
+  --surfer-sunset-light: #fb923c;
+  --surfer-gold: #fbbf24;
+  --surfer-hibiscus: #ec4899;
+  --surfer-hibiscus-light: #f472b6;
+  --surfer-palm: #22c55e;
+  --surfer-sand: #fef3c7;
+  --surfer-sand-dark: #fde68a;
+  --surfer-tiki: #92400e;
+  --surfer-tiki-light: #a16207;
+  --surfer-bg: #fffbeb;
+  --surfer-bg-secondary: #fef3c7;
+  --surfer-text: #1c1917;
+  --surfer-text-secondary: #44403c;
+  --surfer-text-muted: #57534e;
+  --surfer-border: #d6d3d1;
+  --surfer-font-display: var(--font-pacifico), cursive;
+}
+
+.dark[data-email-theme="surfer-dude"] {
+  --surfer-ocean: #22d3ee;
+  --surfer-ocean-deep: #0891b2;
+  --surfer-ocean-light: #67e8f9;
+  --surfer-sunset: #fb923c;
+  --surfer-sunset-light: #fdba74;
+  --surfer-gold: #fbbf24;
+  --surfer-hibiscus: #f472b6;
+  --surfer-hibiscus-light: #f9a8d4;
+  --surfer-palm: #4ade80;
+  --surfer-sand: #292524;
+  --surfer-sand-dark: #1c1917;
+  --surfer-tiki: #a16207;
+  --surfer-tiki-light: #ca8a04;
+  --surfer-bg: #1c1917;
+  --surfer-bg-secondary: #292524;
+  --surfer-text: #ffffff;
+  --surfer-text-secondary: #ffffff;
+  --surfer-text-muted: #f5f5f4;
+  --surfer-border: #57534e;
+}
+
+/* Warm sandy background with subtle wave pattern */
+[data-email-theme="surfer-dude"] .bg-card {
+  background: 
+    linear-gradient(
+      180deg,
+      var(--surfer-bg) 0%,
+      var(--surfer-bg-secondary) 100%
+    ) !important;
+}
+
+/* Header - tropical gradient with ocean/sunset feel and hibiscus accent */
+[data-email-theme="surfer-dude"] header {
+  background: linear-gradient(
+    90deg,
+    rgba(6, 182, 212, 0.1) 0%,
+    var(--surfer-bg) 25%,
+    var(--surfer-bg) 75%,
+    rgba(249, 115, 22, 0.1) 100%
+  ) !important;
+  border-bottom: 3px solid transparent !important;
+  border-image: linear-gradient(
+    90deg,
+    var(--surfer-hibiscus) 0%,
+    var(--surfer-ocean) 25%,
+    var(--surfer-gold) 50%,
+    var(--surfer-ocean) 75%,
+    var(--surfer-hibiscus) 100%
+  ) 1 !important;
+  box-shadow: 0 2px 12px rgba(6, 182, 212, 0.15);
+}
+
+/* Header title with Hawaiian font */
+[data-email-theme="surfer-dude"] header h1 {
+  font-family: var(--surfer-font-display) !important;
+  background: linear-gradient(135deg, var(--surfer-ocean) 0%, var(--surfer-sunset) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Sidebar - beachy warmth with lei border */
+[data-email-theme="surfer-dude"] aside {
+  background: linear-gradient(
+    180deg,
+    var(--surfer-bg-secondary) 0%,
+    var(--surfer-bg) 100%
+  ) !important;
+  border-right: 3px solid transparent !important;
+  border-image: linear-gradient(
+    180deg,
+    var(--surfer-hibiscus) 0%,
+    var(--surfer-palm) 25%,
+    var(--surfer-gold) 50%,
+    var(--surfer-ocean) 75%,
+    var(--surfer-sunset) 100%
+  ) 1 !important;
+}
+
+/* Cards - subtle tropical styling */
+[data-email-theme="surfer-dude"] .card-luxury,
+[data-email-theme="surfer-dude"] [class*="Card"] {
+  background: var(--surfer-bg) !important;
+  border: 1px solid var(--surfer-border) !important;
+  border-radius: 12px !important;
+  position: relative;
+  box-shadow: 
+    0 2px 8px rgba(6, 182, 212, 0.08),
+    0 4px 16px rgba(249, 115, 22, 0.05);
+}
+
+/* Subtle tropical accent - top border only */
+[data-email-theme="surfer-dude"] .card-luxury::before,
+[data-email-theme="surfer-dude"] [class*="Card"]::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  border-radius: 12px 12px 0 0;
+  background: linear-gradient(
+    90deg,
+    var(--surfer-ocean) 0%,
+    var(--surfer-gold) 50%,
+    var(--surfer-hibiscus) 100%
+  );
+  opacity: 0.7;
+}
+
+/* Hibiscus corner decoration on cards - single subtle one */
+[data-email-theme="surfer-dude"] [class*="Card"] > [class*="CardHeader"]::before {
+  content: "🌺";
+  position: absolute;
+  top: -8px;
+  right: 12px;
+  font-size: 14px;
+  z-index: 10;
+  filter: drop-shadow(1px 2px 2px rgba(0,0,0,0.15));
+}
+
+/* Inputs - clean with ocean focus */
+[data-email-theme="surfer-dude"] input:not([type="color"]):not([type="range"]),
+[data-email-theme="surfer-dude"] textarea,
+[data-email-theme="surfer-dude"] select {
+  background: var(--surfer-bg) !important;
+  border: 1px solid var(--surfer-border) !important;
+  border-radius: 8px !important;
+  color: var(--surfer-text) !important;
+  transition: all 0.2s ease;
+}
+
+[data-email-theme="surfer-dude"] input:focus,
+[data-email-theme="surfer-dude"] textarea:focus,
+[data-email-theme="surfer-dude"] select:focus {
+  border-color: var(--surfer-ocean) !important;
+  box-shadow: 
+    0 0 0 3px rgba(6, 182, 212, 0.15),
+    0 0 12px rgba(6, 182, 212, 0.1) !important;
+  outline: none !important;
+}
+
+/* Buttons - vibrant tropical gradient (exclude tab buttons) */
+[data-email-theme="surfer-dude"] button[class*="primary"]:not(.border-b):not([class*="flex-1"]),
+[data-email-theme="surfer-dude"] button[class*="default"]:not(.border-b):not([class*="flex-1"]) {
+  background: linear-gradient(
+    135deg,
+    var(--surfer-ocean) 0%,
+    var(--surfer-ocean-light) 50%,
+    var(--surfer-sunset-light) 100%
+  ) !important;
+  border: none !important;
+  color: white !important;
+  font-weight: 600 !important;
+  border-radius: 8px !important;
+  box-shadow: 0 2px 8px rgba(6, 182, 212, 0.3);
+  transition: all 0.2s ease;
+}
+
+[data-email-theme="surfer-dude"] button[class*="primary"]:not(.border-b):not([class*="flex-1"]):hover,
+[data-email-theme="surfer-dude"] button[class*="default"]:not(.border-b):not([class*="flex-1"]):hover {
+  background: linear-gradient(
+    135deg,
+    var(--surfer-ocean-light) 0%,
+    var(--surfer-sunset-light) 50%,
+    var(--surfer-sunset) 100%
+  ) !important;
+  box-shadow: 
+    0 4px 12px rgba(6, 182, 212, 0.3),
+    0 0 20px rgba(249, 115, 22, 0.15);
+  transform: translateY(-1px);
+}
+
+/* Tabs - minimalist underline style */
+[data-email-theme="surfer-dude"] [role="tablist"],
+[data-email-theme="surfer-dude"] .tabs-container {
+  background: transparent !important;
+  border-bottom: 1px solid var(--surfer-border) !important;
+}
+
+[data-email-theme="surfer-dude"] [role="tab"],
+[data-email-theme="surfer-dude"] .tab-item {
+  background: transparent !important;
+  border: none !important;
+  border-bottom: 2px solid transparent !important;
+  border-radius: 0 !important;
+  transition: all 0.2s ease;
+  color: var(--surfer-text-muted) !important;
+}
+
+[data-email-theme="surfer-dude"] [role="tab"]:hover,
+[data-email-theme="surfer-dude"] .tab-item:hover {
+  color: var(--surfer-ocean) !important;
+}
+
+[data-email-theme="surfer-dude"] [role="tab"][aria-selected="true"],
+[data-email-theme="surfer-dude"] .tab-item.active {
+  background: transparent !important;
+  border-bottom: 2px solid var(--surfer-ocean) !important;
+  color: var(--surfer-ocean) !important;
+}
+
+/* Sidebar tab buttons - clean with gradient underline */
+[data-email-theme="surfer-dude"] aside .border-b button,
+[data-email-theme="surfer-dude"] aside .flex.border-b button {
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+  position: relative;
+  color: var(--surfer-text-muted) !important;
+  transition: all 0.2s ease;
+}
+
+/* Gradient underline - hidden by default */
+[data-email-theme="surfer-dude"] aside .border-b button::after,
+[data-email-theme="surfer-dude"] aside .flex.border-b button::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 16px;
+  right: 16px;
+  height: 3px;
+  background: linear-gradient(
+    90deg,
+    var(--surfer-ocean) 0%,
+    var(--surfer-gold) 50%,
+    var(--surfer-hibiscus) 100%
+  );
+  border-radius: 3px 3px 0 0;
+  opacity: 0;
+  transform: scaleX(0.5);
+  transition: all 0.25s ease;
+}
+
+/* Hover - subtle underline appears */
+[data-email-theme="surfer-dude"] aside .border-b button:hover,
+[data-email-theme="surfer-dude"] aside .flex.border-b button:hover {
+  color: var(--surfer-ocean) !important;
+  background: transparent !important;
+}
+
+[data-email-theme="surfer-dude"] aside .border-b button:hover::after,
+[data-email-theme="surfer-dude"] aside .flex.border-b button:hover::after {
+  opacity: 0.5;
+  transform: scaleX(0.75);
+}
+
+/* Active tab - full gradient underline */
+[data-email-theme="surfer-dude"] aside .border-b button.border-primary,
+[data-email-theme="surfer-dude"] aside .border-b button.bg-background,
+[data-email-theme="surfer-dude"] aside .flex.border-b button.border-primary,
+[data-email-theme="surfer-dude"] aside .flex.border-b button.bg-background {
+  color: var(--surfer-ocean) !important;
+  background: transparent !important;
+  border: none !important;
+}
+
+[data-email-theme="surfer-dude"] aside .border-b button.border-primary::after,
+[data-email-theme="surfer-dude"] aside .border-b button.bg-background::after,
+[data-email-theme="surfer-dude"] aside .flex.border-b button.border-primary::after,
+[data-email-theme="surfer-dude"] aside .flex.border-b button.bg-background::after {
+  opacity: 1 !important;
+  transform: scaleX(1) !important;
+}
+
+/* Dark mode gradient underline */
+.dark[data-email-theme="surfer-dude"] aside .border-b button::after,
+.dark[data-email-theme="surfer-dude"] aside .flex.border-b button::after {
+  background: linear-gradient(
+    90deg,
+    var(--surfer-ocean-light) 0%,
+    var(--surfer-gold) 50%,
+    var(--surfer-hibiscus-light) 100%
+  );
+}
+
+/* Scrollbar - ocean wave style */
+[data-email-theme="surfer-dude"] ::-webkit-scrollbar {
+  width: 10px;
+  background: var(--surfer-bg-secondary);
+}
+
+[data-email-theme="surfer-dude"] ::-webkit-scrollbar-thumb {
+  background: linear-gradient(
+    180deg,
+    var(--surfer-ocean) 0%,
+    var(--surfer-ocean-deep) 100%
+  );
+  border-radius: 5px;
+  border: 2px solid var(--surfer-bg-secondary);
+}
+
+[data-email-theme="surfer-dude"] ::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(
+    180deg,
+    var(--surfer-ocean-light) 0%,
+    var(--surfer-ocean) 100%
+  );
+}
+
+/* Labels */
+[data-email-theme="surfer-dude"] label,
+[data-email-theme="surfer-dude"] .label {
+  color: var(--surfer-text-secondary) !important;
+}
+
+/* Headings - Hawaiian Pacifico font */
+[data-email-theme="surfer-dude"] h1,
+[data-email-theme="surfer-dude"] h2,
+[data-email-theme="surfer-dude"] h3,
+[data-email-theme="surfer-dude"] [class*="CardTitle"],
+[data-email-theme="surfer-dude"] .text-lg.font-semibold,
+[data-email-theme="surfer-dude"] header h1 {
+  font-family: var(--surfer-font-display) !important;
+  color: var(--surfer-text) !important;
+  letter-spacing: 0.02em;
+}
+
+/* Subtitle/description text - better contrast */
+[data-email-theme="surfer-dude"] p.text-muted-foreground,
+[data-email-theme="surfer-dude"] .text-xs.text-muted-foreground,
+[data-email-theme="surfer-dude"] span.text-muted-foreground {
+  color: var(--surfer-text-secondary) !important;
+}
+
+.dark[data-email-theme="surfer-dude"] p.text-muted-foreground,
+.dark[data-email-theme="surfer-dude"] .text-xs.text-muted-foreground,
+.dark[data-email-theme="surfer-dude"] span.text-muted-foreground {
+  color: var(--surfer-text-muted) !important;
+}
+
+/* Selection - hibiscus pink highlight */
+[data-email-theme="surfer-dude"] ::selection {
+  background: rgba(236, 72, 153, 0.25);
+  color: var(--surfer-text);
+}
+
+/* Muted text */
+[data-email-theme="surfer-dude"] .text-muted-foreground {
+  color: var(--surfer-text-muted) !important;
+}
+
+/* Dark mode specific overrides */
+.dark[data-email-theme="surfer-dude"] header {
+  background: linear-gradient(
+    90deg,
+    rgba(34, 211, 238, 0.12) 0%,
+    var(--surfer-bg) 25%,
+    var(--surfer-bg) 75%,
+    rgba(251, 146, 60, 0.12) 100%
+  ) !important;
+  border-bottom-color: var(--surfer-ocean-light) !important;
+}
+
+/* Header title with Hawaiian font in dark mode */
+.dark[data-email-theme="surfer-dude"] header h1 {
+  color: var(--surfer-gold) !important;
+  text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+}
+
+.dark[data-email-theme="surfer-dude"] label,
+.dark[data-email-theme="surfer-dude"] .label {
+  color: var(--surfer-text-secondary) !important;
+}
+
+.dark[data-email-theme="surfer-dude"] [role="tab"],
+.dark[data-email-theme="surfer-dude"] .tab-item {
+  color: var(--surfer-text-muted) !important;
+}
+
+.dark[data-email-theme="surfer-dude"] [role="tab"][aria-selected="true"],
+.dark[data-email-theme="surfer-dude"] .tab-item.active {
+  background: transparent !important;
+  border-bottom: 2px solid var(--surfer-ocean-light) !important;
+  color: var(--surfer-ocean-light) !important;
+}
+
+/* Dark mode sidebar tab buttons */
+.dark[data-email-theme="surfer-dude"] aside .border-b button,
+.dark[data-email-theme="surfer-dude"] aside .flex.border-b button {
+  color: var(--surfer-text-muted) !important;
+}
+
+.dark[data-email-theme="surfer-dude"] aside .border-b button:hover,
+.dark[data-email-theme="surfer-dude"] aside .flex.border-b button:hover {
+  color: var(--surfer-ocean-light) !important;
+}
+
+.dark[data-email-theme="surfer-dude"] aside .border-b button.border-primary,
+.dark[data-email-theme="surfer-dude"] aside .border-b button.bg-background,
+.dark[data-email-theme="surfer-dude"] aside .flex.border-b button.border-primary,
+.dark[data-email-theme="surfer-dude"] aside .flex.border-b button.bg-background {
+  color: var(--surfer-ocean-light) !important;
+}
+
+.dark[data-email-theme="surfer-dude"] button {
+  color: var(--surfer-text) !important;
+}
+
+.dark[data-email-theme="surfer-dude"] input,
+.dark[data-email-theme="surfer-dude"] textarea,
+.dark[data-email-theme="surfer-dude"] select {
+  color: var(--surfer-text) !important;
+  background: var(--surfer-bg-secondary) !important;
+}
+
+.dark[data-email-theme="surfer-dude"] input::placeholder,
+.dark[data-email-theme="surfer-dude"] textarea::placeholder {
+  color: var(--surfer-text-muted) !important;
+  opacity: 0.7;
+}
+
+/* Card header text contrast in dark mode */
+.dark[data-email-theme="surfer-dude"] [class*="CardTitle"] {
+  color: var(--surfer-gold) !important;
+  text-shadow: 0 1px 3px rgba(0,0,0,0.4);
+}
+
+/* ========================================
+   SURFER DUDE - BEACH POSTCARD FRAME
+   ======================================== */
+
+.surfer-beach-frame {
+  position: relative;
+  overflow: visible !important;
+}
+
+/* Tiki wood border frame with tropical accent */
+.surfer-beach-frame {
+  box-shadow: 
+    0 4px 20px rgba(6, 182, 212, 0.15),
+    0 8px 32px rgba(249, 115, 22, 0.1),
+    0 0 0 3px var(--surfer-ocean, #06b6d4),
+    0 0 0 6px var(--surfer-tiki, #92400e),
+    0 0 0 8px rgba(0,0,0,0.1) !important;
+  border-radius: 8px !important;
+}
+
+/* Hibiscus decoration on corner */
+.surfer-beach-frame::after {
+  content: "🌺";
+  position: absolute;
+  top: -12px;
+  right: 16px;
+  font-size: 24px;
+  z-index: 100;
+  filter: drop-shadow(1px 2px 2px rgba(0,0,0,0.2));
+}
+
+/* Wave animation for active elements */
+@keyframes surfer-wave {
+  0%, 100% { transform: translateY(0) rotate(0deg); }
+  25% { transform: translateY(-2px) rotate(1deg); }
+  75% { transform: translateY(2px) rotate(-1deg); }
+}
+
+[data-email-theme="surfer-dude"] .card-luxury:hover {
+  animation: surfer-wave 2s ease-in-out infinite;
+}
+
+/* Tropical accent bar on cards */
+[data-email-theme="surfer-dude"] .card-luxury::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: linear-gradient(
+    90deg,
+    var(--surfer-ocean) 0%,
+    var(--surfer-ocean-light) 25%,
+    var(--surfer-gold) 50%,
+    var(--surfer-sunset-light) 75%,
+    var(--surfer-hibiscus-light) 100%
+  );
+  border-radius: 12px 12px 0 0;
+  opacity: 0.7;
+}
+
+/* ========================================
+   RESPONSIVE DESIGN SYSTEM
+   Mobile-first approach for all devices
+   ======================================== */
+
+/* ========================================
+   MOBILE STYLES (< 768px)
+   ======================================== */
+
+/* Mobile navigation */
+.mobile-nav {
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+}
+
+.mobile-nav-compact {
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+}
+
+/* Safe area bottom padding for iPhone notch */
+.safe-area-bottom {
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+}
+
+/* Touch-friendly targets */
+@media (max-width: 767px) {
+  /* Increase touch targets */
+  button, 
+  a, 
+  input, 
+  select, 
+  textarea {
+    min-height: 44px;
+  }
+  
+  /* Mobile nav item styling */
+  .mobile-nav-item {
+    position: relative;
+  }
+  
+  /* Adjust card padding for mobile */
+  .card-luxury,
+  [class*="Card"] {
+    padding: 1rem;
+  }
+  
+  /* Stack form fields on mobile */
+  .grid-cols-1.md\:grid-cols-2,
+  .grid.md\:grid-cols-2 {
+    grid-template-columns: 1fr !important;
+  }
+  
+  /* Compact header spacing */
+  header .px-4 {
+    padding-left: 0.75rem;
+    padding-right: 0.75rem;
+  }
+  
+  /* Mobile preview zoom adjustment */
+  .canvas-container {
+    transform-origin: top center !important;
+    max-width: 100% !important;
+  }
+  
+  /* Hide desktop-only elements */
+  .hidden-mobile,
+  .lg\:flex:not(.md\:flex) {
+    display: none !important;
+  }
+  
+  /* Mobile-friendly font sizes */
+  .text-xs {
+    font-size: 0.7rem;
+  }
+  
+  .text-sm {
+    font-size: 0.8rem;
+  }
+  
+  /* Full-width buttons on mobile */
+  .mobile-full-width {
+    width: 100%;
+  }
+  
+  /* Reduce padding in mobile panels */
+  .p-4 {
+    padding: 1rem;
+  }
+  
+  /* Mobile-specific card styling */
+  .card-luxury::after,
+  .card-luxury::before {
+    display: none;
+  }
+  
+  /* Compact zoom controls */
+  .zoom-controls {
+    transform: scale(0.9);
+  }
+  
+  /* Mobile input styling */
+  input[type="text"],
+  input[type="email"],
+  input[type="tel"],
+  input[type="url"],
+  textarea,
+  select {
+    font-size: 16px; /* Prevents iOS zoom on focus */
+  }
+  
+  /* Mobile modal adjustments */
+  .fixed.inset-0 {
+    padding: 1rem;
+  }
+  
+  /* Mobile template grid */
+  .template-grid {
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 0.75rem;
+  }
+  
+  /* Compact social links on mobile */
+  .social-link-row {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+  
+  .social-link-row select {
+    width: 100%;
+  }
+  
+  /* Mobile donation banner */
+  .donation-banner {
+    padding: 0.5rem 1rem;
+    font-size: 0.75rem;
+  }
+  
+  /* Compact tabs on mobile */
+  .mobile-tab-compact {
+    padding: 0.5rem 0.75rem;
+    font-size: 0.7rem;
+  }
+}
+
+/* Extra small screens (< 375px) */
+@media (max-width: 374px) {
+  .mobile-nav {
+    height: 56px;
+  }
+  
+  .mobile-nav-item {
+    min-width: 44px;
+    padding: 0.25rem;
+  }
+  
+  .mobile-nav-item span {
+    font-size: 9px;
+  }
+  
+  /* Even smaller text for tiny screens */
+  .text-xs {
+    font-size: 0.65rem;
+  }
+}
+
+/* ========================================
+   TABLET STYLES (768px - 1023px)
+   ======================================== */
+
+@media (min-width: 768px) and (max-width: 1023px) {
+  /* Tablet drawer transitions */
+  aside {
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  
+  /* Tablet-friendly touch targets */
+  button,
+  a {
+    min-height: 40px;
+  }
+  
+  /* Two-column form layout on tablet */
+  .grid.md\:grid-cols-2 {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  
+  /* Tablet preview sizing */
+  .canvas-container {
+    transform-origin: top center !important;
+  }
+  
+  /* Tablet header adjustments */
+  header .px-4 {
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+  
+  /* Tablet sidebar width */
+  .tablet-sidebar {
+    width: 320px;
+  }
+  
+  /* Backdrop blur for tablet drawers */
+  .tablet-drawer-overlay {
+    backdrop-filter: blur(4px);
+  }
+  
+  /* Tablet card adjustments */
+  .card-luxury {
+    padding: 1.25rem;
+  }
+  
+  /* Template grid for tablet */
+  .template-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem;
+  }
+  
+  /* Tablet-specific modal sizing */
+  .modal-content {
+    max-width: 90vw;
+    max-height: 80vh;
+  }
+}
+
+/* ========================================
+   DESKTOP STYLES (>= 1024px)
+   ======================================== */
+
+@media (min-width: 1024px) {
+  /* Desktop keeps all existing styles */
+  /* No modifications needed - original layout preserved */
+  
+  /* Ensure desktop elements are visible */
+  .lg\:flex {
+    display: flex !important;
+  }
+  
+  .hidden.lg\:block {
+    display: block !important;
+  }
+}
+
+/* ========================================
+   RESPONSIVE UTILITIES
+   ======================================== */
+
+/* Hide on specific breakpoints */
+@media (max-width: 767px) {
+  .hide-on-mobile { display: none !important; }
+}
+
+@media (min-width: 768px) and (max-width: 1023px) {
+  .hide-on-tablet { display: none !important; }
+}
+
+@media (min-width: 1024px) {
+  .hide-on-desktop { display: none !important; }
+}
+
+/* Show only on specific breakpoints */
+@media (max-width: 767px) {
+  .show-only-mobile { display: flex !important; }
+}
+
+@media (min-width: 768px) {
+  .show-only-mobile { display: none !important; }
+}
+
+/* Custom xs breakpoint for very small screens */
+@media (min-width: 375px) {
+  .xs\:block { display: block; }
+  .xs\:flex { display: flex; }
+  .xs\:hidden { display: none; }
+}
+
+/* ========================================
+   RESPONSIVE ANIMATIONS
+   ======================================== */
+
+/* Reduce motion for mobile/low-power devices */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* Smoother animations for high refresh rate displays */
+@media (min-resolution: 2dppx) {
+  .canvas-container {
+    will-change: transform;
+  }
+}
+
+/* ========================================
+   MOBILE-SPECIFIC COMPONENT OVERRIDES
+   ======================================== */
+
+/* Mobile preview toolbar */
+@media (max-width: 767px) {
+  .preview-toolbar {
+    height: 40px;
+    padding: 0 0.75rem;
+  }
+  
+  .preview-toolbar .text-xs {
+    font-size: 0.65rem;
+  }
+  
+  .preview-toolbar button {
+    width: 32px;
+    height: 32px;
+    min-height: 32px;
+  }
+  
+  /* Hide zoom percentage on mobile */
+  .zoom-percentage {
+    display: none;
+  }
+  
+  /* Compact email theme selector on mobile */
+  .email-theme-selector {
+    max-width: 120px;
+  }
+}
+
+/* Mobile form card adjustments */
+@media (max-width: 767px) {
+  [class*="CardHeader"] {
+    padding: 0.75rem 1rem;
+  }
+  
+  [class*="CardContent"] {
+    padding: 1rem;
+  }
+  
+  [class*="CardTitle"] {
+    font-size: 0.95rem;
+  }
+  
+  /* Compact social link rows */
+  .flex.gap-2 {
+    flex-wrap: wrap;
+  }
+}
+
+/* ========================================
+   TABLET DRAWER SPECIFIC STYLES
+   ======================================== */
+
+@media (min-width: 768px) and (max-width: 1023px) {
+  /* Left drawer */
+  .tablet-left-drawer {
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 288px;
+    z-index: 30;
+    transform: translateX(-100%);
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  
+  .tablet-left-drawer.open {
+    transform: translateX(0);
+  }
+  
+  /* Right drawer */
+  .tablet-right-drawer {
+    position: absolute;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    width: 320px;
+    z-index: 30;
+    transform: translateX(100%);
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  
+  .tablet-right-drawer.open {
+    transform: translateX(0);
+  }
+  
+  /* Drawer backdrop */
+  .tablet-drawer-backdrop {
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.2);
+    backdrop-filter: blur(2px);
+    z-index: 20;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s ease;
+  }
+  
+  .tablet-drawer-backdrop.visible {
+    opacity: 1;
+    pointer-events: auto;
+  }
+}
+
+/* ========================================
+   RESPONSIVE FULLSCREEN MODAL
+   ======================================== */
+
+/* Mobile fullscreen */
+@media (max-width: 767px) {
+  .fullscreen-modal {
+    padding: 0;
+  }
+  
+  .fullscreen-modal .preview-content {
+    padding: 0.5rem;
+  }
+  
+  .fullscreen-modal .preview-header {
+    height: 48px;
+    padding: 0 0.75rem;
+  }
+  
+  .fullscreen-modal .zoom-controls {
+    display: none;
+  }
+  
+  .fullscreen-modal .exit-hint {
+    font-size: 0.65rem;
+    padding: 0.25rem 0.75rem;
+  }
+}
+
+/* Tablet fullscreen */
+@media (min-width: 768px) and (max-width: 1023px) {
+  .fullscreen-modal .preview-header {
+    padding: 0 1rem;
+  }
+  
+  .fullscreen-modal .preview-content {
+    padding: 1rem;
+  }
+}
+
+/* ========================================
+   RESPONSIVE THEME OVERRIDES
+   Ensure themed elements work on all screens
+   ======================================== */
+
+@media (max-width: 767px) {
+  /* Simplify Office theme on mobile */
+  [data-email-theme="the-office"] .card-luxury::before,
+  [data-email-theme="the-office"] .card-luxury::after {
+    display: none;
+  }
+  
+  /* Simplify Parks theme on mobile */
+  [data-email-theme="parks-and-recreation"] .card-luxury::before,
+  [data-email-theme="parks-and-recreation"] .card-luxury::after {
+    display: none;
+  }
+  
+  /* Simplify Star Wars themes on mobile */
+  [data-email-theme="darth-vader"] .card-luxury::before,
+  [data-email-theme="darth-vader"] .card-luxury::after,
+  [data-email-theme="yoda"] .card-luxury::before,
+  [data-email-theme="yoda"] .card-luxury::after {
+    display: none;
+  }
+  
+  /* Simplify Spider-Man theme on mobile */
+  [data-email-theme="spider-man"] .card-luxury::after {
+    display: none;
+  }
+  
+  /* Simplify Surfer theme on mobile */
+  [data-email-theme="surfer-dude"] .card-luxury::before {
+    display: none;
+  }
+}
+
+/* ========================================
+   PRINT STYLES
+   ======================================== */
+
+@media print {
+  /* Hide navigation and controls when printing */
+  .mobile-nav,
+  header,
+  footer,
+  aside,
+  .preview-toolbar {
+    display: none !important;
+  }
+  
+  /* Full width preview for printing */
+  main {
+    width: 100% !important;
+    position: static !important;
+    left: 0 !important;
+    right: 0 !important;
+  }
+  
+  .canvas-container {
+    transform: none !important;
+    box-shadow: none !important;
+  }
+}
