@@ -58,28 +58,21 @@ export function MobileNav({ activeTab, onTabChange, className }: MobileNavProps)
         style={{ paddingBottom: 'env(safe-area-inset-bottom, 0px)' }}
       >
         {/* Footer info row */}
-        <div className="flex items-center justify-between px-3 py-1.5 border-b border-border/50 bg-secondary/30">
-          <span className="text-[9px] text-muted-foreground/70">
-            © {currentYear} Open Insurance
-          </span>
-          <div className="flex items-center gap-1.5 text-[9px] text-muted-foreground/70">
-            <span className="text-rainbow-animated font-medium">Free</span>
-            <span className="opacity-50">•</span>
-            <Link href="/privacy" className="hover:text-muted-foreground transition-colors">
-              Privacy
-            </Link>
-            <span className="opacity-50">•</span>
-            <Link href="/terms" className="hover:text-muted-foreground transition-colors">
-              Terms
-            </Link>
-            <span className="opacity-50">•</span>
-            <button
-              onClick={() => setIsDisclaimerOpen(true)}
-              className="hover:text-muted-foreground transition-colors"
-            >
-              Disclaimers
-            </button>
-          </div>
+        <div className="flex items-center justify-center gap-1.5 px-2 py-1 border-b border-border/50 bg-secondary/30 text-[9px] text-muted-foreground/70">
+          <span>© {currentYear}</span>
+          <span className="opacity-40">|</span>
+          <span className="text-rainbow-animated font-medium">Free</span>
+          <span className="opacity-40">|</span>
+          <Link href="/privacy" className="hover:text-muted-foreground transition-colors">Privacy</Link>
+          <span className="opacity-40">•</span>
+          <Link href="/terms" className="hover:text-muted-foreground transition-colors">Terms</Link>
+          <span className="opacity-40">•</span>
+          <button
+            onClick={() => setIsDisclaimerOpen(true)}
+            className="hover:text-muted-foreground transition-colors"
+          >
+            Legal
+          </button>
         </div>
         
         {/* Navigation tabs */}
