@@ -28,32 +28,18 @@ export function Footer() {
 
           {/* Center: Free tool badge - visible on all screens */}
           <div className="flex items-center gap-1 text-xs">
-            <span className="text-rainbow-animated font-medium">Free</span>
+            <span className="text-rainbow-animated font-medium">Free forever</span>
             <span className="text-muted-foreground">•</span>
             <span className="text-rainbow-animated font-medium">No signup</span>
           </div>
 
-          {/* Right: Links + Branding */}
-          <div className="flex items-center gap-2 md:gap-3 text-xs text-muted-foreground">
-            <Link 
-              href="/privacy" 
-              className="hover:text-foreground transition-colors"
-            >
-              Privacy
-            </Link>
-            <span className="text-border">•</span>
-            <Link 
-              href="/terms" 
-              className="hover:text-foreground transition-colors"
-            >
-              Terms
-            </Link>
-            <span className="text-border hidden md:inline">|</span>
+          {/* Right: Branding (desktop only) */}
+          <div className="hidden md:flex items-center gap-2 md:gap-3 text-xs text-muted-foreground">
             <a
               href="https://www.openinsurance.ai"
               target="_blank"
               rel="noopener noreferrer"
-              className="hidden md:flex items-center gap-1.5 hover:text-foreground transition-colors group"
+              className="flex items-center gap-1.5 hover:text-foreground transition-colors group"
             >
               Powered by <span className="font-medium text-rainbow-animated group-hover:opacity-90">OpenOS</span>
               <ExternalLink className="w-3 h-3" />
@@ -74,16 +60,32 @@ export function Footer() {
           </a>
         </div>
 
-        {/* Bottom Row: Copyright + Disclaimers Link */}
+        {/* Bottom Row: Copyright + Links */}
         <div className="px-4 py-2 border-t border-border/50 bg-secondary/20">
-          <div className="flex items-center justify-center md:justify-between gap-3 text-[10px] text-muted-foreground/70">
-            <p>© {currentYear} Open Insurance</p>
-            <button
-              onClick={() => setIsDisclaimerModalOpen(true)}
-              className="hover:text-muted-foreground transition-colors underline underline-offset-2"
-            >
-              Disclaimers
-            </button>
+          <div className="flex flex-col md:flex-row items-center justify-center md:justify-between gap-2 md:gap-3 text-[10px] text-muted-foreground/70">
+            <p>© {currentYear} OpenOS</p>
+            <div className="flex items-center gap-3">
+              <Link 
+                href="/privacy" 
+                className="hover:text-muted-foreground transition-colors"
+              >
+                Privacy
+              </Link>
+              <span className="text-border">•</span>
+              <Link 
+                href="/terms" 
+                className="hover:text-muted-foreground transition-colors"
+              >
+                Terms
+              </Link>
+              <span className="text-border">•</span>
+              <button
+                onClick={() => setIsDisclaimerModalOpen(true)}
+                className="hover:text-muted-foreground transition-colors"
+              >
+                Disclaimers
+              </button>
+            </div>
           </div>
         </div>
       </footer>
