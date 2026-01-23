@@ -683,6 +683,9 @@ function HomeContent({
                 <ExportPanel onCopyHTML={getSignatureHTML} onFirstExport={handleFirstExport} />
               </div>
             )}
+
+            {/* Mobile Footer - inside scroll area */}
+            <Footer />
           </div>
 
           {/* Mobile Bottom Navigation */}
@@ -1463,8 +1466,8 @@ function HomeContent({
         </div>
       )}
 
-      {/* Footer */}
-      <Footer />
+      {/* Footer - hidden on mobile since it's in the scroll area */}
+      {!isMobile && <Footer />}
     </div>
   );
 }
