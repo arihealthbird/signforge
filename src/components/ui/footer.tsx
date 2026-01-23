@@ -4,10 +4,12 @@ import { useState } from "react";
 import Link from "next/link";
 import { ExternalLink } from "lucide-react";
 import { VersionBadge, VersionModal } from "./version-modal";
+import { DisclaimerModal } from "./disclaimer-modal";
 
 export function Footer() {
   const currentYear = new Date().getFullYear();
   const [isVersionModalOpen, setIsVersionModalOpen] = useState(false);
+  const [isDisclaimerModalOpen, setIsDisclaimerModalOpen] = useState(false);
 
   return (
     <>
@@ -72,24 +74,28 @@ export function Footer() {
           </a>
         </div>
 
-        {/* Bottom Row: Copyright + Trademark Disclaimers */}
-        <div className="px-4 py-2.5 md:py-2 border-t border-border/50 bg-secondary/20">
-          <div className="flex flex-col items-center gap-2 md:gap-1.5 md:flex-row md:justify-between text-[10px] text-muted-foreground/70">
-            <p className="text-center md:text-left">
-              © {currentYear} Open Insurance. All rights reserved.
-            </p>
-            <p className="text-center md:text-right leading-relaxed">
-              <span className="block md:inline">Star Wars™, Spider-Man™, Pirates of the Caribbean™ © Disney/Lucasfilm/Marvel.</span>
-              <span className="block md:inline md:ml-1">The Office™, Parks and Rec™ © NBCUniversal. Fan tributes only.</span>
-            </p>
+        {/* Bottom Row: Copyright + Disclaimers Link */}
+        <div className="px-4 py-2 border-t border-border/50 bg-secondary/20">
+          <div className="flex items-center justify-center md:justify-between gap-3 text-[10px] text-muted-foreground/70">
+            <p>© {currentYear} Open Insurance</p>
+            <button
+              onClick={() => setIsDisclaimerModalOpen(true)}
+              className="hover:text-muted-foreground transition-colors underline underline-offset-2"
+            >
+              Disclaimers
+            </button>
           </div>
         </div>
       </footer>
 
-      {/* Version Modal */}
+      {/* Modals */}
       <VersionModal 
         isOpen={isVersionModalOpen} 
         onClose={() => setIsVersionModalOpen(false)} 
+      />
+      <DisclaimerModal
+        isOpen={isDisclaimerModalOpen}
+        onClose={() => setIsDisclaimerModalOpen(false)}
       />
     </>
   );
