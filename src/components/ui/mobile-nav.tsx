@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
 import { clsx } from "clsx";
 import {
   Eye,
@@ -57,16 +58,24 @@ export function MobileNav({ activeTab, onTabChange, className }: MobileNavProps)
         style={{ paddingBottom: 'env(safe-area-inset-bottom, 0px)' }}
       >
         {/* Footer info row */}
-        <div className="flex items-center justify-between px-4 py-1.5 border-b border-border/50 bg-secondary/30">
+        <div className="flex items-center justify-between px-3 py-1.5 border-b border-border/50 bg-secondary/30">
           <span className="text-[9px] text-muted-foreground/70">
             © {currentYear} Open Insurance
           </span>
-          <div className="flex items-center gap-2 text-[9px] text-muted-foreground/70">
+          <div className="flex items-center gap-1.5 text-[9px] text-muted-foreground/70">
             <span className="text-rainbow-animated font-medium">Free</span>
-            <span>•</span>
+            <span className="opacity-50">•</span>
+            <Link href="/privacy" className="hover:text-muted-foreground transition-colors">
+              Privacy
+            </Link>
+            <span className="opacity-50">•</span>
+            <Link href="/terms" className="hover:text-muted-foreground transition-colors">
+              Terms
+            </Link>
+            <span className="opacity-50">•</span>
             <button
               onClick={() => setIsDisclaimerOpen(true)}
-              className="underline underline-offset-2 hover:text-muted-foreground transition-colors"
+              className="hover:text-muted-foreground transition-colors"
             >
               Disclaimers
             </button>
