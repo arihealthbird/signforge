@@ -13,25 +13,26 @@ export function Footer() {
     <>
       <footer className="border-t border-border bg-background/50 backdrop-blur-sm">
         {/* Main Footer Row */}
-        <div className="px-4 py-2 flex flex-col md:flex-row items-center justify-between gap-2">
-          {/* Left: Status + Version + Disclaimer */}
-          <div className="flex items-center gap-2 text-xs text-muted-foreground">
+        <div className="px-4 py-3 md:py-2 flex flex-col md:flex-row items-center justify-between gap-3 md:gap-2">
+          {/* Left: Status + Version */}
+          <div className="flex flex-wrap items-center justify-center md:justify-start gap-2 text-xs text-muted-foreground">
             <div className="flex items-center gap-2">
-              <span className="w-2 h-2 rounded-full bg-emerald-500" />
-              <span>Changes saved automatically</span>
+              <span className="w-2 h-2 rounded-full bg-emerald-500 shrink-0" />
+              <span>Saved automatically</span>
             </div>
-            <span className="hidden md:inline text-border">|</span>
+            <span className="text-border">|</span>
             <VersionBadge onClick={() => setIsVersionModalOpen(true)} />
-            <span className="hidden lg:inline text-border">|</span>
-            <span className="hidden lg:inline">
-              <span className="text-rainbow-animated font-medium">Free</span>
-              <span className="text-muted-foreground"> tool • </span>
-              <span className="text-rainbow-animated font-medium">No account required</span>
-            </span>
+          </div>
+
+          {/* Center: Free tool badge - visible on all screens */}
+          <div className="flex items-center gap-1 text-xs">
+            <span className="text-rainbow-animated font-medium">Free</span>
+            <span className="text-muted-foreground">•</span>
+            <span className="text-rainbow-animated font-medium">No signup</span>
           </div>
 
           {/* Right: Links + Branding */}
-          <div className="flex items-center gap-3 text-xs text-muted-foreground">
+          <div className="flex items-center gap-2 md:gap-3 text-xs text-muted-foreground">
             <Link 
               href="/privacy" 
               className="hover:text-foreground transition-colors"
@@ -45,12 +46,12 @@ export function Footer() {
             >
               Terms
             </Link>
-            <span className="text-border">|</span>
+            <span className="text-border hidden md:inline">|</span>
             <a
               href="https://www.openinsurance.ai"
               target="_blank"
               rel="noopener noreferrer"
-              className="flex items-center gap-1.5 hover:text-foreground transition-colors group"
+              className="hidden md:flex items-center gap-1.5 hover:text-foreground transition-colors group"
             >
               Powered by <span className="font-medium text-rainbow-animated group-hover:opacity-90">OpenOS</span>
               <ExternalLink className="w-3 h-3" />
@@ -58,15 +59,28 @@ export function Footer() {
           </div>
         </div>
 
+        {/* Mobile: Powered by row */}
+        <div className="md:hidden px-4 pb-2 flex justify-center">
+          <a
+            href="https://www.openinsurance.ai"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex items-center gap-1.5 text-xs text-muted-foreground hover:text-foreground transition-colors group"
+          >
+            Powered by <span className="font-medium text-rainbow-animated group-hover:opacity-90">OpenOS</span>
+            <ExternalLink className="w-3 h-3" />
+          </a>
+        </div>
+
         {/* Bottom Row: Copyright + Trademark Disclaimers */}
-        <div className="px-4 py-2 border-t border-border/50 bg-secondary/20">
-          <div className="flex flex-col md:flex-row items-center justify-between gap-1.5 text-[10px] text-muted-foreground/70">
-            <p>
-              © {currentYear} Open Insurance. All rights reserved. Provided "as is" without warranty.
+        <div className="px-4 py-2.5 md:py-2 border-t border-border/50 bg-secondary/20">
+          <div className="flex flex-col items-center gap-2 md:gap-1.5 md:flex-row md:justify-between text-[10px] text-muted-foreground/70">
+            <p className="text-center md:text-left">
+              © {currentYear} Open Insurance. All rights reserved.
             </p>
-            <p className="text-center md:text-right">
-              Star Wars™, Spider-Man™, and Pirates of the Caribbean™ are trademarks of Disney/Lucasfilm/Marvel. 
-              The Office™ and Parks and Recreation™ are trademarks of NBCUniversal. All character themes are fan tributes.
+            <p className="text-center md:text-right leading-relaxed">
+              <span className="block md:inline">Star Wars™, Spider-Man™, Pirates of the Caribbean™ © Disney/Lucasfilm/Marvel.</span>
+              <span className="block md:inline md:ml-1">The Office™, Parks and Rec™ © NBCUniversal. Fan tributes only.</span>
             </p>
           </div>
         </div>
