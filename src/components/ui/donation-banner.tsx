@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Heart, X, Github } from "lucide-react";
+import { Heart, X } from "lucide-react";
 import { clsx } from "clsx";
 
 interface DonationBannerProps {
@@ -40,19 +40,20 @@ export function DonationBanner({ onDonateClick, onVisibilityChange }: DonationBa
       className={clsx(
         "relative overflow-hidden border-b border-border/30",
         "bg-gradient-to-r from-rose-500/5 via-amber-500/5 to-rose-500/5",
-        "animate-in slide-in-from-top duration-500"
+        "animate-in slide-in-from-top duration-500",
+        // Hide banner on mobile - show compact version in header instead
+        "hidden sm:block"
       )}
     >
       {/* Subtle animated shimmer */}
       <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent -translate-x-full animate-shimmer" />
       
-      {/* Mobile: Compact single-line layout */}
+      {/* Desktop/Tablet: Full banner */}
       <div className="relative h-8 flex items-center justify-center px-8">
-        <div className="flex items-center gap-1.5 text-[11px] sm:text-xs">
-          <Heart className="w-3 h-3 text-rose-500/80 flex-shrink-0 hidden xs:block" />
+        <div className="flex items-center gap-1.5 text-xs">
+          <Heart className="w-3 h-3 text-rose-500/80 flex-shrink-0" />
           <span className="text-muted-foreground">
-            <span className="hidden sm:inline">Signature Forge is </span>
-            Free & open source
+            Signature Forge is free & open source
           </span>
           <span className="text-muted-foreground/50">·</span>
           <button
@@ -65,12 +66,49 @@ export function DonationBanner({ onDonateClick, onVisibilityChange }: DonationBa
         
         <button
           onClick={handleDismiss}
-          className="absolute right-1.5 sm:right-2 p-1.5 rounded-full text-muted-foreground/60 hover:text-foreground hover:bg-secondary/50 transition-colors"
+          className="absolute right-2 p-1.5 rounded-full text-muted-foreground/60 hover:text-foreground hover:bg-secondary/50 transition-colors"
           aria-label="Dismiss banner"
         >
           <X className="w-3 h-3" />
         </button>
       </div>
     </div>
+  );
+}
+
+/**
+ * Compact mobile donation indicator - shows as a small heart button
+ * that opens the donation modal when tapped
+ */
+export function MobileDonationButton({ onDonateClick }: { onDonateClick: () => void }) {
+  const [isVisible, setIsVisible] = useState(false);
+
+  useEffect(() => {
+    // Check if user has dismissed the donation prompt
+    const dismissed = sessionStorage.getItem("donation-banner-dismissed");
+    if (!dismissed) {
+      // Show after a brief delay
+      const timer = setTimeout(() => setIsVisible(true), 1500);
+      return () => clearTimeout(timer);
+    }
+  }, []);
+
+  if (!isVisible) return null;
+
+  return (
+    <button
+      onClick={onDonateClick}
+      className={clsx(
+        "flex items-center justify-center",
+        "w-8 h-8 rounded-full",
+        "bg-rose-500/10 hover:bg-rose-500/20",
+        "text-rose-500/80 hover:text-rose-500",
+        "transition-all duration-200",
+        "animate-in fade-in slide-in-from-left-2 duration-300"
+      )}
+      aria-label="Support this project"
+    >
+      <Heart className="w-4 h-4" />
+    </button>
   );
 }

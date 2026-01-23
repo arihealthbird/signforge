@@ -33,7 +33,7 @@ import { EmailThemeSelector } from "@/components/ui/email-theme-selector";
 import { EmailPreviewMock } from "@/components/signature/email-preview-mock";
 import { EmailThemeId } from "@/lib/email-themes";
 import { ThemeCanvasEffects } from "@/components/ui/theme-canvas-effects";
-import { DonationBanner } from "@/components/ui/donation-banner";
+import { DonationBanner, MobileDonationButton } from "@/components/ui/donation-banner";
 import { DonateModal } from "@/components/ui/donate-modal";
 import { ExportDonationModal } from "@/components/ui/export-donation-modal";
 import { CelebrationModal } from "@/components/ui/celebration-modal";
@@ -383,7 +383,7 @@ function HomeContent({
       
       {/* Unified Header + Banner Container */}
       <header className="sticky top-0 z-50 bg-background/95 backdrop-blur-xl">
-        {/* Donation Banner - now inside header */}
+        {/* Donation Banner - hidden on mobile, shown on tablet/desktop */}
         <DonationBanner 
           onDonateClick={() => setIsDonateModalOpen(true)} 
           onVisibilityChange={setDonationBannerVisible}
@@ -391,122 +391,132 @@ function HomeContent({
 
         {/* Main Header Bar */}
         <div className="border-b border-border">
-        <div className="px-2.5 sm:px-3 md:px-4 h-12 sm:h-14 flex items-center justify-between">
-          <div className="flex items-center gap-2 sm:gap-3 md:gap-4">
-            <div className="flex items-center gap-1.5 sm:gap-2 md:gap-3">
-              <AnimatedLogo />
-              <div>
-                <h1 className="font-semibold text-xs sm:text-sm tracking-tight">Signature Forge</h1>
-                <a 
-                  href="https://www.openinsurance.ai" 
-                  target="_blank" 
-                  rel="noopener noreferrer"
-                  className="text-[9px] sm:text-[10px] text-muted-foreground hover:text-foreground transition-colors flex items-center gap-0.5 sm:gap-1"
+          {/* Mobile Header - Clean and Minimal */}
+          {isMobile && (
+            <div className="px-3 h-12 flex items-center justify-between">
+              {/* Left: Logo + Title */}
+              <div className="flex items-center gap-2">
+                <AnimatedLogo />
+                <h1 className="font-semibold text-sm tracking-tight">Forge</h1>
+              </div>
+              
+              {/* Right: Minimal actions */}
+              <div className="flex items-center gap-1">
+                {/* Compact donation button on mobile */}
+                <MobileDonationButton onDonateClick={() => setIsDonateModalOpen(true)} />
+                {/* Share button */}
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="h-8 w-8 text-muted-foreground hover:text-foreground"
+                  onClick={() => setIsShareModalOpen(true)}
                 >
-                  by <span className="font-medium">OpenOS</span>
-                </a>
+                  <SendHorizontal className="w-4 h-4" />
+                </Button>
+                {/* Theme toggle */}
+                <ThemeToggle />
               </div>
             </div>
-            
-            {/* Toggle Left Panel - Desktop only */}
-            {isDesktop && (
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={() => setLeftPanelOpen(!leftPanelOpen)}
-              >
-                {leftPanelOpen ? (
-                  <PanelLeftClose className="w-4 h-4" />
-                ) : (
-                  <PanelLeft className="w-4 h-4" />
-                )}
-              </Button>
-            )}
-            
-            {/* Tablet drawer toggles */}
-            {isTablet && (
-              <div className="flex items-center gap-1">
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={() => setTabletDrawerOpen(tabletDrawerOpen === "left" ? null : "left")}
-                  className={clsx(
-                    tabletDrawerOpen === "left" && "bg-primary/10 text-primary"
-                  )}
-                >
-                  <Layout className="w-4 h-4" />
-                </Button>
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={() => setTabletDrawerOpen(tabletDrawerOpen === "right" ? null : "right")}
-                  className={clsx(
-                    tabletDrawerOpen === "right" && "bg-primary/10 text-primary"
-                  )}
-                >
-                  <FileText className="w-4 h-4" />
-                </Button>
-              </div>
-            )}
-          </div>
+          )}
 
-          <div className="flex items-center gap-1 md:gap-2">
-            {/* AI Assist - hidden on mobile, handled by bottom nav */}
-            <SparkleButton
-              size="sm"
-              className="hidden md:flex"
-              onClick={() => {
-                if (isMobile) {
-                  setMobileTab("ai");
-                } else {
-                  setRightTab("ai");
-                }
-              }}
-            >
-              <Sparkles className="w-4 h-4" />
-              <span className="hidden lg:inline">AI Assist</span>
-            </SparkleButton>
-            {/* Share button - visible on all screen sizes */}
-            <Button
-              variant="ghost"
-              size="icon"
-              className="md:hidden h-8 w-8 text-muted-foreground hover:text-foreground"
-              onClick={() => setIsShareModalOpen(true)}
-            >
-              <SendHorizontal className="w-4 h-4" />
-            </Button>
-            <Button
-              variant="ghost"
-              size="sm"
-              className="hidden md:flex gap-2 text-muted-foreground hover:text-foreground transition-colors group share-btn-hover"
-              onClick={() => setIsShareModalOpen(true)}
-            >
-              <SendHorizontal className="w-4 h-4 share-icon" />
-              <span className="hidden lg:inline group-hover:text-rainbow-animated">Share</span>
-            </Button>
-            {/* Export button - compact on mobile */}
-            <Button
-              size="sm"
-              className="btn-elegant relative overflow-hidden group"
-              onClick={() => {
-                if (isMobile) {
-                  setMobileTab("export");
-                } else {
-                  handleExportClick();
-                }
-              }}
-            >
-              <Download className="w-4 h-4 md:mr-2 group-hover:text-[var(--gradient-mid-3)] transition-colors" />
-              <span className="hidden md:inline group-hover:text-rainbow-animated transition-all">Export</span>
-              <span className="absolute inset-0 bg-gradient-to-r from-[var(--gradient-start)]/0 via-[var(--gradient-mid-3)]/10 to-[var(--gradient-end)]/0 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none" />
-            </Button>
-            <div className="w-px h-6 bg-border mx-1 hidden md:block" />
-            <Button variant="ghost" size="icon" onClick={handleReset} className="text-muted-foreground hover:text-foreground hidden md:flex">
-              <RotateCcw className="w-4 h-4" />
-            </Button>
-            <ThemeToggle />
-          </div>
-        </div>
+          {/* Tablet/Desktop Header - Full featured */}
+          {!isMobile && (
+            <div className="px-3 md:px-4 h-14 flex items-center justify-between">
+              <div className="flex items-center gap-3 md:gap-4">
+                <div className="flex items-center gap-2 md:gap-3">
+                  <AnimatedLogo />
+                  <div>
+                    <h1 className="font-semibold text-sm tracking-tight">Signature Forge</h1>
+                    <a 
+                      href="https://www.openinsurance.ai" 
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                      className="text-[10px] text-muted-foreground hover:text-foreground transition-colors flex items-center gap-1"
+                    >
+                      by <span className="font-medium">OpenOS</span>
+                    </a>
+                  </div>
+                </div>
+                
+                {/* Toggle Left Panel - Desktop only */}
+                {isDesktop && (
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => setLeftPanelOpen(!leftPanelOpen)}
+                  >
+                    {leftPanelOpen ? (
+                      <PanelLeftClose className="w-4 h-4" />
+                    ) : (
+                      <PanelLeft className="w-4 h-4" />
+                    )}
+                  </Button>
+                )}
+                
+                {/* Tablet drawer toggles */}
+                {isTablet && (
+                  <div className="flex items-center gap-1">
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => setTabletDrawerOpen(tabletDrawerOpen === "left" ? null : "left")}
+                      className={clsx(
+                        tabletDrawerOpen === "left" && "bg-primary/10 text-primary"
+                      )}
+                    >
+                      <Layout className="w-4 h-4" />
+                    </Button>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => setTabletDrawerOpen(tabletDrawerOpen === "right" ? null : "right")}
+                      className={clsx(
+                        tabletDrawerOpen === "right" && "bg-primary/10 text-primary"
+                      )}
+                    >
+                      <FileText className="w-4 h-4" />
+                    </Button>
+                  </div>
+                )}
+              </div>
+
+              <div className="flex items-center gap-2">
+                {/* AI Assist - visible on tablet/desktop */}
+                <SparkleButton
+                  size="sm"
+                  onClick={() => setRightTab("ai")}
+                >
+                  <Sparkles className="w-4 h-4" />
+                  <span className="hidden lg:inline">AI Assist</span>
+                </SparkleButton>
+                {/* Share button */}
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="h-9 w-auto px-3 text-muted-foreground hover:text-foreground transition-colors group share-btn-hover"
+                  onClick={() => setIsShareModalOpen(true)}
+                >
+                  <SendHorizontal className="w-4 h-4 share-icon" />
+                  <span className="hidden md:inline ml-2 group-hover:text-rainbow-animated">Share</span>
+                </Button>
+                {/* Export button */}
+                <Button
+                  size="sm"
+                  className="btn-elegant relative overflow-hidden group"
+                  onClick={handleExportClick}
+                >
+                  <Download className="w-4 h-4 mr-2 group-hover:text-[var(--gradient-mid-3)] transition-colors" />
+                  <span className="group-hover:text-rainbow-animated transition-all">Export</span>
+                  <span className="absolute inset-0 bg-gradient-to-r from-[var(--gradient-start)]/0 via-[var(--gradient-mid-3)]/10 to-[var(--gradient-end)]/0 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none" />
+                </Button>
+                <div className="w-px h-6 bg-border mx-1" />
+                <Button variant="ghost" size="icon" onClick={handleReset} className="text-muted-foreground hover:text-foreground">
+                  <RotateCcw className="w-4 h-4" />
+                </Button>
+                <ThemeToggle />
+              </div>
+            </div>
+          )}
         </div>
 
         {/* Shared Template Banner - inside header */}
@@ -532,63 +542,49 @@ function HomeContent({
             {/* Preview Panel */}
             {mobileTab === "preview" && (
               <div className="h-full bg-secondary/30 flex flex-col">
-                {/* Enhanced mobile toolbar - sticky */}
+                {/* Minimal mobile preview toolbar */}
                 <div className="sticky top-0 z-20 border-b border-border bg-background/95 backdrop-blur-sm">
-                {/* Top row - Theme and actions */}
-                  <div className="h-11 flex items-center justify-between px-3">
-                    <div className="flex items-center gap-2">
-                      <EmailThemeSelector value={emailTheme} onChange={setEmailTheme} />
-                    </div>
+                  <div className="h-10 flex items-center justify-between px-2">
+                    {/* Left: Theme selector */}
+                    <EmailThemeSelector value={emailTheme} onChange={setEmailTheme} />
+                    
+                    {/* Right: Essential controls only */}
                     <div className="flex items-center gap-1">
+                      {/* Compact zoom - just buttons, no label */}
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        className="h-7 w-7 touch-manipulation"
+                        onClick={() => setPreviewZoom(Math.max(50, previewZoom - 15))}
+                        disabled={previewZoom <= 50}
+                      >
+                        <ZoomOut className="w-3.5 h-3.5" />
+                      </Button>
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        className="h-7 w-7 touch-manipulation"
+                        onClick={() => setPreviewZoom(Math.min(150, previewZoom + 15))}
+                        disabled={previewZoom >= 150}
+                      >
+                        <ZoomIn className="w-3.5 h-3.5" />
+                      </Button>
+                      <div className="w-px h-5 bg-border mx-0.5" />
+                      {/* Preview theme toggle */}
                       <PreviewThemeSwitch
                         isDark={previewTheme === "dark"}
                         onChange={(isDark) => setPreviewTheme(isDark ? "dark" : "light")}
                       />
+                      {/* Fullscreen */}
                       <Button
                         variant="ghost"
                         size="icon"
-                        className="h-9 w-9 touch-manipulation"
+                        className="h-7 w-7 touch-manipulation"
                         onClick={toggleFullscreen}
                       >
-                        <Maximize2 className="w-4 h-4" />
+                        <Maximize2 className="w-3.5 h-3.5" />
                       </Button>
                     </div>
-                  </div>
-                  {/* Bottom row - Zoom controls */}
-                  <div className="h-10 flex items-center justify-center gap-3 px-3 border-t border-border/50 bg-secondary/30">
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      className="h-8 w-8 touch-manipulation"
-                      onClick={() => setPreviewZoom(Math.max(50, previewZoom - 10))}
-                      disabled={previewZoom <= 50}
-                    >
-                      <ZoomOut className="w-4 h-4" />
-                    </Button>
-                    {/* Zoom slider for fine control */}
-                    <div className="flex items-center gap-2 flex-1 max-w-[200px]">
-                      <input
-                        type="range"
-                        min="50"
-                        max="150"
-                        step="5"
-                        value={previewZoom}
-                        onChange={(e) => setPreviewZoom(Number(e.target.value))}
-                        className="flex-1 h-1.5 bg-border rounded-full appearance-none cursor-pointer touch-manipulation"
-                      />
-                      <span className="text-xs text-muted-foreground w-10 text-center font-medium">
-                        {previewZoom}%
-                      </span>
-                    </div>
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      className="h-8 w-8 touch-manipulation"
-                      onClick={() => setPreviewZoom(Math.min(150, previewZoom + 10))}
-                      disabled={previewZoom >= 150}
-                    >
-                      <ZoomIn className="w-4 h-4" />
-                    </Button>
                   </div>
                 </div>
                 {/* Preview Area - with proper spacing for toolbar */}

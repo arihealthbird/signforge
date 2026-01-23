@@ -88,26 +88,24 @@ export function EmailThemeSelector({ value, onChange }: EmailThemeSelectorProps)
 
   return (
     <div ref={containerRef} className="relative">
-      {/* Trigger Button */}
+      {/* Trigger Button - compact on mobile */}
       <button
         onClick={() => setIsOpen(!isOpen)}
         className={clsx(
-          "flex items-center gap-2 px-3 py-1.5 rounded-md text-xs font-medium transition-all",
+          "flex items-center gap-1.5 sm:gap-2 px-2 sm:px-3 py-1.5 rounded-md text-xs font-medium transition-all",
           "border shadow-sm",
           isOpen
             ? "bg-card border-primary/40 text-foreground ring-2 ring-primary/20"
             : "bg-card border-border text-muted-foreground hover:text-foreground hover:border-border/80"
         )}
       >
-        <span className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">Fun</span>
-        <div className="w-px h-3 bg-border" />
         <span className="flex items-center gap-1.5">
           <ThemeBadge themeId={value} />
-          <span className="font-medium text-foreground">{currentTheme.name}</span>
+          <span className="font-medium text-foreground text-[11px] sm:text-xs max-w-[60px] sm:max-w-none truncate">{currentTheme.name}</span>
         </span>
         <ChevronDown 
           className={clsx(
-            "w-3.5 h-3.5 text-muted-foreground transition-transform duration-200",
+            "w-3 h-3 sm:w-3.5 sm:h-3.5 text-muted-foreground transition-transform duration-200 flex-shrink-0",
             isOpen && "rotate-180"
           )} 
         />
