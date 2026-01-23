@@ -397,7 +397,7 @@ function HomeContent({
               {/* Left: Logo + Title */}
               <div className="flex items-center gap-2">
                 <AnimatedLogo />
-                <h1 className="font-semibold text-sm tracking-tight">Forge</h1>
+                <h1 className="font-semibold text-sm tracking-tight">SignForge</h1>
               </div>
               
               {/* Right: Minimal actions */}
