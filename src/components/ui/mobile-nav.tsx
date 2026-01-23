@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import { clsx } from "clsx";
 import {
   Eye,
@@ -9,6 +10,7 @@ import {
   Wand2,
   Sparkles,
 } from "lucide-react";
+import { DisclaimerModal } from "./disclaimer-modal";
 
 // Simplified tab types for cleaner mobile nav
 export type MobileTab = "preview" | "content" | "templates" | "style" | "ai" | "export";
@@ -40,18 +42,39 @@ const primaryTabs: { id: PrimaryTab; mapTo: MobileTab; label: string; icon: type
 export function MobileNav({ activeTab, onTabChange, className }: MobileNavProps) {
   // Map design-related tabs
   const isDesignActive = activeTab === "templates" || activeTab === "style";
+  const [isDisclaimerOpen, setIsDisclaimerOpen] = useState(false);
+  const currentYear = new Date().getFullYear();
   
   return (
-    <nav
-      className={clsx(
-        "mobile-nav fixed bottom-0 left-0 right-0 z-50",
-        "bg-background/98 backdrop-blur-xl border-t border-border",
-        "touch-manipulation",
-        className
-      )}
-      style={{ paddingBottom: 'env(safe-area-inset-bottom, 0px)' }}
-    >
-      <div className="flex items-center justify-around h-[60px] px-1">
+    <>
+      <nav
+        className={clsx(
+          "mobile-nav fixed bottom-0 left-0 right-0 z-50",
+          "bg-background/98 backdrop-blur-xl border-t border-border",
+          "touch-manipulation",
+          className
+        )}
+        style={{ paddingBottom: 'env(safe-area-inset-bottom, 0px)' }}
+      >
+        {/* Footer info row */}
+        <div className="flex items-center justify-between px-4 py-1.5 border-b border-border/50 bg-secondary/30">
+          <span className="text-[9px] text-muted-foreground/70">
+            © {currentYear} Open Insurance
+          </span>
+          <div className="flex items-center gap-2 text-[9px] text-muted-foreground/70">
+            <span className="text-rainbow-animated font-medium">Free</span>
+            <span>•</span>
+            <button
+              onClick={() => setIsDisclaimerOpen(true)}
+              className="underline underline-offset-2 hover:text-muted-foreground transition-colors"
+            >
+              Disclaimers
+            </button>
+          </div>
+        </div>
+        
+        {/* Navigation tabs */}
+        <div className="flex items-center justify-around h-[56px] px-1">
         {primaryTabs.map((tab) => {
           // Check if this tab or its mapped tab is active
           const isActive = tab.id === "design" 
@@ -117,8 +140,15 @@ export function MobileNav({ activeTab, onTabChange, className }: MobileNavProps)
             </button>
           );
         })}
-      </div>
-    </nav>
+        </div>
+      </nav>
+      
+      {/* Disclaimer Modal */}
+      <DisclaimerModal
+        isOpen={isDisclaimerOpen}
+        onClose={() => setIsDisclaimerOpen(false)}
+      />
+    </>
   );
 }
 

@@ -536,7 +536,7 @@ function HomeContent({
       {/* Main Builder Layout */}
       {/* ======================= MOBILE LAYOUT ======================= */}
       {isMobile && (
-        <div className="flex-1 flex flex-col overflow-hidden pb-[68px] safe-area-bottom min-h-screen-mobile">
+        <div className="flex-1 flex flex-col overflow-hidden pb-[88px] safe-area-bottom min-h-screen-mobile">
           {/* Mobile Panel Content */}
           <div className="flex-1 overflow-y-auto scroll-touch">
             {/* Preview Panel */}
@@ -683,9 +683,6 @@ function HomeContent({
                 <ExportPanel onCopyHTML={getSignatureHTML} onFirstExport={handleFirstExport} />
               </div>
             )}
-
-            {/* Mobile Footer - inside scroll area */}
-            <Footer />
           </div>
 
           {/* Mobile Bottom Navigation */}
