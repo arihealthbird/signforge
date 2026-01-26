@@ -63,8 +63,8 @@ export function Footer() {
         {/* Bottom Row: Copyright + Links */}
         <div className="px-4 py-2 border-t border-border/50 bg-secondary/20">
           <div className="flex flex-col md:flex-row items-center justify-center md:justify-between gap-2 md:gap-3 text-[10px] text-muted-foreground/70">
-            <p>© {currentYear} OpenOS</p>
-            <div className="flex items-center gap-3">
+            {/* Links - shown first on mobile for visual hierarchy */}
+            <div className="flex items-center justify-center gap-3 order-first md:order-last">
               <Link 
                 href="/privacy" 
                 className="hover:text-muted-foreground transition-colors"
@@ -86,6 +86,8 @@ export function Footer() {
                 Disclaimers
               </button>
             </div>
+            {/* Copyright */}
+            <p className="order-last md:order-first">© {currentYear} OpenOS</p>
           </div>
         </div>
       </footer>

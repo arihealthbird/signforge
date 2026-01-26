@@ -10,6 +10,7 @@ export interface ResponsiveState {
   isTablet: boolean;
   isDesktop: boolean;
   width: number;
+  mounted: boolean;
 }
 
 // Breakpoints - adjusted for better 3-panel layout support
@@ -25,24 +26,20 @@ const BREAKPOINTS = {
  * Uses window.matchMedia for efficient media query detection
  */
 export function useResponsive(): ResponsiveState {
-  const [state, setState] = useState<ResponsiveState>(() => {
-    // Default to desktop for SSR
-    if (typeof window === "undefined") {
-      return {
-        layoutMode: "desktop",
-        isMobile: false,
-        isTablet: false,
-        isDesktop: true,
-        width: 1200,
-      };
-    }
-    return getResponsiveState();
+  // Always start with desktop for SSR to ensure consistent hydration
+  const [state, setState] = useState<ResponsiveState>({
+    layoutMode: "desktop",
+    isMobile: false,
+    isTablet: false,
+    isDesktop: true,
+    width: 1200,
+    mounted: false,
   });
 
   useEffect(() => {
-    // Initial check - use functional update to avoid lint warning
+    // Set initial client state with mounted: true
     const initialState = getResponsiveState();
-    setState(initialState);
+    setState({ ...initialState, mounted: true });
 
     // Create media queries
     const mobileQuery = window.matchMedia(`(max-width: ${BREAKPOINTS.tablet - 1}px)`);
@@ -52,7 +49,7 @@ export function useResponsive(): ResponsiveState {
     const desktopQuery = window.matchMedia(`(min-width: ${BREAKPOINTS.desktop}px)`);
 
     const handleChange = () => {
-      setState(getResponsiveState());
+      setState({ ...getResponsiveState(), mounted: true });
     };
 
     // Modern API with fallback
@@ -105,6 +102,7 @@ function getResponsiveState(): ResponsiveState {
     isTablet: layoutMode === "tablet",
     isDesktop: layoutMode === "desktop",
     width,
+    mounted: false, // Will be overridden by caller
   };
 }
 

@@ -242,6 +242,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" suppressHydrationWarning>
+      <head>
+        <link href="https://api.fontshare.com/v2/css?f[]=satoshi@300,700,900&display=swap" rel="stylesheet" />
+      </head>
       <body
         className={`${fontVariables} font-sans antialiased min-h-screen bg-background`}
       >

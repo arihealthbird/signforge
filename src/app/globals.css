@@ -160,6 +160,15 @@ body {
   font-family: var(--font-sans), system-ui, sans-serif;
 }
 
+/* Logo icon filter - black in light mode, white in dark mode */
+.logo-icon-filter {
+  filter: none;
+}
+
+.dark .logo-icon-filter {
+  filter: invert(1);
+}
+
 * {
   border-color: var(--border);
 }

@@ -1,7 +1,7 @@
 "use client";
 
-import { X, Sparkles, Heart, ExternalLink } from "lucide-react";
-import { AnimatedLogo } from "./animated-logo";
+import { X, Heart, ExternalLink } from "lucide-react";
+import { ElectricLogo } from "./electric-logo";
 
 interface VersionModalProps {
   isOpen: boolean;
@@ -23,102 +23,179 @@ export function VersionModal({ isOpen, onClose }: VersionModalProps) {
       <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" />
       
       {/* Modal */}
-      <div className="relative w-full max-w-md bg-background border border-border rounded-2xl shadow-2xl overflow-hidden">
-        {/* Rainbow top border */}
-        <div className="h-1 w-full bg-gradient-to-r from-[var(--gradient-start)] via-[var(--gradient-mid-3)] to-[var(--gradient-end)]" />
+      <div className="relative w-full max-w-xs bg-background border border-border rounded-xl shadow-2xl overflow-hidden">
+        {/* Animated rainbow top border */}
+        <div 
+          className="h-1 w-full"
+          style={{
+            background: 'linear-gradient(90deg, var(--gradient-start), var(--gradient-mid-1), var(--gradient-mid-2), var(--gradient-mid-3), var(--gradient-mid-4), var(--gradient-end), var(--gradient-start))',
+            backgroundSize: '200% 100%',
+            animation: 'rainbow-border-shift 3s linear infinite',
+          }}
+        />
         
         {/* Close button */}
         <button
           onClick={onClose}
-          className="absolute top-4 right-4 p-1.5 rounded-full hover:bg-secondary transition-colors text-muted-foreground hover:text-foreground"
+          className="absolute top-3 right-3 p-1 rounded-full hover:bg-secondary transition-colors text-muted-foreground hover:text-foreground"
         >
-          <X className="w-4 h-4" />
+          <X className="w-3.5 h-3.5" />
         </button>
 
         {/* Content */}
-        <div className="p-8 flex flex-col items-center text-center">
-          {/* Logo with glow effect */}
-          <div className="relative mb-6">
-            <div className="absolute inset-0 blur-2xl opacity-30 bg-gradient-to-r from-[var(--gradient-start)] via-[var(--gradient-mid-3)] to-[var(--gradient-end)] rounded-full scale-150" />
-            <div className="relative scale-150">
-              <AnimatedLogo />
-            </div>
+        <div className="px-6 py-5 flex flex-col items-center text-center">
+          {/* Logo with electrical effect */}
+          <div className="mb-3">
+            <ElectricLogo size="lg" />
           </div>
 
-          {/* App name */}
-          <h2 className="text-2xl font-bold mb-1">Signature Forge</h2>
-          <p className="text-sm text-muted-foreground mb-4">
-            by <span className="text-rainbow-animated font-medium">OpenOS</span>
-          </p>
-
-          {/* Version badge */}
-          <div className="flex items-center gap-2 mb-6">
-            <span className="px-2.5 py-1 text-xs font-medium rounded-full bg-gradient-to-r from-amber-500/20 to-orange-500/20 text-amber-500 border border-amber-500/30">
+          {/* App name + version inline */}
+          <div className="flex items-center gap-2 mb-1">
+            <h2 className="text-lg" style={{ fontFamily: 'Satoshi, sans-serif', fontWeight: 700 }}>SignForge</h2>
+            <span className="px-1.5 py-0.5 text-[10px] font-medium rounded bg-gradient-to-r from-amber-500/20 to-orange-500/20 text-amber-500 border border-amber-500/30">
               BETA
             </span>
-            <span className="px-3 py-1 text-sm font-mono font-medium rounded-full bg-secondary border border-border">
-              v{APP_VERSION}
-            </span>
           </div>
-
-          {/* Description */}
-          <p className="text-sm text-muted-foreground mb-6 max-w-xs">
-            AI-powered email signature builder. Create stunning, professional signatures in seconds.
+          <p className="text-xs text-muted-foreground mb-3">
+            by <span className="font-medium">OpenOS</span> · v{APP_VERSION}
           </p>
 
-          {/* Divider with sparkles */}
-          <div className="flex items-center gap-3 w-full mb-6">
-            <div className="flex-1 h-px bg-gradient-to-r from-transparent via-border to-transparent" />
-            <Sparkles className="w-4 h-4 text-[var(--gradient-mid-3)]" />
-            <div className="flex-1 h-px bg-gradient-to-r from-transparent via-border to-transparent" />
+          {/* Description */}
+          <p className="text-xs text-muted-foreground mb-4">
+            AI-powered email signature builder
+          </p>
+
+          {/* Wavy rainbow divider - surge starts here */}
+          <svg className="w-full h-3 mb-4" viewBox="0 0 200 12" preserveAspectRatio="none">
+            <defs>
+              <linearGradient id="waveGradient1" x1="-100%" y1="0%" x2="0%" y2="0%">
+                <stop offset="0%" stopColor="transparent" />
+                <stop offset="30%">
+                  <animate attributeName="stop-color" values="#ff6b6b;#4ecdc4;#a855f7;#f59e0b;#ff6b6b" dur="24s" repeatCount="indefinite" />
+                </stop>
+                <stop offset="50%">
+                  <animate attributeName="stop-color" values="#4ecdc4;#a855f7;#f59e0b;#ff6b6b;#4ecdc4" dur="24s" repeatCount="indefinite" />
+                </stop>
+                <stop offset="70%">
+                  <animate attributeName="stop-color" values="#a855f7;#f59e0b;#ff6b6b;#4ecdc4;#a855f7" dur="24s" repeatCount="indefinite" />
+                </stop>
+                <stop offset="100%" stopColor="transparent" />
+                <animate attributeName="x1" values="-100%;100%;100%" keyTimes="0;0.35;1" dur="8s" repeatCount="indefinite" calcMode="linear" />
+                <animate attributeName="x2" values="0%;200%;200%" keyTimes="0;0.35;1" dur="8s" repeatCount="indefinite" calcMode="linear" />
+              </linearGradient>
+              <filter id="electricGlow1" x="-50%" y="-50%" width="200%" height="200%">
+                <feGaussianBlur stdDeviation="2" result="blur" />
+                <feMerge>
+                  <feMergeNode in="blur" />
+                  <feMergeNode in="SourceGraphic" />
+                </feMerge>
+              </filter>
+            </defs>
+            {/* Glow layer */}
+            <path
+              d="M0,6 Q10,2 20,6 T40,6 T60,6 T80,6 T100,6 T120,6 T140,6 T160,6 T180,6 T200,6"
+              fill="none"
+              stroke="url(#waveGradient1)"
+              strokeWidth="4"
+              opacity="0.3"
+              filter="url(#electricGlow1)"
+            />
+            {/* Main stroke */}
+            <path
+              d="M0,6 Q10,2 20,6 T40,6 T60,6 T80,6 T100,6 T120,6 T140,6 T160,6 T180,6 T200,6"
+              fill="none"
+              stroke="url(#waveGradient1)"
+              strokeWidth="1.5"
+              opacity="0.8"
+            />
+            {/* Leading spark */}
+            <circle r="2.5" opacity="0" filter="url(#electricGlow1)">
+              <animate attributeName="fill" values="#ffffff;#ffffff" dur="8s" repeatCount="indefinite" />
+              <animate attributeName="cx" values="0;200;200" keyTimes="0;0.35;1" dur="8s" repeatCount="indefinite" />
+              <animate attributeName="cy" values="6;6;6" dur="8s" repeatCount="indefinite" />
+              <animate attributeName="opacity" values="0;0.9;0.9;0" keyTimes="0;0.05;0.30;0.35" dur="8s" repeatCount="indefinite" />
+              <animate attributeName="r" values="2;3;2" dur="0.3s" repeatCount="indefinite" />
+            </circle>
+          </svg>
+
+          {/* Compact info row */}
+          <div className="flex items-center justify-center gap-3 text-[10px] text-muted-foreground mb-4">
+            <span>{BUILD_DATE}</span>
+            <span className="w-1 h-1 rounded-full bg-gradient-to-r from-[var(--gradient-start)] to-[var(--gradient-mid-2)]" />
+            <span>Free to Use</span>
+            <span className="w-1 h-1 rounded-full bg-gradient-to-r from-[var(--gradient-mid-3)] to-[var(--gradient-end)]" />
+            <span className="text-emerald-500">Active</span>
           </div>
 
-          {/* Info grid */}
-          <div className="grid grid-cols-2 gap-4 w-full text-sm mb-6">
-            <div className="text-left">
-              <p className="text-muted-foreground text-xs uppercase tracking-wide mb-1">Build</p>
-              <p className="font-medium">{BUILD_DATE}</p>
-            </div>
-            <div className="text-left">
-              <p className="text-muted-foreground text-xs uppercase tracking-wide mb-1">Platform</p>
-              <p className="font-medium">Web Application</p>
-            </div>
-            <div className="text-left">
-              <p className="text-muted-foreground text-xs uppercase tracking-wide mb-1">License</p>
-              <p className="font-medium">Free to Use</p>
-            </div>
-            <div className="text-left">
-              <p className="text-muted-foreground text-xs uppercase tracking-wide mb-1">Status</p>
-              <p className="font-medium text-emerald-500">Active Development</p>
-            </div>
-          </div>
+          {/* Link */}
+          <a
+            href="https://www.openinsurance.ai"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex items-center gap-1 px-2.5 py-1 text-[10px] font-medium rounded-md bg-secondary hover:bg-secondary/80 transition-colors mb-4"
+          >
+            <ExternalLink className="w-3 h-3" />
+            Website
+          </a>
 
-          {/* Links */}
-          <div className="flex items-center gap-3 mb-6">
-            <a
-              href="https://www.openinsurance.ai"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-lg bg-secondary hover:bg-secondary/80 transition-colors"
-            >
-              <ExternalLink className="w-3.5 h-3.5" />
-              Website
-            </a>
-          </div>
-
-          {/* Copyright */}
-          <div className="pt-4 border-t border-border w-full">
-            <p className="text-xs text-muted-foreground">
-              © {new Date().getFullYear()} <span className="text-rainbow-animated">Open Insurance</span>. All rights reserved.
-            </p>
-            <p className="text-[10px] text-muted-foreground/60 mt-1 flex items-center justify-center gap-1">
-              Made with <Heart className="w-3 h-3 text-red-500 fill-red-500" /> for the community
+          {/* Copyright with wavy rainbow border - surge continues here */}
+          <div className="w-full relative">
+            <svg className="w-full h-3 mb-2" viewBox="0 0 200 12" preserveAspectRatio="none">
+              <defs>
+                <linearGradient id="waveGradient2" x1="-100%" y1="0%" x2="0%" y2="0%">
+                  <stop offset="0%" stopColor="transparent" />
+                  <stop offset="30%">
+                    <animate attributeName="stop-color" values="#ff6b6b;#4ecdc4;#a855f7;#f59e0b;#ff6b6b" dur="24s" repeatCount="indefinite" />
+                  </stop>
+                  <stop offset="50%">
+                    <animate attributeName="stop-color" values="#4ecdc4;#a855f7;#f59e0b;#ff6b6b;#4ecdc4" dur="24s" repeatCount="indefinite" />
+                  </stop>
+                  <stop offset="70%">
+                    <animate attributeName="stop-color" values="#a855f7;#f59e0b;#ff6b6b;#4ecdc4;#a855f7" dur="24s" repeatCount="indefinite" />
+                  </stop>
+                  <stop offset="100%" stopColor="transparent" />
+                  <animate attributeName="x1" values="-100%;-100%;100%;100%" keyTimes="0;0.4;0.75;1" dur="8s" repeatCount="indefinite" calcMode="linear" />
+                  <animate attributeName="x2" values="0%;0%;200%;200%" keyTimes="0;0.4;0.75;1" dur="8s" repeatCount="indefinite" calcMode="linear" />
+                </linearGradient>
+                <filter id="electricGlow2" x="-50%" y="-50%" width="200%" height="200%">
+                  <feGaussianBlur stdDeviation="2" result="blur" />
+                  <feMerge>
+                    <feMergeNode in="blur" />
+                    <feMergeNode in="SourceGraphic" />
+                  </feMerge>
+                </filter>
+              </defs>
+              {/* Glow layer */}
+              <path
+                d="M0,6 Q10,10 20,6 T40,6 T60,6 T80,6 T100,6 T120,6 T140,6 T160,6 T180,6 T200,6"
+                fill="none"
+                stroke="url(#waveGradient2)"
+                strokeWidth="4"
+                opacity="0.3"
+                filter="url(#electricGlow2)"
+              />
+              {/* Main stroke */}
+              <path
+                d="M0,6 Q10,10 20,6 T40,6 T60,6 T80,6 T100,6 T120,6 T140,6 T160,6 T180,6 T200,6"
+                fill="none"
+                stroke="url(#waveGradient2)"
+                strokeWidth="1.5"
+                opacity="0.8"
+              />
+              {/* Leading spark */}
+              <circle r="2.5" opacity="0" filter="url(#electricGlow2)">
+                <animate attributeName="fill" values="#ffffff;#ffffff" dur="8s" repeatCount="indefinite" />
+                <animate attributeName="cx" values="0;0;200;200" keyTimes="0;0.4;0.75;1" dur="8s" repeatCount="indefinite" />
+                <animate attributeName="cy" values="6;6;6;6" dur="8s" repeatCount="indefinite" />
+                <animate attributeName="opacity" values="0;0;0.9;0.9;0" keyTimes="0;0.4;0.45;0.70;0.75" dur="8s" repeatCount="indefinite" />
+                <animate attributeName="r" values="2;3;2" dur="0.3s" repeatCount="indefinite" />
+              </circle>
+            </svg>
+            <p className="text-[10px] text-muted-foreground flex items-center justify-center gap-1">
+              © {new Date().getFullYear()} Open Insurance · Made with <Heart className="w-2.5 h-2.5 text-red-500 fill-red-500" />
             </p>
           </div>
         </div>
-
-        {/* Rainbow bottom accent */}
-        <div className="h-0.5 w-full bg-gradient-to-r from-[var(--gradient-end)] via-[var(--gradient-mid-3)] to-[var(--gradient-start)] opacity-50" />
       </div>
     </div>
   );

@@ -27,7 +27,7 @@ import {
   DEVICE_CONFIGS 
 } from "@/components/ui/device-preview-switcher";
 import { PreviewThemeSwitch } from "@/components/ui/preview-theme-switch";
-import { AnimatedLogo } from "@/components/ui/animated-logo";
+import { ElectricLogo } from "@/components/ui/electric-logo";
 import { SparkleButton } from "@/components/ui/sparkle-button";
 import { EmailThemeSelector } from "@/components/ui/email-theme-selector";
 import { EmailPreviewMock } from "@/components/signature/email-preview-mock";
@@ -341,7 +341,12 @@ function HomeContent({
   onSharedTemplateUse,
 }: HomeContentProps) {
   const visualEditor = useVisualEditorSafe();
-  const { layoutMode, isMobile, isTablet, isDesktop } = useResponsive();
+  const { layoutMode, isMobile, isTablet, isDesktop, mounted } = useResponsive();
+
+  // Use desktop layout until mounted to avoid hydration mismatch
+  const effectiveIsMobile = mounted ? isMobile : false;
+  const effectiveIsTablet = mounted ? isTablet : false;
+  const effectiveIsDesktop = mounted ? isDesktop : true;
 
   // Sync visual edit mode with context
   useEffect(() => {
@@ -392,12 +397,15 @@ function HomeContent({
         {/* Main Header Bar */}
         <div className="border-b border-border">
           {/* Mobile Header - Clean and Minimal */}
-          {isMobile && (
-            <div className="px-3 h-12 flex items-center justify-between">
+          {effectiveIsMobile && (
+            <div className="px-3 h-14 flex items-center justify-between">
               {/* Left: Logo + Title */}
-              <div className="flex items-center gap-2">
-                <AnimatedLogo />
-                <h1 className="font-semibold text-sm tracking-tight">SignForge</h1>
+              <div className="flex items-center gap-2.5">
+                <ElectricLogo size="sm" />
+                <h1 className="text-base tracking-tight" style={{ fontFamily: 'Satoshi, sans-serif' }}>
+                  <span style={{ fontWeight: 900, fontStyle: 'italic' }}>Sign</span>
+                  <span style={{ fontWeight: 300, fontStyle: 'italic' }}>Forge</span>
+                </h1>
               </div>
               
               {/* Right: Minimal actions */}
@@ -420,13 +428,16 @@ function HomeContent({
           )}
 
           {/* Tablet/Desktop Header - Full featured */}
-          {!isMobile && (
-            <div className="px-3 md:px-4 h-14 flex items-center justify-between">
-              <div className="flex items-center gap-3 md:gap-4">
-                <div className="flex items-center gap-2 md:gap-3">
-                  <AnimatedLogo />
+          {!effectiveIsMobile && (
+            <div className="px-4 h-14 flex items-center justify-between">
+              <div className="flex items-center gap-4">
+                <div className="flex items-center gap-2.5">
+                  <ElectricLogo size="sm" />
                   <div>
-                    <h1 className="font-semibold text-sm tracking-tight">Signature Forge</h1>
+                    <h1 className="text-base tracking-tight" style={{ fontFamily: 'Satoshi, sans-serif' }}>
+                      <span style={{ fontWeight: 900, fontStyle: 'italic' }}>Sign</span>
+                      <span style={{ fontWeight: 300, fontStyle: 'italic' }}>Forge</span>
+                    </h1>
                     <a 
                       href="https://www.openinsurance.ai" 
                       target="_blank" 
@@ -439,7 +450,7 @@ function HomeContent({
                 </div>
                 
                 {/* Toggle Left Panel - Desktop only */}
-                {isDesktop && (
+                {effectiveIsDesktop && (
                   <Button
                     variant="ghost"
                     size="sm"
@@ -454,7 +465,7 @@ function HomeContent({
                 )}
                 
                 {/* Tablet drawer toggles */}
-                {isTablet && (
+                {effectiveIsTablet && (
                   <div className="flex items-center gap-1">
                     <Button
                       variant="ghost"
@@ -535,7 +546,7 @@ function HomeContent({
 
       {/* Main Builder Layout */}
       {/* ======================= MOBILE LAYOUT ======================= */}
-      {isMobile && (
+      {effectiveIsMobile && (
         <div className="flex-1 flex flex-col overflow-hidden pb-[88px] safe-area-bottom min-h-screen-mobile">
           {/* Mobile Panel Content */}
           <div className="flex-1 overflow-y-auto scroll-touch">
@@ -691,7 +702,7 @@ function HomeContent({
       )}
 
       {/* ======================= TABLET LAYOUT ======================= */}
-      {isTablet && (
+      {effectiveIsTablet && (
         <div className="flex-1 flex overflow-hidden relative">
           {/* Left Drawer - wider on larger tablets/small laptops */}
           <aside 
@@ -909,7 +920,7 @@ function HomeContent({
       )}
 
       {/* ======================= DESKTOP LAYOUT (Original) ======================= */}
-      {isDesktop && (
+      {effectiveIsDesktop && (
         <div className="flex-1 flex overflow-hidden">
           {/* Left Sidebar - Design Tools */}
           <aside 
@@ -1243,7 +1254,7 @@ function HomeContent({
         >
           <div className="relative w-full h-full flex flex-col">
             {/* Mobile Close Button - Floating at top right */}
-            {isMobile && (
+            {effectiveIsMobile && (
               <button
                 onClick={() => setIsFullscreen(false)}
                 className="absolute top-3 right-3 z-50 w-10 h-10 rounded-full bg-background/90 backdrop-blur-sm border border-border flex items-center justify-center shadow-lg active:scale-95 transition-transform"
@@ -1255,11 +1266,11 @@ function HomeContent({
             {/* Fullscreen Header - Hidden on mobile for more space */}
             <div className={clsx(
               "bg-background/95 backdrop-blur-xl border-b border-border flex items-center justify-between px-4 md:px-6 relative z-10",
-              isMobile ? "h-12" : "h-14"
+              effectiveIsMobile ? "h-12" : "h-14"
             )}>
               <div className="flex items-center gap-2 md:gap-4">
-                <span className="text-xs md:text-sm font-medium">{isMobile ? "Preview" : "Email Preview"}</span>
-                {!isMobile && (
+                <span className="text-xs md:text-sm font-medium">{effectiveIsMobile ? "Preview" : "Email Preview"}</span>
+                {!effectiveIsMobile && (
                   <>
                     <span className="text-xs text-muted-foreground px-2 py-0.5 bg-secondary rounded border border-border capitalize">
                       {selectedTemplate.replace(/-/g, " ")}
@@ -1272,7 +1283,7 @@ function HomeContent({
               </div>
               <div className="flex items-center gap-1 md:gap-2">
                 {/* Visual Edit Mode Toggle in Fullscreen - Hidden on mobile */}
-                {!isMobile && (
+                {!effectiveIsMobile && (
                   <>
                     <button
                       onClick={() => setIsVisualEditMode(!isVisualEditMode)}
@@ -1335,7 +1346,7 @@ function HomeContent({
                   <ZoomIn className="w-4 h-4" />
                 </Button>
                 {/* Exit Button - Desktop only (mobile has floating button) */}
-                {!isMobile && (
+                {!effectiveIsMobile && (
                   <>
                     <div className="w-px h-6 bg-border" />
                     <Button
@@ -1456,7 +1467,7 @@ function HomeContent({
             {/* Hint - Different for mobile vs desktop */}
             <div className="absolute bottom-4 left-1/2 -translate-x-1/2 safe-area-bottom">
               <span className="text-xs text-muted-foreground bg-background/80 px-3 py-1.5 rounded-full border border-border">
-                {isMobile ? "Tap ✕ or outside to exit" : "Press ESC or click outside to exit"}
+                {effectiveIsMobile ? "Tap ✕ or outside to exit" : "Press ESC or click outside to exit"}
               </span>
             </div>
           </div>
@@ -1464,7 +1475,7 @@ function HomeContent({
       )}
 
       {/* Footer - hidden on mobile since it's in the scroll area */}
-      {!isMobile && <Footer />}
+      {!effectiveIsMobile && <Footer />}
     </div>
   );
 }
