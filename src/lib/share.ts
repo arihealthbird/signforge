@@ -2,6 +2,10 @@ import { compressToEncodedURIComponent, decompressFromEncodedURIComponent } from
 import { SignatureData, DEFAULT_SIGNATURE_DATA } from "@/types/signature";
 import { TemplateId } from "@/lib/templates";
 import { EmailThemeId } from "@/lib/email-themes";
+import { stripDangerousKeys, validateSignatureData, sanitizeSignatureFields } from "@/lib/security";
+
+// Maximum size for decompressed share data (100KB)
+const MAX_DECOMPRESSED_SIZE = 100 * 1024;
 
 /**
  * Shared signature data structure
@@ -54,23 +58,37 @@ export function decodeSignatureFromShare(encoded: string): SharedSignatureData |
     const decompressed = decompressFromEncodedURIComponent(encoded);
     if (!decompressed) return null;
 
-    const parsed = JSON.parse(decompressed) as SharedSignatureData;
+    // Enforce size limit on decompressed data to prevent abuse
+    if (decompressed.length > MAX_DECOMPRESSED_SIZE) return null;
+
+    // Strip prototype pollution keys before spreading
+    const parsed = stripDangerousKeys(
+      JSON.parse(decompressed)
+    ) as SharedSignatureData;
     
     // Validate structure
     if (
       typeof parsed.v !== "number" ||
       typeof parsed.s !== "object" ||
+      parsed.s === null ||
       typeof parsed.t !== "string" ||
       typeof parsed.ts !== "number"
     ) {
       return null;
     }
 
-    // Ensure signature data has required fields
-    const signatureData: SignatureData = {
+    // Validate the signature data structure
+    if (!validateSignatureData(parsed.s)) {
+      return null;
+    }
+
+    // Ensure signature data has required fields, then sanitize URLs/colors
+    const merged = {
       ...DEFAULT_SIGNATURE_DATA,
       ...parsed.s,
     };
+    const sanitized = sanitizeSignatureFields(merged as Record<string, unknown>);
+    const signatureData = sanitized as unknown as SignatureData;
 
     return {
       ...parsed,

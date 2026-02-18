@@ -244,6 +244,8 @@ export default function RootLayout({
     <html lang="en" suppressHydrationWarning>
       <head>
         <link href="https://api.fontshare.com/v2/css?f[]=satoshi@300,700,900&display=swap" rel="stylesheet" />
+        {/* Cloudflare Turnstile for bot protection */}
+        <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer />
       </head>
       <body
         className={`${fontVariables} font-sans antialiased min-h-screen bg-background`}

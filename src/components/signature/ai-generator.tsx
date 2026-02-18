@@ -1,12 +1,13 @@
 "use client";
 
-import { useState, useEffect, useRef, useMemo } from "react";
+import { useState, useEffect, useRef, useMemo, useCallback } from "react";
 import { SignatureData } from "@/types/signature";
 import { TemplateId } from "@/lib/templates";
 import { Sparkles, Wand2, Loader2, Star, Lightbulb, Palette, Building2, Check, ImagePlus, User, X, History, ChevronDown } from "lucide-react";
 import { clsx } from "clsx";
 import { EmailThemeId } from "@/lib/email-themes";
 import { getThemePlaceholders } from "@/lib/theme-placeholders";
+import { Turnstile, isTurnstileEnabled } from "@/components/ui/turnstile";
 
 interface UploadedImage {
   type: "profile" | "logo";
@@ -37,6 +38,7 @@ export function AIGenerator({ currentData, onGenerate, onGeneratingChange, onGen
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
   const [uploadedImages, setUploadedImages] = useState<UploadedImage[]>([]);
   const [isUploading, setIsUploading] = useState(false);
+  const [turnstileToken, setTurnstileToken] = useState<string | null>(null);
   
   const profileInputRef = useRef<HTMLInputElement>(null);
   const logoInputRef = useRef<HTMLInputElement>(null);
@@ -122,13 +124,27 @@ export function AIGenerator({ currentData, onGenerate, onGeneratingChange, onGen
     }
   }, [showHistory]);
 
+  const handleTurnstileVerify = useCallback((token: string) => {
+    setTurnstileToken(token);
+  }, []);
+
+  const handleTurnstileExpire = useCallback(() => {
+    setTurnstileToken(null);
+  }, []);
+
   const uploadImage = async (file: File): Promise<string | null> => {
     const formData = new FormData();
     formData.append("file", file);
 
     try {
+      const headers: Record<string, string> = {};
+      if (turnstileToken) {
+        headers["x-turnstile-token"] = turnstileToken;
+      }
+
       const response = await fetch("/api/upload", {
         method: "POST",
+        headers,
         body: formData,
       });
 
@@ -215,11 +231,16 @@ export function AIGenerator({ currentData, onGenerate, onGeneratingChange, onGen
       const profileImage = uploadedImages.find(img => img.type === "profile");
       const logoImage = uploadedImages.find(img => img.type === "logo");
 
+      const fetchHeaders: Record<string, string> = {
+        "Content-Type": "application/json",
+      };
+      if (turnstileToken) {
+        fetchHeaders["x-turnstile-token"] = turnstileToken;
+      }
+
       const response = await fetch("/api/generate", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
+        headers: fetchHeaders,
         body: JSON.stringify({
           prompt,
           currentData,
@@ -598,6 +619,17 @@ export function AIGenerator({ currentData, onGenerate, onGeneratingChange, onGen
               </>
             )}
           </button>
+
+          {/* Turnstile bot protection */}
+          {isTurnstileEnabled() && (
+            <div className="mt-3 flex justify-center">
+              <Turnstile
+                onVerify={handleTurnstileVerify}
+                onExpire={handleTurnstileExpire}
+                size="compact"
+              />
+            </div>
+          )}
 
           {/* Footer hint */}
           <p className="text-[10px] text-muted-foreground/60 text-center mt-3">
