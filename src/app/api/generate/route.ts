@@ -258,8 +258,21 @@ Match colors/fonts/template to the person's industry. Fill all relevant fields i
 
     // Parse the JSON response
     try {
-      // Remove markdown code blocks if present
-      const jsonStr = content.replace(/```json\n?|\n?```/g, "").trim();
+      // Strip markdown fences (case-insensitive, optional whitespace)
+      let jsonStr = content
+        .replace(/```(?:json)?\s*\n?/gi, "")
+        .replace(/\n?\s*```/g, "")
+        .trim();
+
+      // If reasoning/thinking text surrounds the JSON, extract the object
+      if (!jsonStr.startsWith("{")) {
+        const firstBrace = jsonStr.indexOf("{");
+        const lastBrace = jsonStr.lastIndexOf("}");
+        if (firstBrace !== -1 && lastBrace > firstBrace) {
+          jsonStr = jsonStr.substring(firstBrace, lastBrace + 1);
+        }
+      }
+
       const aiResponse = stripDangerousKeys(JSON.parse(jsonStr));
       
       // Extract special fields
@@ -353,7 +366,13 @@ Match colors/fonts/template to the person's industry. Fill all relevant fields i
           }
         }
       );
-    } catch {
+    } catch (parseError) {
+      console.error(
+        "Failed to parse AI response:",
+        parseError instanceof Error ? parseError.message : parseError,
+        "\nRaw content:",
+        typeof content === "string" ? content.substring(0, 500) : content
+      );
       return NextResponse.json(
         { error: "Failed to parse AI response" },
         { status: 500 }
