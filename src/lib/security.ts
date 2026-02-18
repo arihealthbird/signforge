@@ -1,6 +1,8 @@
 /**
  * Security utilities for input sanitization and validation
  */
+import { Ratelimit } from "@upstash/ratelimit";
+import { Redis } from "@upstash/redis";
 
 /**
  * Escapes HTML special characters to prevent XSS attacks
@@ -29,8 +31,9 @@ export function escapeHtml(str: string | undefined | null): string {
 export function validateUrl(url: string | undefined | null): string {
   if (!url) return "";
   
-  // Strip null bytes and unicode direction override characters
-  const cleaned = url.replace(/[\x00\u200E\u200F\u202A-\u202E\u2066-\u2069]/g, "");
+  // Strip null bytes, unicode direction overrides, and tabs/newlines that could
+  // break protocol detection (e.g. "java\tscript:")
+  const cleaned = url.replace(/[\x00\t\n\r\u200E\u200F\u202A-\u202E\u2066-\u2069]/g, "");
   const trimmed = cleaned.trim();
   
   if (!trimmed) return "";
@@ -82,7 +85,29 @@ function isPrivateUrl(url: string): boolean {
     const hostname = parsed.hostname;
     
     // Block localhost
-    if (hostname === "localhost" || hostname === "[::1]") return true;
+    if (hostname === "localhost") return true;
+    
+    // Block IPv6 private/reserved ranges
+    if (hostname.startsWith("[")) {
+      const ipv6 = hostname.slice(1, -1).toLowerCase();
+      if (ipv6 === "::1") return true; // Loopback
+      // Link-local (fe80::/10)
+      if (/^fe[89ab]/i.test(ipv6)) return true;
+      // Unique local address (fc00::/7)
+      if (/^f[cd]/i.test(ipv6)) return true;
+      // IPv4-mapped IPv6 (::ffff:x.x.x.x)
+      if (ipv6.startsWith("::ffff:")) {
+        const ipv4Part = ipv6.slice(7);
+        const ipv4Match = ipv4Part.match(/^(\d{1,3})\.(\d{1,3})\.(\d{1,3})\.(\d{1,3})$/);
+        if (ipv4Match) {
+          const [, a, b] = ipv4Match.map(Number);
+          if (a === 127 || a === 10 || a === 0) return true;
+          if (a === 172 && b >= 16 && b <= 31) return true;
+          if (a === 192 && b === 168) return true;
+          if (a === 169 && b === 254) return true;
+        }
+      }
+    }
     
     // Block private IPv4 ranges
     const ipv4Match = hostname.match(/^(\d{1,3})\.(\d{1,3})\.(\d{1,3})\.(\d{1,3})$/);
@@ -136,8 +161,47 @@ export function truncate(str: string | undefined | null, maxLength: number): str
 }
 
 /**
- * Simple in-memory rate limiter
+ * Rate limiting — distributed (Upstash Redis) with in-memory fallback.
+ *
+ * When UPSTASH_REDIS_REST_URL and UPSTASH_REDIS_REST_TOKEN are set, uses a
+ * Redis-backed sliding-window limiter that persists across deploys and
+ * serverless cold-starts.  Otherwise falls back to the original in-memory Map
+ * (acceptable for single-instance deployments).
  */
+
+// ── Upstash distributed limiter (lazy-init) ──────────────────────────
+let _upstashLimiters: Map<string, Ratelimit> | null = null;
+
+function getUpstashLimiter(
+  maxRequests: number,
+  windowMs: number
+): Ratelimit | null {
+  if (
+    !process.env.UPSTASH_REDIS_REST_URL ||
+    !process.env.UPSTASH_REDIS_REST_TOKEN
+  ) {
+    return null;
+  }
+
+  // Cache limiter instances by config key to avoid recreating on every call
+  if (!_upstashLimiters) _upstashLimiters = new Map();
+  const cacheKey = `${maxRequests}:${windowMs}`;
+  let limiter = _upstashLimiters.get(cacheKey);
+  if (!limiter) {
+    limiter = new Ratelimit({
+      redis: Redis.fromEnv(),
+      limiter: Ratelimit.slidingWindow(
+        maxRequests,
+        `${Math.round(windowMs / 1000)} s`
+      ),
+      prefix: "signforge:rl",
+    });
+    _upstashLimiters.set(cacheKey, limiter);
+  }
+  return limiter;
+}
+
+// ── In-memory fallback limiter ───────────────────────────────────────
 interface RateLimitEntry {
   count: number;
   resetTime: number;
@@ -145,14 +209,14 @@ interface RateLimitEntry {
 
 const rateLimitMap = new Map<string, RateLimitEntry>();
 
-export function checkRateLimit(
+function checkRateLimitInMemory(
   identifier: string,
-  maxRequests: number = 10,
-  windowMs: number = 60000 // 1 minute
+  maxRequests: number,
+  windowMs: number
 ): { allowed: boolean; remaining: number; resetIn: number } {
   const now = Date.now();
   const entry = rateLimitMap.get(identifier);
-  
+
   // Clean up old entries periodically
   if (rateLimitMap.size > 10000) {
     for (const [key, value] of rateLimitMap.entries()) {
@@ -161,16 +225,15 @@ export function checkRateLimit(
       }
     }
   }
-  
+
   if (!entry || entry.resetTime < now) {
-    // Create new entry or reset expired one
     rateLimitMap.set(identifier, {
       count: 1,
       resetTime: now + windowMs,
     });
     return { allowed: true, remaining: maxRequests - 1, resetIn: windowMs };
   }
-  
+
   if (entry.count >= maxRequests) {
     return {
       allowed: false,
@@ -178,13 +241,38 @@ export function checkRateLimit(
       resetIn: entry.resetTime - now,
     };
   }
-  
+
   entry.count++;
   return {
     allowed: true,
     remaining: maxRequests - entry.count,
     resetIn: entry.resetTime - now,
   };
+}
+
+// ── Public API ───────────────────────────────────────────────────────
+export async function checkRateLimit(
+  identifier: string,
+  maxRequests: number = 10,
+  windowMs: number = 60000 // 1 minute
+): Promise<{ allowed: boolean; remaining: number; resetIn: number }> {
+  const upstash = getUpstashLimiter(maxRequests, windowMs);
+
+  if (upstash) {
+    try {
+      const result = await upstash.limit(identifier);
+      return {
+        allowed: result.success,
+        remaining: result.remaining,
+        resetIn: result.reset ? result.reset - Date.now() : windowMs,
+      };
+    } catch {
+      // Redis unavailable — fall through to in-memory
+      console.warn("Upstash rate limit unavailable, falling back to in-memory");
+    }
+  }
+
+  return checkRateLimitInMemory(identifier, maxRequests, windowMs);
 }
 
 /**
@@ -257,6 +345,69 @@ export function stripDangerousKeys<T>(obj: T): T {
 }
 
 /**
+ * Sanitizes styleOverrides from untrusted sources (e.g. share URLs).
+ * Allowlists valid properties and clamps numeric values to safe ranges.
+ */
+export function sanitizeStyleOverrides(
+  overrides: Record<string, unknown> | undefined
+): Record<string, unknown> | undefined {
+  if (!overrides || typeof overrides !== "object") return undefined;
+
+  const validElements = new Set([
+    "fullName", "jobTitle", "company", "department",
+    "email", "phone", "website", "address", "disclaimer",
+  ]);
+  const validWeights = new Set(["normal", "bold", "500", "600", "700"]);
+  const validStyles = new Set(["normal", "italic"]);
+  const validDecorations = new Set(["none", "underline"]);
+  const validAligns = new Set(["left", "center", "right"]);
+
+  const sanitized: Record<string, Record<string, unknown>> = {};
+
+  for (const [key, style] of Object.entries(overrides)) {
+    if (!validElements.has(key)) continue;
+    if (!style || typeof style !== "object") continue;
+
+    const s = style as Record<string, unknown>;
+    const clean: Record<string, unknown> = {};
+
+    if (typeof s.fontWeight === "string" && validWeights.has(s.fontWeight)) {
+      clean.fontWeight = s.fontWeight;
+    }
+    if (typeof s.fontStyle === "string" && validStyles.has(s.fontStyle)) {
+      clean.fontStyle = s.fontStyle;
+    }
+    if (typeof s.textDecoration === "string" && validDecorations.has(s.textDecoration)) {
+      clean.textDecoration = s.textDecoration;
+    }
+    if (typeof s.textAlign === "string" && validAligns.has(s.textAlign)) {
+      clean.textAlign = s.textAlign;
+    }
+    if (typeof s.color === "string") {
+      clean.color = sanitizeColor(s.color);
+    }
+    if (typeof s.fontSize === "number") {
+      clean.fontSize = Math.max(-6, Math.min(12, s.fontSize));
+    }
+    if (typeof s.letterSpacing === "number") {
+      clean.letterSpacing = Math.max(-2, Math.min(10, s.letterSpacing));
+    }
+    if (typeof s.marginTop === "number") {
+      clean.marginTop = Math.max(0, Math.min(100, s.marginTop));
+    }
+    if (typeof s.marginBottom === "number") {
+      clean.marginBottom = Math.max(0, Math.min(100, s.marginBottom));
+    }
+
+    if (Object.keys(clean).length > 0) {
+      sanitized[key] = clean;
+    }
+  }
+
+  return Object.keys(sanitized).length > 0 ? sanitized : undefined;
+}
+
+/**
  * Sanitizes all URL and color fields in a signature data object.
  */
 export function sanitizeSignatureFields(data: Record<string, unknown>): Record<string, unknown> {
@@ -297,17 +448,29 @@ export function sanitizeSignatureFields(data: Record<string, unknown>): Record<s
  * Verifies a Cloudflare Turnstile token server-side.
  * Returns true if verification succeeds or if Turnstile is not configured.
  */
+// Token reuse prevention: track recently verified Turnstile tokens (300s window)
+const usedTurnstileTokens = new Set<string>();
+
 export async function verifyTurnstileToken(token: string | null): Promise<boolean> {
   const secretKey = process.env.TURNSTILE_SECRET_KEY;
   
-  // If Turnstile is not configured, skip verification (allow request)
-  if (!secretKey) return true;
-
   // Skip verification in development mode (localhost testing)
   if (process.env.NODE_ENV === "development") return true;
+
+  // Fail closed in production: if Turnstile is not configured, block the request
+  if (!secretKey) {
+    if (process.env.NODE_ENV === "production") {
+      console.error("CRITICAL: TURNSTILE_SECRET_KEY not configured in production — blocking request");
+      return false;
+    }
+    return true; // Allow in non-production/non-development (e.g. preview)
+  }
   
   // If configured but no token provided, reject
   if (!token) return false;
+
+  // Prevent token reuse within validity window
+  if (usedTurnstileTokens.has(token)) return false;
   
   try {
     const response = await fetch(
@@ -323,7 +486,18 @@ export async function verifyTurnstileToken(token: string | null): Promise<boolea
     );
     
     const data = await response.json();
-    return data.success === true;
+    if (data.success === true) {
+      usedTurnstileTokens.add(token);
+      // Clean up after token expiry (300s validity)
+      setTimeout(() => usedTurnstileTokens.delete(token), 300_000);
+      // Prevent unbounded growth
+      if (usedTurnstileTokens.size > 10000) {
+        const first = usedTurnstileTokens.values().next().value;
+        if (first) usedTurnstileTokens.delete(first);
+      }
+      return true;
+    }
+    return false;
   } catch {
     // On verification failure, reject the request
     return false;
@@ -353,8 +527,9 @@ export function validateSignatureData(data: unknown): boolean {
     if (obj[field] !== undefined && typeof obj[field] !== "string") {
       return false;
     }
-    // Check string length limits
-    if (typeof obj[field] === "string" && (obj[field] as string).length > 5000) {
+    // Check string length limits (500 chars for most fields, 2000 for disclaimer)
+    const maxLen = field === "disclaimer" ? 2000 : 500;
+    if (typeof obj[field] === "string" && (obj[field] as string).length > maxLen) {
       return false;
     }
   }

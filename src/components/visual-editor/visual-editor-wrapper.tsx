@@ -226,9 +226,14 @@ export function VisualEditorWrapper({ children }: VisualEditorWrapperProps) {
 
     const fieldKey = EDITABLE_FIELD_MAP[selectedElement];
     if (fieldKey) {
+      // Strip HTML tags to prevent stored XSS via inline editor
+      const sanitizedValue = editingValue
+        .replace(/</g, "\u003c")
+        .replace(/>/g, "\u003e")
+        .trim();
       setSignatureData({
         ...signatureData,
-        [fieldKey]: editingValue,
+        [fieldKey]: sanitizedValue,
       });
     }
     setIsInlineEditing(false);

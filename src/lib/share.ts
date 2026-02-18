@@ -2,7 +2,7 @@ import { compressToEncodedURIComponent, decompressFromEncodedURIComponent } from
 import { SignatureData, DEFAULT_SIGNATURE_DATA } from "@/types/signature";
 import { TemplateId } from "@/lib/templates";
 import { EmailThemeId } from "@/lib/email-themes";
-import { stripDangerousKeys, validateSignatureData, sanitizeSignatureFields } from "@/lib/security";
+import { stripDangerousKeys, validateSignatureData, sanitizeSignatureFields, escapeHtml, sanitizeStyleOverrides } from "@/lib/security";
 
 // Maximum size for decompressed share data (100KB)
 const MAX_DECOMPRESSED_SIZE = 100 * 1024;
@@ -55,6 +55,9 @@ export function encodeSignatureForShare(
  */
 export function decodeSignatureFromShare(encoded: string): SharedSignatureData | null {
   try {
+    // Pre-check encoded string length to prevent decompression bombs
+    if (encoded.length > 50000) return null;
+
     const decompressed = decompressFromEncodedURIComponent(encoded);
     if (!decompressed) return null;
 
@@ -88,6 +91,26 @@ export function decodeSignatureFromShare(encoded: string): SharedSignatureData |
       ...parsed.s,
     };
     const sanitized = sanitizeSignatureFields(merged as Record<string, unknown>);
+
+    // Escape HTML in all text fields to prevent stored XSS via crafted share URLs
+    const textFields = [
+      "fullName", "jobTitle", "company", "department",
+      "phone", "mobile", "fax", "address", "city", "state",
+      "zipCode", "country", "disclaimer",
+    ];
+    for (const field of textFields) {
+      if (typeof sanitized[field] === "string") {
+        sanitized[field] = escapeHtml(sanitized[field] as string);
+      }
+    }
+
+    // Sanitize styleOverrides to prevent CSS injection via crafted share URLs
+    if (sanitized.styleOverrides) {
+      sanitized.styleOverrides = sanitizeStyleOverrides(
+        sanitized.styleOverrides as Record<string, unknown>
+      );
+    }
+
     const signatureData = sanitized as unknown as SignatureData;
 
     return {

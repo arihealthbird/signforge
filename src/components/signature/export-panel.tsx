@@ -87,6 +87,7 @@ export function ExportPanel({ onCopyHTML, onFirstExport }: ExportPanelProps) {
 <html>
 <head>
   <meta charset="UTF-8">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'none'; img-src https: data:; style-src 'unsafe-inline';">
   <title>Email Signature</title>
 </head>
 <body>

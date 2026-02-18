@@ -1,22 +1,7 @@
 import type { NextConfig } from "next";
 
-// R2 public URL for CSP img-src (strip trailing slash)
-const r2PublicUrl = process.env.R2_PUBLIC_URL?.replace(/\/$/, "") || "";
-
-const cspDirectives = [
-  "default-src 'self'",
-  "script-src 'self' 'unsafe-inline' https://challenges.cloudflare.com",
-  "style-src 'self' 'unsafe-inline' https://api.fontshare.com",
-  `img-src 'self' https://ui-avatars.com https://*.giphy.com https://giphy.com ${r2PublicUrl} data: blob:`.trim(),
-  "font-src 'self' https://fonts.gstatic.com https://api.fontshare.com https://cdn.fontshare.com",
-  "connect-src 'self' https://api.giphy.com https://challenges.cloudflare.com",
-  "media-src 'self' blob:",
-  "frame-src https://challenges.cloudflare.com",
-  "object-src 'none'",
-  "base-uri 'self'",
-  "form-action 'self'",
-];
-
+// CSP is now generated per-request in middleware.ts with nonces.
+// Only non-CSP security headers remain here as static config.
 const securityHeaders = [
   {
     key: "X-DNS-Prefetch-Control",
@@ -42,13 +27,10 @@ const securityHeaders = [
     key: "Permissions-Policy",
     value: "camera=(), microphone=(), geolocation=()",
   },
-  {
-    key: "Content-Security-Policy",
-    value: cspDirectives.join("; "),
-  },
 ];
 
 const nextConfig: NextConfig = {
+  productionBrowserSourceMaps: false,
   reactCompiler: true,
   
   async headers() {

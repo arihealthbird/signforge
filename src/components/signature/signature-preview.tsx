@@ -1035,6 +1035,7 @@ export function SignaturePreview({ data, templateId, previewTheme = "light" }: S
   return (
     <div 
       id="signature-preview" 
+      data-signature-container="true"
       className={`p-6 rounded-lg transition-colors ${
         isDark ? "bg-zinc-900" : "bg-white"
       }`}
@@ -1063,7 +1064,8 @@ export function SignaturePreview({ data, templateId, previewTheme = "light" }: S
 
 // Export function to generate HTML string for copying
 export function generateSignatureHTML(data: SignatureData, templateId: TemplateId): string {
-  const container = document.getElementById("signature-preview");
+  // Use specific attribute selector to prevent DOM clobbering attacks
+  const container = document.querySelector('#signature-preview[data-signature-container="true"]');
   if (!container) return "";
   
   // Clone and clean up the HTML

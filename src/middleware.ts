@@ -1,19 +1,43 @@
 import { NextRequest, NextResponse } from "next/server";
 
 /**
- * Middleware for CORS enforcement and CSRF protection on API routes.
- *
- * - Rejects cross-origin POST requests to /api/* unless the Origin matches the app's own host.
- * - Handles OPTIONS preflight requests.
- * - Requires Origin or Referer header on all state-changing (POST) requests to /api/*.
+ * Middleware for:
+ * 1. CSP nonce generation (all routes)
+ * 2. CORS enforcement and CSRF protection (API routes)
  */
 
-function getAllowedOrigin(request: NextRequest): string {
-  // In production, use the actual host. In development, allow localhost.
-  const host = request.headers.get("host") || "";
-  const proto = request.headers.get("x-forwarded-proto") || "https";
-  return `${proto}://${host}`;
+// ── CSP nonce generation ────────────────────────────────────────────
+
+function generateNonce(): string {
+  const array = new Uint8Array(16);
+  crypto.getRandomValues(array);
+  // btoa is available in Edge Runtime
+  return btoa(String.fromCharCode(...array));
 }
+
+function buildCsp(nonce: string): string {
+  // R2 public URL for img-src
+  const r2PublicUrl = process.env.R2_PUBLIC_URL?.replace(/\/$/, "") || "";
+
+  const directives = [
+    "default-src 'self'",
+    // Nonce-based script-src: modern browsers use nonce + strict-dynamic,
+    // legacy browsers fall back to unsafe-inline (ignored when nonce is present)
+    `script-src 'self' 'nonce-${nonce}' 'strict-dynamic' 'unsafe-inline' https://challenges.cloudflare.com`,
+    "style-src 'self' 'unsafe-inline' https://api.fontshare.com",
+    `img-src 'self' https://ui-avatars.com https://*.giphy.com https://giphy.com ${r2PublicUrl} data: blob:`.trim(),
+    "font-src 'self' https://fonts.gstatic.com https://api.fontshare.com https://cdn.fontshare.com",
+    "connect-src 'self' https://api.giphy.com https://challenges.cloudflare.com",
+    "media-src 'self' blob:",
+    "frame-src https://challenges.cloudflare.com",
+    "object-src 'none'",
+    "base-uri 'self'",
+    "form-action 'self'",
+  ];
+  return directives.join("; ");
+}
+
+// ── CORS / CSRF helpers ─────────────────────────────────────────────
 
 function isApiRoute(pathname: string): boolean {
   return pathname.startsWith("/api/");
@@ -23,20 +47,34 @@ function originMatchesHost(origin: string, request: NextRequest): boolean {
   const host = request.headers.get("host") || "";
   try {
     const originUrl = new URL(origin);
-    // Compare hostname and port (handles localhost:3018 etc.)
     return originUrl.host === host;
   } catch {
     return false;
   }
 }
 
+// ── Main middleware ─────────────────────────────────────────────────
+
 export function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
-  // Only apply to API routes
+  // Generate a per-request CSP nonce
+  const nonce = generateNonce();
+
+  // Generate a unique request ID for traceability
+  const requestId = crypto.randomUUID();
+
+  // ── Non-API routes: apply CSP nonce header and pass through ──
   if (!isApiRoute(pathname)) {
-    return NextResponse.next();
+    const response = NextResponse.next();
+    response.headers.set("Content-Security-Policy", buildCsp(nonce));
+    // Expose nonce to server components via custom header
+    response.headers.set("x-csp-nonce", nonce);
+    response.headers.set("X-Request-ID", requestId);
+    return response;
   }
+
+  // ── API routes: CORS / CSRF enforcement ──
 
   const origin = request.headers.get("origin");
   const referer = request.headers.get("referer");
@@ -55,7 +93,6 @@ export function middleware(request: NextRequest) {
 
   // For state-changing requests (POST), enforce origin check
   if (request.method === "POST") {
-    // Must have Origin or Referer header (CSRF protection)
     if (!origin && !referer) {
       return NextResponse.json(
         { error: "Forbidden: missing origin" },
@@ -63,7 +100,6 @@ export function middleware(request: NextRequest) {
       );
     }
 
-    // If Origin is present, it must match our host
     if (origin && !originMatchesHost(origin, request)) {
       return NextResponse.json(
         { error: "Forbidden: cross-origin request" },
@@ -71,7 +107,6 @@ export function middleware(request: NextRequest) {
       );
     }
 
-    // If only Referer is present (no Origin), verify it matches
     if (!origin && referer) {
       try {
         const refererUrl = new URL(referer);
@@ -90,7 +125,6 @@ export function middleware(request: NextRequest) {
       }
     }
 
-    // Add CORS headers to the response
     const response = NextResponse.next();
     if (origin) {
       response.headers.set("Access-Control-Allow-Origin", origin);
@@ -102,5 +136,6 @@ export function middleware(request: NextRequest) {
 }
 
 export const config = {
-  matcher: "/api/:path*",
+  // Run on all routes (CSP for pages, CORS/CSRF for API)
+  matcher: ["/((?!_next/static|_next/image|favicon.ico|icon.svg|fonts|images|videos|lottie).*)"],
 };

@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { S3Client, PutObjectCommand } from "@aws-sdk/client-s3";
+import sharp from "sharp";
 import { checkRateLimit, validateFileMagicBytes, verifyTurnstileToken } from "@/lib/security";
 
 // Cloudflare R2 client (S3-compatible)
@@ -19,6 +20,8 @@ const PUBLIC_URL_BASE = process.env.R2_PUBLIC_URL || "";
 const ALLOWED_TYPES = ["image/jpeg", "image/png", "image/gif", "image/webp"];
 const MAX_FILE_SIZE = 2 * 1024 * 1024;
 const MAX_REQUEST_SIZE = 3 * 1024 * 1024; // 3MB (file + formdata overhead)
+const MAX_IMAGE_DIMENSION = 4096; // Max width or height in pixels
+const MAX_GIF_FRAMES = 100; // Max frames in animated GIF
 
 // Map MIME type to safe file extension (never trust user-provided extensions)
 const MIME_TO_EXT: Record<string, string> = {
@@ -31,12 +34,14 @@ const MIME_TO_EXT: Record<string, string> = {
 export async function POST(request: NextRequest) {
   try {
     // Rate limit: 20 uploads per minute
+    // Priority: Cloudflare > reverse proxy > forwarded (least trusted) > fallback
     const clientIp =
-      request.headers.get("x-forwarded-for")?.split(",")[0] ||
+      request.headers.get("cf-connecting-ip") ||
       request.headers.get("x-real-ip") ||
+      request.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ||
       "anonymous";
 
-    const rateLimit = checkRateLimit(`upload:${clientIp}`, 20, 60000);
+    const rateLimit = await checkRateLimit(`upload:${clientIp}`, 20, 60000);
     if (!rateLimit.allowed) {
       return NextResponse.json(
         { error: "Too many uploads. Please try again later." },
@@ -107,6 +112,31 @@ export async function POST(request: NextRequest) {
     if (!validateFileMagicBytes(buffer, file.type)) {
       return NextResponse.json(
         { error: "File content does not match declared type" },
+        { status: 400 }
+      );
+    }
+
+    // Validate image dimensions and GIF frame count (prevents decompression bombs)
+    try {
+      const metadata = await sharp(buffer).metadata();
+      if (
+        (metadata.width && metadata.width > MAX_IMAGE_DIMENSION) ||
+        (metadata.height && metadata.height > MAX_IMAGE_DIMENSION)
+      ) {
+        return NextResponse.json(
+          { error: `Image dimensions too large. Maximum ${MAX_IMAGE_DIMENSION}x${MAX_IMAGE_DIMENSION}px` },
+          { status: 400 }
+        );
+      }
+      if (metadata.pages && metadata.pages > MAX_GIF_FRAMES) {
+        return NextResponse.json(
+          { error: `Too many frames in animation. Maximum ${MAX_GIF_FRAMES}` },
+          { status: 400 }
+        );
+      }
+    } catch {
+      return NextResponse.json(
+        { error: "Unable to process image" },
         { status: 400 }
       );
     }
