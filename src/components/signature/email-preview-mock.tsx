@@ -1025,7 +1025,7 @@ function OfficeStickyNote({
           <div 
             className="absolute inset-0 pointer-events-none"
             style={{
-              background: `repeating-linear-gradient(
+              backgroundImage: `repeating-linear-gradient(
                 0deg,
                 transparent,
                 transparent 27px,

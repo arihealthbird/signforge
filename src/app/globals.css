@@ -1198,38 +1198,68 @@ textarea:focus-visible {
 
 /* ========================================
    VISUAL EDITOR STYLES
+   Pure CSS indicators via data attributes —
+   no JS DOM manipulation needed.
    ======================================== */
 
-/* Active visual editor mode indicator */
+/* Wrapper: crosshair cursor when edit mode is active */
 .visual-editor-active {
   cursor: crosshair;
 }
 
-/* Editable elements in edit mode */
-.visual-editor-editable {
-  position: relative;
-  border-radius: 2px;
-  transition: all 0.15s ease;
+/* Block pointer events on links inside the preview while editing.
+   The JS click handler also calls preventDefault, but this provides
+   a visual cue (no pointer cursor on links). */
+.visual-editor-active a {
+  cursor: pointer !important;
+  pointer-events: auto;
 }
 
-.visual-editor-editable:hover {
+/* ── Editable elements (hover + selected) ─────────────────────── */
+
+/* Base state: show pointer cursor and subtle transition */
+.visual-editor-active [data-editable] {
+  cursor: pointer !important;
+  border-radius: 2px;
+  transition: outline 0.15s ease, background-color 0.15s ease;
+}
+
+/* Hover: dashed outline */
+.visual-editor-active [data-editable]:hover {
   outline: 2px dashed var(--gradient-mid-3);
   outline-offset: 2px;
   background-color: rgba(72, 219, 251, 0.05);
 }
 
-.dark .visual-editor-editable:hover {
+.dark .visual-editor-active [data-editable]:hover {
   background-color: rgba(88, 235, 251, 0.08);
 }
 
-/* Selected element in edit mode */
-.visual-editor-selected {
+/* Selected: solid outline driven by the wrapper's data-selected-element
+   attribute.  Each value maps to the matching [data-editable] child. */
+.visual-editor-active[data-selected-element="fullName"] [data-editable="fullName"],
+.visual-editor-active[data-selected-element="jobTitle"] [data-editable="jobTitle"],
+.visual-editor-active[data-selected-element="company"] [data-editable="company"],
+.visual-editor-active[data-selected-element="department"] [data-editable="department"],
+.visual-editor-active[data-selected-element="email"] [data-editable="email"],
+.visual-editor-active[data-selected-element="phone"] [data-editable="phone"],
+.visual-editor-active[data-selected-element="website"] [data-editable="website"],
+.visual-editor-active[data-selected-element="address"] [data-editable="address"],
+.visual-editor-active[data-selected-element="disclaimer"] [data-editable="disclaimer"] {
   outline: 2px solid var(--gradient-mid-4) !important;
   outline-offset: 2px;
   background-color: rgba(165, 94, 234, 0.08) !important;
 }
 
-.dark .visual-editor-selected {
+.dark .visual-editor-active[data-selected-element="fullName"] [data-editable="fullName"],
+.dark .visual-editor-active[data-selected-element="jobTitle"] [data-editable="jobTitle"],
+.dark .visual-editor-active[data-selected-element="company"] [data-editable="company"],
+.dark .visual-editor-active[data-selected-element="department"] [data-editable="department"],
+.dark .visual-editor-active[data-selected-element="email"] [data-editable="email"],
+.dark .visual-editor-active[data-selected-element="phone"] [data-editable="phone"],
+.dark .visual-editor-active[data-selected-element="website"] [data-editable="website"],
+.dark .visual-editor-active[data-selected-element="address"] [data-editable="address"],
+.dark .visual-editor-active[data-selected-element="disclaimer"] [data-editable="disclaimer"] {
   background-color: rgba(181, 110, 250, 0.12) !important;
 }
 

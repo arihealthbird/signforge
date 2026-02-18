@@ -1,6 +1,6 @@
 "use client";
 
-import { createContext, useContext, useState, useCallback, ReactNode } from "react";
+import { createContext, useContext, useState, useCallback, useRef, RefObject, ReactNode } from "react";
 import { EditableElement, ElementStyleOverride, SignatureData } from "@/types/signature";
 
 interface VisualEditorContextType {
@@ -32,6 +32,12 @@ interface VisualEditorContextType {
   // Data reference (set by parent)
   signatureData: SignatureData | null;
   setSignatureData: ((data: SignatureData) => void) | null;
+
+  // Wrapper ref so toolbar can query elements inside it
+  wrapperRef: RefObject<HTMLDivElement | null>;
+
+  // Re-read the selected element's rect from the DOM
+  refreshElementRect: () => void;
 }
 
 const VisualEditorContext = createContext<VisualEditorContextType | null>(null);
@@ -64,6 +70,7 @@ export function VisualEditorProvider({
   const [selectedElement, setSelectedElement] = useState<EditableElement | null>(null);
   const [elementRect, setElementRect] = useState<DOMRect | null>(null);
   const [isInlineEditing, setIsInlineEditing] = useState(false);
+  const wrapperRef = useRef<HTMLDivElement | null>(null);
 
   const updateElementStyle = useCallback(
     (element: EditableElement, style: Partial<ElementStyleOverride>) => {
@@ -91,6 +98,17 @@ export function VisualEditorProvider({
     [signatureData.styleOverrides]
   );
 
+  // Re-read the selected element's bounding rect from the DOM
+  const refreshElementRect = useCallback(() => {
+    if (!selectedElement || !wrapperRef.current) return;
+    const el = wrapperRef.current.querySelector(
+      `[data-editable="${selectedElement}"]`
+    );
+    if (el) {
+      setElementRect(el.getBoundingClientRect());
+    }
+  }, [selectedElement]);
+
   // Clear selection when exiting edit mode
   const handleSetEditMode = useCallback((value: boolean) => {
     setIsEditMode(value);
@@ -116,6 +134,8 @@ export function VisualEditorProvider({
         getElementStyle,
         signatureData,
         setSignatureData: onSignatureDataChange,
+        wrapperRef,
+        refreshElementRect,
       }}
     >
       {children}

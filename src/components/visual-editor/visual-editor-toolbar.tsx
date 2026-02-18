@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, useCallback } from "react";
 import { useVisualEditor } from "./visual-editor-context";
 import { clsx } from "clsx";
 import {
@@ -38,15 +38,18 @@ export function VisualEditorToolbar() {
     getElementStyle,
     setSelectedElement,
     isInlineEditing,
+    wrapperRef,
+    refreshElementRect,
   } = useVisualEditor();
   
   const toolbarRef = useRef<HTMLDivElement>(null);
+  const colorPickerRef = useRef<HTMLDivElement>(null);
   const [position, setPosition] = useState({ top: 0, left: 0 });
   const [showColorPicker, setShowColorPicker] = useState(false);
   const [customColor, setCustomColor] = useState("#000000");
 
-  // Calculate position based on element rect
-  useEffect(() => {
+  // ── Position calculation ────────────────────────────────────────────
+  const computePosition = useCallback(() => {
     if (!elementRect || !toolbarRef.current) return;
 
     const toolbar = toolbarRef.current;
@@ -70,6 +73,87 @@ export function VisualEditorToolbar() {
     
     setPosition({ top, left });
   }, [elementRect]);
+
+  // Recompute whenever the stored rect changes
+  useEffect(() => {
+    computePosition();
+  }, [computePosition]);
+
+  // ── RAF polling: keeps toolbar in sync when zoom, data, or layout changes
+  useEffect(() => {
+    if (!selectedElement || !wrapperRef.current) return;
+
+    let rafId: number;
+    let prevTop = 0;
+    let prevLeft = 0;
+    let prevWidth = 0;
+    let prevHeight = 0;
+
+    const poll = () => {
+      const el = wrapperRef.current?.querySelector(
+        `[data-editable="${selectedElement}"]`
+      );
+      if (el) {
+        const rect = el.getBoundingClientRect();
+        // Only update state when the rect actually moved (avoids re-renders)
+        if (
+          rect.top !== prevTop ||
+          rect.left !== prevLeft ||
+          rect.width !== prevWidth ||
+          rect.height !== prevHeight
+        ) {
+          prevTop = rect.top;
+          prevLeft = rect.left;
+          prevWidth = rect.width;
+          prevHeight = rect.height;
+          refreshElementRect();
+        }
+      }
+      rafId = requestAnimationFrame(poll);
+    };
+
+    rafId = requestAnimationFrame(poll);
+    return () => cancelAnimationFrame(rafId);
+  }, [selectedElement, wrapperRef, refreshElementRect]);
+
+  // ── Close color picker on outside click ─────────────────────────────
+  useEffect(() => {
+    if (!showColorPicker) return;
+
+    const handleOutsideClick = (e: MouseEvent) => {
+      if (
+        colorPickerRef.current &&
+        !colorPickerRef.current.contains(e.target as Node)
+      ) {
+        setShowColorPicker(false);
+      }
+    };
+
+    // Use capture so we catch it before other stopPropagation calls
+    document.addEventListener("mousedown", handleOutsideClick, true);
+    return () =>
+      document.removeEventListener("mousedown", handleOutsideClick, true);
+  }, [showColorPicker]);
+
+  // ── ESC: close color picker first, then deselect ────────────────────
+  useEffect(() => {
+    if (!selectedElement) return;
+
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape" && showColorPicker) {
+        e.stopPropagation(); // prevent wrapper ESC handler from also firing
+        setShowColorPicker(false);
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyDown, true);
+    return () => window.removeEventListener("keydown", handleKeyDown, true);
+  }, [selectedElement, showColorPicker]);
+
+  // Close color picker when element selection changes
+  useEffect(() => {
+    setShowColorPicker(false);
+  }, [selectedElement]);
 
   if (!selectedElement || !elementRect) return null;
 
@@ -245,7 +329,7 @@ export function VisualEditorToolbar() {
         </div>
 
         {/* Color picker */}
-        <div className="relative pl-2">
+        <div className="relative pl-2" ref={colorPickerRef}>
           <ToolbarButton
             onClick={() => setShowColorPicker(!showColorPicker)}
             title="Text Color"
