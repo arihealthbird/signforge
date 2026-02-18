@@ -21,9 +21,10 @@ function buildCsp(nonce: string): string {
 
   const directives = [
     "default-src 'self'",
-    // Nonce-based script-src: modern browsers use nonce + strict-dynamic,
-    // legacy browsers fall back to unsafe-inline (ignored when nonce is present)
-    `script-src 'self' 'nonce-${nonce}' 'strict-dynamic' 'unsafe-inline' https://challenges.cloudflare.com`,
+    // Note: 'unsafe-inline' is required for Next.js hydration scripts.
+    // Do NOT add 'strict-dynamic' — it causes browsers to ignore 'unsafe-inline'
+    // and 'self', which breaks React hydration (nothing becomes clickable).
+    `script-src 'self' 'unsafe-inline' https://challenges.cloudflare.com`,
     "style-src 'self' 'unsafe-inline' https://api.fontshare.com",
     `img-src 'self' https://ui-avatars.com https://*.giphy.com https://giphy.com ${r2PublicUrl} data: blob:`.trim(),
     "font-src 'self' https://fonts.gstatic.com https://api.fontshare.com https://cdn.fontshare.com",
