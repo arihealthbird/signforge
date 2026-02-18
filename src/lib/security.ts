@@ -302,6 +302,9 @@ export async function verifyTurnstileToken(token: string | null): Promise<boolea
   
   // If Turnstile is not configured, skip verification (allow request)
   if (!secretKey) return true;
+
+  // Skip verification in development mode (localhost testing)
+  if (process.env.NODE_ENV === "development") return true;
   
   // If configured but no token provided, reject
   if (!token) return false;

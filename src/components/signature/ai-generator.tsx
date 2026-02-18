@@ -3,7 +3,7 @@
 import { useState, useEffect, useRef, useMemo, useCallback } from "react";
 import { SignatureData } from "@/types/signature";
 import { TemplateId } from "@/lib/templates";
-import { Sparkles, Wand2, Loader2, Star, Lightbulb, Palette, Building2, Check, ImagePlus, User, X, History, ChevronDown } from "lucide-react";
+import { Sparkles, Wand2, Loader2, Star, Lightbulb, Palette, Building2, Check, ImagePlus, User, X, History, ChevronDown, Briefcase, GraduationCap, HeartPulse } from "lucide-react";
 import { clsx } from "clsx";
 import { EmailThemeId } from "@/lib/email-themes";
 import { getThemePlaceholders } from "@/lib/theme-placeholders";
@@ -287,7 +287,7 @@ export function AIGenerator({ currentData, onGenerate, onGeneratingChange, onGen
   };
 
   // Icon mapping for quick prompts
-  const quickPromptIcons = [Lightbulb, Building2, Palette, Star, Wand2];
+  const quickPromptIcons = [Lightbulb, Building2, Palette, Star, Wand2, Briefcase, GraduationCap, HeartPulse];
   
   const quickPrompts = placeholders.aiQuickPrompts.map((prompt, index) => ({
     ...prompt,
@@ -623,11 +623,13 @@ export function AIGenerator({ currentData, onGenerate, onGeneratingChange, onGen
           {/* Turnstile bot protection */}
           {isTurnstileEnabled() && (
             <div className="mt-3 flex justify-center">
-              <Turnstile
-                onVerify={handleTurnstileVerify}
-                onExpire={handleTurnstileExpire}
-                size="compact"
-              />
+              <div className="transform scale-[0.85] origin-center -my-1">
+                <Turnstile
+                  onVerify={handleTurnstileVerify}
+                  onExpire={handleTurnstileExpire}
+                  size="compact"
+                />
+              </div>
             </div>
           )}
 

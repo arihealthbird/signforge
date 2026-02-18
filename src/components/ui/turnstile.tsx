@@ -105,8 +105,9 @@ export function Turnstile({
 
 /**
  * Check if Turnstile is configured (has a site key).
- * Use this to conditionally show the widget.
+ * Disabled in development mode since localhost is not a valid Turnstile domain.
  */
 export function isTurnstileEnabled(): boolean {
+  if (process.env.NODE_ENV === "development") return false;
   return !!SITE_KEY;
 }

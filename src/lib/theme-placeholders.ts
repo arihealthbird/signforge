@@ -77,6 +77,9 @@ const DEFAULT_PLACEHOLDERS: ThemePlaceholders = {
     { text: "Design a creative signature for a freelance designer with portfolio links", short: "Creative" },
     { text: "Generate an executive-style signature for a CEO with elegant styling", short: "Executive" },
     { text: "Create a minimal signature with just name, title and email - clean and professional", short: "Minimal" },
+    { text: "I'm a real estate agent - create a warm, trustworthy signature with phone number and calendar link", short: "Real Estate" },
+    { text: "Design a signature for a university professor with department info and academic links", short: "Academic" },
+    { text: "I'm a doctor at a hospital - create a clean medical signature with credentials and clinic website", short: "Healthcare" },
   ],
 };
 
@@ -112,6 +115,9 @@ const OFFICE_PLACEHOLDERS: ThemePlaceholders = {
     { text: "Design a signature for a salesman who's also an Assistant to the Regional Manager", short: "Sales" },
     { text: "Generate a signature for an accountant who loves cats and Angela", short: "Accounting" },
     { text: "Create a minimal signature for someone in HR who just wants to be left alone", short: "HR" },
+    { text: "Design a signature for the warehouse foreman who keeps things moving at Dunder Mifflin", short: "Warehouse" },
+    { text: "Create a fun signature for someone in the Party Planning Committee", short: "Party Planning" },
+    { text: "I'm a temp who somehow became a full-time employee - make a signature that shows my journey", short: "Temp to Hire" },
   ],
 };
 
@@ -147,6 +153,9 @@ const PARKS_REC_PLACEHOLDERS: ThemePlaceholders = {
     { text: "Design a creative signature for someone who organizes community events and festivals", short: "Events" },
     { text: "Generate an executive-style signature for a City Manager with elegant civic styling", short: "Manager" },
     { text: "Create a minimal signature for a Parks employee - clean and professional with a touch of warmth", short: "Minimal" },
+    { text: "I run the local health department and need a public-service signature that shows I care about the community", short: "Health Dept" },
+    { text: "Design a signature for a city auditor who takes budgets very seriously", short: "Auditor" },
+    { text: "Create a signature for a public library director who champions literacy and free waffle breakfasts", short: "Library" },
   ],
 };
 
@@ -182,6 +191,9 @@ const DARTH_VADER_PLACEHOLDERS: ThemePlaceholders = {
     { text: "Design a dark signature for someone who has embraced the power of the Dark Side", short: "Dark Side" },
     { text: "Generate a signature for a Star Destroyer commander with military precision", short: "Commander" },
     { text: "Create a minimal but menacing signature worthy of the Empire", short: "Minimal" },
+    { text: "I am a bounty hunter working for the Empire - create a signature that means business", short: "Bounty Hunter" },
+    { text: "Design a signature for the Grand Moff overseeing the Death Star project", short: "Grand Moff" },
+    { text: "Create an intimidating signature for the leader of the Inquisitors hunting Jedi", short: "Inquisitor" },
   ],
 };
 
@@ -217,6 +229,9 @@ const YODA_PLACEHOLDERS: ThemePlaceholders = {
     { text: "Design a peaceful signature for one who teaches the ways of the Force", short: "Teacher" },
     { text: "Generate a signature for a member of the Jedi Council with ancient wisdom", short: "Council" },
     { text: "Minimal signature create for a humble Jedi, you must", short: "Minimal" },
+    { text: "A Padawan learner I am, eager to prove myself - create a signature showing my path to knighthood", short: "Padawan" },
+    { text: "Keeper of the Jedi Archives I am - design a scholarly signature of great knowledge", short: "Archivist" },
+    { text: "A healer in the Jedi Temple, create a calming signature that soothes the spirit, you will", short: "Healer" },
   ],
 };
 
@@ -252,6 +267,9 @@ const SPIDERMAN_PLACEHOLDERS: ThemePlaceholders = {
     { text: "Design a fun signature for someone who swings between jobs", short: "Freelancer" },
     { text: "Generate a signature that's spectacular and sensational", short: "Spectacular" },
     { text: "Create a simple signature for a busy Queens teenager", short: "Minimal" },
+    { text: "I'm a science student who also interns at a cutting-edge tech lab - create a brainy signature", short: "Science Whiz" },
+    { text: "Design a signature for someone who runs a social media account covering NYC street photography", short: "Influencer" },
+    { text: "Create a heroic signature for the editor-in-chief who demands pictures of Spider-Man", short: "Editor" },
   ],
 };
 
@@ -287,6 +305,9 @@ const PIRATE_PLACEHOLDERS: ThemePlaceholders = {
     { text: "Design a treasure map style signature for a swashbuckling entrepreneur", short: "Treasure" },
     { text: "Generate a signature for the most infamous pirate in the Caribbean", short: "Infamous" },
     { text: "Create a simple signature, savvy? Nothing too fancy, mate", short: "Minimal" },
+    { text: "I be the ship's navigator charting courses through uncharted waters - create a signature with adventure", short: "Navigator" },
+    { text: "Design a signature for the quartermaster who keeps the crew in line and the loot organized", short: "Quartermaster" },
+    { text: "Arr, I run a tavern in Tortuga - create a welcoming signature for weary sailors", short: "Tavern Keep" },
   ],
 };
 
@@ -322,6 +343,9 @@ const SHAKESPEARE_PLACEHOLDERS: ThemePlaceholders = {
     { text: "Design a poetic signature worthy of the greatest writer in the English tongue", short: "Poet" },
     { text: "Generate a dramatic signature befitting a master of tragedy and comedy", short: "Drama" },
     { text: "Create a humble signature for a simple wordsmith of Stratford", short: "Minimal" },
+    { text: "I am a travelling actor performing the Bard's works across the land - create a signature of flair", short: "Actor" },
+    { text: "Design a signature for a scholar who studies and annotates the great works of literature", short: "Scholar" },
+    { text: "Prithee, craft a signature for a royal court musician who composes for kings and queens", short: "Musician" },
   ],
 };
 
@@ -357,6 +381,9 @@ const SURFER_PLACEHOLDERS: ThemePlaceholders = {
     { text: "Design a beachy signature with major coastal vibes", short: "Beach Vibes" },
     { text: "Generate a signature for someone who's stoked about life and waves", short: "Stoked" },
     { text: "Create a simple signature, brah - nothing too gnarly", short: "Minimal" },
+    { text: "I run a beachside surf shop selling boards and wax - create a laid-back business signature", short: "Surf Shop" },
+    { text: "Design a signature for a marine biologist who surfs between research dives", short: "Ocean Science" },
+    { text: "Brah, I'm a yoga instructor on the beach - create a zen signature with tropical energy", short: "Beach Yoga" },
   ],
 };
 

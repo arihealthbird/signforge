@@ -64,14 +64,21 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Check if OpenAI is configured
-    const apiKey = process.env.OPENAI_API_KEY;
-    if (!apiKey) {
+    // Resolve AI provider configuration
+    // Priority: AI_API_KEY > OPENAI_API_KEY (backward compat)
+    const aiApiKey = process.env.AI_API_KEY || process.env.OPENAI_API_KEY;
+    if (!aiApiKey) {
       return NextResponse.json(
         { error: "AI features are not configured" },
         { status: 503 }
       );
     }
+
+    const isKimi = !!process.env.AI_API_KEY;
+    const aiBaseUrl = process.env.AI_BASE_URL || (isKimi ? "https://openrouter.ai/api/v1" : "https://api.openai.com/v1");
+    const aiModel = process.env.AI_MODEL || (isKimi ? "moonshotai/kimi-k2.5" : "gpt-4o-mini");
+    const aiTemperature = isKimi ? 0.6 : 0.7;
+    const aiTopP = isKimi ? 0.95 : undefined;
 
     let body;
     try {
@@ -132,10 +139,10 @@ export async function POST(request: NextRequest) {
     const colorThemeInfo = COLOR_THEMES.map(t => `${t.id}: ${t.name} (primary: ${t.primaryColor}, secondary: ${t.secondaryColor})`).join("\n");
     const fontInfo = FONT_OPTIONS.slice(0, 15).map(f => f.label).join(", ");
 
-    const systemPrompt = `You are an expert email signature designer. Generate ONLY valid JSON for email signatures.
+    const systemPrompt = `You are an elite email signature designer and personal branding strategist. Think deeply about the user's request — consider their industry, role, personality, and goals — then generate a richly detailed, perfectly crafted JSON signature.
 
 IMPORTANT SECURITY RULES:
-- You MUST respond with ONLY a valid JSON object. No explanations, no markdown, no code fences.
+- Your FINAL output MUST be ONLY a valid JSON object. No explanations, no markdown, no code fences.
 - Only generate content appropriate for professional email signatures.
 - Only generate URLs on well-known public domains (linkedin.com, twitter.com, github.com, etc.).
 - Never generate URLs pointing to IP addresses, localhost, or internal networks.
@@ -168,33 +175,53 @@ User image availability:
 - Profile Photo: ${userProvidedProfilePhoto ? "YES" : "NO"}
 - Company Logo: ${userProvidedLogo ? "YES" : "NO"}
 
-DESIGN GUIDELINES:
-- Professional/corporate: blues (#2563eb), Inter/Roboto
-- Creative/startup: vibrant (#7c3aed, #06b6d4), Poppins
-- Executive/elegant: sophisticated (#334155), Playfair Display
-- Tech/developer: GitHub, darker themes
-- Marketing/sales: social links, warm colors (#ea580c), calendar link
+DESIGN RULES:
+- Match colors, fonts, and template to the person's industry and seniority.
+- Corporate/legal/finance → blues/navy, Inter/Roboto, corporate-bold or professional-classic.
+- Creative/startup → vibrant purples/teals, Poppins, startup-fresh or creative-gradient.
+- Executive → dark slate, Playfair Display, executive-elegant.
+- Tech/dev → darker themes, include GitHub link.
+- Healthcare → calming blues/greens.
+- Fill all relevant fields: contact info, social links, disclaimer, scheduling link.
+- Add social platforms appropriate to the role (GitHub for devs, LinkedIn for corporate, Instagram for creatives).
 
-Generate a complete signature based on the user's request below.`;
+Generate a complete JSON signature now.`;
 
     // Wrap user input in clear delimiters to mitigate prompt injection
     const userMessage = `<user_request>${sanitizedPrompt}</user_request>`;
 
-    const response = await fetch("https://api.openai.com/v1/chat/completions", {
+    const fetchHeaders: Record<string, string> = {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${aiApiKey}`,
+    };
+    // OpenRouter requires HTTP-Referer for attribution
+    if (aiBaseUrl.includes("openrouter.ai")) {
+      fetchHeaders["HTTP-Referer"] = "https://signforge.app";
+      fetchHeaders["X-Title"] = "SignForge";
+    }
+
+    const completionBody: Record<string, unknown> = {
+      model: aiModel,
+      messages: [
+        { role: "system", content: systemPrompt },
+        { role: "user", content: userMessage },
+      ],
+      temperature: isKimi ? 1.0 : 0.7,
+      max_tokens: isKimi ? 2000 : 1000,
+    };
+    if (aiTopP !== undefined) {
+      completionBody.top_p = aiTopP;
+    }
+    // Enable thinking/reasoning mode for Kimi K2.5 — low effort is sufficient
+    // for structured JSON output and dramatically reduces latency
+    if (isKimi) {
+      completionBody.reasoning = { effort: "low" };
+    }
+
+    const response = await fetch(`${aiBaseUrl}/chat/completions`, {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${apiKey}`,
-      },
-      body: JSON.stringify({
-        model: "gpt-4o-mini",
-        messages: [
-          { role: "system", content: systemPrompt },
-          { role: "user", content: userMessage },
-        ],
-        temperature: 0.7,
-        max_tokens: 1000,
-      }),
+      headers: fetchHeaders,
+      body: JSON.stringify(completionBody),
     });
 
     if (!response.ok) {
