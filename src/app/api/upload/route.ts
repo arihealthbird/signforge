@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { S3Client, PutObjectCommand } from "@aws-sdk/client-s3";
 import sharp from "sharp";
-import { checkRateLimit, validateFileMagicBytes, verifyTurnstileToken } from "@/lib/security";
+import { checkRateLimit, validateFileMagicBytes } from "@/lib/security";
 
 // Cloudflare R2 client (S3-compatible)
 const R2 = new S3Client({
@@ -51,16 +51,6 @@ export async function POST(request: NextRequest) {
             "Retry-After": String(Math.ceil(rateLimit.resetIn / 1000)),
           },
         }
-      );
-    }
-
-    // Verify Turnstile token (bot protection)
-    const turnstileToken = request.headers.get("x-turnstile-token");
-    const turnstileValid = await verifyTurnstileToken(turnstileToken);
-    if (!turnstileValid) {
-      return NextResponse.json(
-        { error: "Bot verification failed. Please try again." },
-        { status: 403 }
       );
     }
 
