@@ -94,7 +94,7 @@ export async function POST(request: NextRequest) {
     const isKimi = !!process.env.AI_API_KEY;
     const aiBaseUrl = process.env.AI_BASE_URL || (isKimi ? "https://openrouter.ai/api/v1" : "https://api.openai.com/v1");
     const aiModel = process.env.AI_MODEL || (isKimi ? "moonshotai/kimi-k2.5" : "gpt-4o-mini");
-    const aiTemperature = 0.6; // Lower temp → faster, more focused output
+    const aiTemperature = isKimi ? 1.0 : 0.6; // Kimi K2.5 works best at 1.0; lower for OpenAI
     const aiTopP = isKimi ? 0.95 : undefined;
 
     let body;
@@ -186,7 +186,7 @@ Images: Profile=${userProvidedProfilePhoto ? "yes" : "no"}, Logo=${userProvidedL
         { role: "user", content: userMessage },
       ],
       temperature: aiTemperature,
-      max_tokens: 800, // Signature JSON is ~400-500 tokens; keep tight for speed
+      max_tokens: isKimi ? 2000 : 800, // Kimi needs headroom for reasoning; OpenAI with json_object is tighter
     };
     // JSON mode: only enable for direct OpenAI — not all OpenRouter models support it
     if (!isKimi) {
@@ -195,8 +195,11 @@ Images: Profile=${userProvidedProfilePhoto ? "yes" : "no"}, Logo=${userProvidedL
     if (aiTopP !== undefined) {
       completionBody.top_p = aiTopP;
     }
-    // NOTE: reasoning mode intentionally removed — structured JSON generation
-    // does not benefit from chain-of-thought and it adds significant latency
+    // Kimi K2.5 uses thinking mode by default — low effort keeps it fast
+    // while ensuring the model produces structured output reliably
+    if (isKimi) {
+      completionBody.reasoning = { effort: "low" };
+    }
 
     // Track concurrent requests for the global limiter
     activeAiRequests++;
@@ -240,9 +243,21 @@ Images: Profile=${userProvidedProfilePhoto ? "yes" : "no"}, Logo=${userProvidedL
     }
 
     const data = await response.json();
-    const content = data.choices[0]?.message?.content;
+    const message = data.choices?.[0]?.message;
+    const content = message?.content
+      || message?.reasoning_content  // Some reasoning models put output here
+      || (Array.isArray(message?.reasoning_details) && message.reasoning_details.find((d: { type?: string; content?: string }) => d.type === "text")?.content)
+      || null;
 
     if (!content) {
+      console.error(
+        "AI returned empty content. Model:",
+        aiModel,
+        "\nResponse keys:",
+        data ? Object.keys(data) : "null",
+        "\nChoices:",
+        JSON.stringify(data?.choices?.[0] ?? null).substring(0, 500)
+      );
       return NextResponse.json(
         { error: "No response from AI" },
         { status: 500 }
