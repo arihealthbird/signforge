@@ -1,5 +1,5 @@
 export interface SocialLink {
-  platform: "linkedin" | "twitter" | "facebook" | "instagram" | "github" | "youtube" | "website";
+  platform: "linkedin" | "twitter" | "facebook" | "instagram" | "github" | "youtube" | "tiktok" | "website";
   url: string;
 }
 
@@ -78,6 +78,17 @@ export interface SignatureData {
   // GIF Support
   gifBannerUrl?: string;
   
+  // Advanced Customization
+  dividerStyle?: "solid" | "dashed" | "dotted" | "double" | "none";
+  dividerWidth?: number;
+  dividerColor?: string;
+  photoShape?: "circle" | "rounded" | "square";
+  socialIconStyle?: "icon" | "text" | "icon-text";
+  socialIconShape?: "circle" | "rounded" | "square" | "none";
+  contentPadding?: "compact" | "normal" | "relaxed";
+  lineHeight?: number;
+  textColor?: string;
+  
   // Visual Editor Overrides
   styleOverrides?: ElementStyleOverrides;
 }
@@ -99,6 +110,13 @@ export const DEFAULT_SIGNATURE_DATA: SignatureData = {
   primaryColor: "#6366f1",
   fontFamily: "var(--font-inter), 'Inter', system-ui, sans-serif",
   fontSize: 14,
+  dividerStyle: "solid",
+  dividerWidth: 2,
+  photoShape: "circle",
+  socialIconStyle: "icon",
+  socialIconShape: "none",
+  contentPadding: "normal",
+  lineHeight: 1.4,
 };
 
 export const FONT_CATEGORIES = [
@@ -162,6 +180,7 @@ export const SOCIAL_PLATFORMS = [
   { id: "instagram", label: "Instagram", placeholder: "https://instagram.com/yourhandle" },
   { id: "github", label: "GitHub", placeholder: "https://github.com/yourusername" },
   { id: "youtube", label: "YouTube", placeholder: "https://youtube.com/@yourchannel" },
+  { id: "tiktok", label: "TikTok", placeholder: "https://tiktok.com/@yourhandle" },
   { id: "website", label: "Website", placeholder: "https://yourwebsite.com" },
 ] as const;
 

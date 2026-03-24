@@ -415,7 +415,7 @@ export function sanitizeSignatureFields(data: Record<string, unknown>): Record<s
     "website", "logoUrl", "profilePhotoUrl", "bannerUrl",
     "bannerLink", "calendarLink", "gifBannerUrl",
   ];
-  const colorFields = ["primaryColor", "secondaryColor"];
+  const colorFields = ["primaryColor", "secondaryColor", "dividerColor", "textColor"];
 
   const sanitized = { ...data };
 
@@ -521,7 +521,24 @@ export function validateSignatureData(data: unknown): boolean {
     "bannerUrl", "bannerLink", "calendarLink", "gifBannerUrl"
   ];
   
-  const numberFields = ["logoWidth", "profilePhotoSize", "fontSize"];
+  const numberFields = ["logoWidth", "profilePhotoSize", "fontSize", "dividerWidth", "lineHeight"];
+  
+  // Enum validation for new customization fields
+  const enumFields: Record<string, string[]> = {
+    dividerStyle: ["solid", "dashed", "dotted", "double", "none"],
+    photoShape: ["circle", "rounded", "square"],
+    socialIconStyle: ["icon", "text", "icon-text"],
+    socialIconShape: ["circle", "rounded", "square", "none"],
+    contentPadding: ["compact", "normal", "relaxed"],
+  };
+  
+  for (const [field, allowed] of Object.entries(enumFields)) {
+    if (obj[field] !== undefined) {
+      if (typeof obj[field] !== "string" || !allowed.includes(obj[field] as string)) {
+        return false;
+      }
+    }
+  }
   
   for (const field of stringFields) {
     if (obj[field] !== undefined && typeof obj[field] !== "string") {
@@ -545,7 +562,7 @@ export function validateSignatureData(data: unknown): boolean {
     if (!Array.isArray(obj.socialLinks)) return false;
     if (obj.socialLinks.length > 20) return false;
     
-    const validPlatforms = ["linkedin", "twitter", "facebook", "instagram", "github", "youtube", "website"];
+    const validPlatforms = ["linkedin", "twitter", "facebook", "instagram", "github", "youtube", "tiktok", "website"];
     for (const link of obj.socialLinks) {
       if (typeof link !== "object" || !link) return false;
       if (typeof link.platform !== "string" || !validPlatforms.includes(link.platform)) return false;

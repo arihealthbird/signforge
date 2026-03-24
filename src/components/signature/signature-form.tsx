@@ -39,6 +39,7 @@ export function SignatureForm({ data, onChange, emailTheme = "professional" }: S
       instagram: "instagram",
       github: "github",
       youtube: "youtube",
+      tiktok: "tiktok",
       website: "websiteUrl",
     };
     const key = platformMap[platformId];

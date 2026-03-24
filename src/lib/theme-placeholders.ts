@@ -26,6 +26,7 @@ export interface ThemePlaceholders {
   instagram: string;
   github: string;
   youtube: string;
+  tiktok: string;
   websiteUrl: string;
   
   // Additional
@@ -64,6 +65,7 @@ const DEFAULT_PLACEHOLDERS: ThemePlaceholders = {
   instagram: "https://instagram.com/yourhandle",
   github: "https://github.com/yourusername",
   youtube: "https://youtube.com/@yourchannel",
+  tiktok: "https://tiktok.com/@yourhandle",
   websiteUrl: "https://yourwebsite.com",
   disclaimer: "This email and any attachments are confidential...",
   calendarLink: "https://calendly.com/yourname",
@@ -102,6 +104,7 @@ const OFFICE_PLACEHOLDERS: ThemePlaceholders = {
   instagram: "https://instagram.com/dundermifflinpaper",
   github: "https://github.com/dundermifflin",
   youtube: "https://youtube.com/@threatlevelmidnight",
+  tiktok: "https://tiktok.com/@dundermifflin",
   websiteUrl: "https://dundermifflin.com",
   disclaimer: "Limitless paper in a paperless world. Dunder Mifflin - The People Person's Paper People.",
   calendarLink: "https://calendly.com/michaelscott",
@@ -140,6 +143,7 @@ const PARKS_REC_PLACEHOLDERS: ThemePlaceholders = {
   instagram: "https://instagram.com/pawneeparksrec",
   github: "https://github.com/pawneeparks",
   youtube: "https://youtube.com/@paborhood",
+  tiktok: "https://tiktok.com/@pawneeparks",
   websiteUrl: "https://pawneeindiana.gov",
   disclaimer: "This message is from the City of Pawnee Parks and Recreation Department. Go Parks!",
   calendarLink: "https://calendly.com/leslieknope",
@@ -178,6 +182,7 @@ const DARTH_VADER_PLACEHOLDERS: ThemePlaceholders = {
   instagram: "https://instagram.com/darthvader",
   github: "https://github.com/galacticempire",
   youtube: "https://youtube.com/@imperialholonet",
+  tiktok: "https://tiktok.com/@galacticempire",
   websiteUrl: "https://galacticempire.gov",
   disclaimer: "This transmission is classified by Imperial decree. The Emperor's will be done.",
   calendarLink: "https://calendly.com/darthvader",
@@ -216,6 +221,7 @@ const YODA_PLACEHOLDERS: ThemePlaceholders = {
   instagram: "https://instagram.com/masteryoda",
   github: "https://github.com/jediorder",
   youtube: "https://youtube.com/@jediarchives",
+  tiktok: "https://tiktok.com/@jediorder",
   websiteUrl: "https://jediorder.org",
   disclaimer: "Strong in the Force, this message is. Read carefully, you must.",
   calendarLink: "https://calendly.com/masteryoda",
@@ -254,6 +260,7 @@ const SPIDERMAN_PLACEHOLDERS: ThemePlaceholders = {
   instagram: "https://instagram.com/spideyshots",
   github: "https://github.com/webslinger",
   youtube: "https://youtube.com/@dailybugle",
+  tiktok: "https://tiktok.com/@spideyshots",
   websiteUrl: "https://dailybugle.com",
   disclaimer: "With great power comes great responsibility. Also, I'm not Spider-Man. Stop asking.",
   calendarLink: "https://calendly.com/peterparker",
@@ -292,6 +299,7 @@ const PIRATE_PLACEHOLDERS: ThemePlaceholders = {
   instagram: "https://instagram.com/captainjacksparrow",
   github: "https://github.com/blackpearl",
   youtube: "https://youtube.com/@pirateslife",
+  tiktok: "https://tiktok.com/@pirateslife",
   websiteUrl: "https://blackpearl.sea",
   disclaimer: "This message may contain rum stains. The Black Pearl claims no responsibility for lost treasure.",
   calendarLink: "https://calendly.com/captainjack",
@@ -330,6 +338,7 @@ const SHAKESPEARE_PLACEHOLDERS: ThemePlaceholders = {
   instagram: "https://instagram.com/bardofavon",
   github: "https://github.com/thebard",
   youtube: "https://youtube.com/@globetheatre",
+  tiktok: "https://tiktok.com/@thebard",
   websiteUrl: "https://globetheatre.uk",
   disclaimer: "All the world's a stage, and all correspondence merely players upon it.",
   calendarLink: "https://calendly.com/shakespeare",
@@ -368,6 +377,7 @@ const SURFER_PLACEHOLDERS: ThemePlaceholders = {
   instagram: "https://instagram.com/chadwaverson",
   github: "https://github.com/surfcode",
   youtube: "https://youtube.com/@gnarlywaves",
+  tiktok: "https://tiktok.com/@gnarlychad",
   websiteUrl: "https://gnarlywaves.com",
   disclaimer: "Hang loose! 🤙 This message was typed between sets. Mahalo for your patience, brah!",
   calendarLink: "https://calendly.com/chadwaverson",

@@ -3,7 +3,8 @@
 import { useState, useEffect, useRef, useMemo, useCallback } from "react";
 import { SignatureData } from "@/types/signature";
 import { TemplateId } from "@/lib/templates";
-import { Sparkles, Wand2, Loader2, Star, Lightbulb, Palette, Building2, Check, ImagePlus, User, X, History, ChevronDown, Briefcase, GraduationCap, HeartPulse } from "lucide-react";
+import { FONT_OPTIONS } from "@/types/signature";
+import { Sparkles, Wand2, Loader2, Star, Lightbulb, Palette, Building2, Check, ImagePlus, User, X, History, ChevronDown, Briefcase, GraduationCap, HeartPulse, RefreshCw } from "lucide-react";
 import { clsx } from "clsx";
 import { EmailThemeId } from "@/lib/email-themes";
 import { getThemePlaceholders } from "@/lib/theme-placeholders";
@@ -19,6 +20,7 @@ interface UploadedImage {
 
 interface AIGeneratorProps {
   currentData: SignatureData;
+  selectedTemplate: TemplateId;
   onGenerate: (data: Partial<SignatureData>, suggestedTemplate?: TemplateId | null) => void;
   onGeneratingChange?: (isGenerating: boolean) => void;
   onGenerationComplete?: () => void;
@@ -29,7 +31,7 @@ const PROMPT_STORAGE_KEY = "ai-signature-current-prompt";
 const PROMPT_HISTORY_KEY = "ai-signature-prompt-history";
 const MAX_HISTORY_ITEMS = 10;
 
-export function AIGenerator({ currentData, onGenerate, onGeneratingChange, onGenerationComplete, emailTheme = "professional" }: AIGeneratorProps) {
+export function AIGenerator({ currentData, selectedTemplate, onGenerate, onGeneratingChange, onGenerationComplete, emailTheme = "professional" }: AIGeneratorProps) {
   const [prompt, setPrompt] = useState("");
   const [promptHistory, setPromptHistory] = useState<string[]>([]);
   const [showHistory, setShowHistory] = useState(false);
@@ -39,6 +41,7 @@ export function AIGenerator({ currentData, onGenerate, onGeneratingChange, onGen
   const [uploadedImages, setUploadedImages] = useState<UploadedImage[]>([]);
   const [isUploading, setIsUploading] = useState(false);
   const [turnstileToken, setTurnstileToken] = useState<string | null>(null);
+  const [lastChangeSummary, setLastChangeSummary] = useState<string | null>(null);
   
   const profileInputRef = useRef<HTMLInputElement>(null);
   const logoInputRef = useRef<HTMLInputElement>(null);
@@ -238,6 +241,9 @@ export function AIGenerator({ currentData, onGenerate, onGeneratingChange, onGen
         fetchHeaders["x-turnstile-token"] = turnstileToken;
       }
 
+      // Resolve font label from CSS value for AI context
+      const currentFontLabel = FONT_OPTIONS.find(f => f.value === currentData.fontFamily)?.label || "Inter";
+
       const response = await fetch("/api/generate", {
         method: "POST",
         headers: fetchHeaders,
@@ -248,6 +254,9 @@ export function AIGenerator({ currentData, onGenerate, onGeneratingChange, onGen
             profilePhotoUrl: profileImage?.url || null,
             logoUrl: logoImage?.url || null,
           },
+          selectedTemplate,
+          fontFamilyLabel: currentFontLabel,
+          socialLinksCount: currentData.socialLinks.length,
         }),
       });
 
@@ -266,14 +275,16 @@ export function AIGenerator({ currentData, onGenerate, onGeneratingChange, onGen
       uploadedImages.forEach(img => URL.revokeObjectURL(img.preview));
       setUploadedImages([]);
       
-      // Show success message
+      // Build change summary
       const changes: string[] = [];
       if (data.signature.fullName) changes.push("content");
       if (data.signature.primaryColor || data.signature.fontFamily) changes.push("styling");
       if (data.signature.profilePhotoUrl || data.signature.logoUrl) changes.push("images");
-      if (data.suggestedTemplate) changes.push("template");
+      if (data.suggestedTemplate) changes.push(`template → ${data.suggestedTemplate}`);
+      if (data.signature.styleOverrides) changes.push("element styles");
       
       setSuccessMessage(`Generated ${changes.length > 0 ? changes.join(", ") : "signature"}!`);
+      setLastChangeSummary(changes.join(", ") || null);
       
       // Notify parent that generation is complete
       setTimeout(() => {
@@ -551,11 +562,37 @@ export function AIGenerator({ currentData, onGenerate, onGeneratingChange, onGen
             </div>
           </div>
 
-          {/* Success message */}
+          {/* Success message + refinement chips */}
           {successMessage && (
-            <div className="mb-4 text-sm text-emerald-600 dark:text-emerald-400 bg-emerald-500/10 px-3 py-2 rounded-lg border border-emerald-500/20 flex items-center gap-2">
-              <Check className="w-4 h-4" />
-              {successMessage} Check the Content tab to edit.
+            <div className="mb-4 space-y-2">
+              <div className="text-sm text-emerald-600 dark:text-emerald-400 bg-emerald-500/10 px-3 py-2 rounded-lg border border-emerald-500/20 flex items-center gap-2">
+                <Check className="w-4 h-4 flex-shrink-0" />
+                <span>{successMessage} Check the Content tab to edit.</span>
+              </div>
+              {/* Refinement chips */}
+              <div className="flex flex-wrap gap-1.5">
+                <span className="text-[10px] text-muted-foreground flex items-center gap-1 mr-1">
+                  <RefreshCw className="w-3 h-3" /> Refine:
+                </span>
+                {[
+                  { label: "Bolder", prompt: "Starting from the current signature, make it bolder and more impactful with stronger colors and heavier fonts" },
+                  { label: "More Minimal", prompt: "Starting from the current signature, make it more minimal and cleaner — reduce visual noise, simplify layout" },
+                  { label: "Different Template", prompt: "Starting from the current signature, try a completely different template style that better fits the content" },
+                  { label: "More Colorful", prompt: "Starting from the current signature, make it more colorful and vibrant while keeping it professional" },
+                  { label: "More Professional", prompt: "Starting from the current signature, make it more formal and corporate with traditional styling" },
+                ].map((chip) => (
+                  <button
+                    key={chip.label}
+                    onClick={() => {
+                      setPrompt(chip.prompt);
+                      setSuccessMessage(null);
+                    }}
+                    className="text-[10px] px-2 py-1 rounded-full bg-secondary/80 hover:bg-secondary border border-border/50 text-muted-foreground hover:text-foreground transition-all"
+                  >
+                    {chip.label}
+                  </button>
+                ))}
+              </div>
             </div>
           )}
 

@@ -3,7 +3,7 @@
 import { SignatureData, EditableElement, ElementStyleOverride } from "@/types/signature";
 import { TemplateId } from "@/lib/templates";
 import { escapeHtml, validateUrl, sanitizeColor } from "@/lib/security";
-import { Linkedin, Twitter, Facebook, Instagram, Github, Youtube, Globe, Phone, Mail, Calendar, MapPin } from "lucide-react";
+import { Linkedin, Twitter, Facebook, Instagram, Github, Youtube, Globe, Phone, Mail, Calendar, MapPin, Music } from "lucide-react";
 import { CSSProperties } from "react";
 
 // Helper to merge base styles with visual editor overrides
@@ -36,6 +36,107 @@ function applyStyleOverride(
   return merged;
 }
 
+// --- Custom style helpers ---
+
+function getPhotoRadius(shape?: string): string {
+  switch (shape) {
+    case "square": return "0";
+    case "rounded": return "8px";
+    case "circle":
+    default: return "50%";
+  }
+}
+
+function getPhotoDimensions(data: SignatureData, defaultSize: number): { width: string; height: string } {
+  const size = data.profilePhotoSize ?? defaultSize;
+  return { width: `${size}px`, height: `${size}px` };
+}
+
+function getLogoMaxWidth(data: SignatureData, defaultWidth: number): string {
+  return `${data.logoWidth ?? defaultWidth}px`;
+}
+
+function getDividerBorder(data: SignatureData, fallbackColor: string, orientation: "top" | "left" | "right" | "bottom" = "top"): string {
+  const style = data.dividerStyle ?? "solid";
+  if (style === "none") return "none";
+  const width = data.dividerWidth ?? 2;
+  const color = data.dividerColor || fallbackColor;
+  return `${width}px ${style} ${color}`;
+}
+
+function getContentSpacing(density?: string): { section: string; element: string } {
+  switch (density) {
+    case "compact": return { section: "8px", element: "2px" };
+    case "relaxed": return { section: "20px", element: "8px" };
+    case "normal":
+    default: return { section: "12px", element: "4px" };
+  }
+}
+
+function getEffectiveTextColor(data: SignatureData, isDark: boolean, fallbackDark = "#f4f4f5", fallbackLight = "#333333"): string {
+  if (data.textColor) return data.textColor;
+  return isDark ? fallbackDark : fallbackLight;
+}
+
+function getSocialIconBg(shape?: string, color?: string): CSSProperties {
+  if (!shape || shape === "none") return {};
+  const bg = color ? `${color}15` : "transparent";
+  const radius = shape === "circle" ? "50%" : shape === "rounded" ? "6px" : "0";
+  return {
+    backgroundColor: bg,
+    borderRadius: radius,
+    padding: "6px",
+  };
+}
+
+function renderSocialLinks(
+  links: SignatureData["socialLinks"],
+  data: SignatureData,
+  accentColor: string,
+  textColor: string,
+  baseStyle?: CSSProperties,
+) {
+  const iconStyle = data.socialIconStyle ?? "icon";
+  const iconShape = data.socialIconShape ?? "none";
+  const shapeBg = getSocialIconBg(iconShape, accentColor);
+
+  return links.map((link, i) => {
+    const safeUrl = validateUrl(link.url);
+    if (!safeUrl) return null;
+    const label = SOCIAL_PLATFORM_LABELS[link.platform] || link.platform;
+    return (
+      <a
+        key={i}
+        href={safeUrl}
+        style={{
+          display: "inline-block",
+          marginRight: "8px",
+          color: accentColor,
+          textDecoration: "none",
+          verticalAlign: "middle",
+          ...shapeBg,
+          ...baseStyle,
+        }}
+      >
+        {(iconStyle === "icon" || iconStyle === "icon-text") && <SocialIcon platform={link.platform} />}
+        {iconStyle === "icon-text" && <span style={{ marginLeft: "4px", fontSize: "12px" }}>{label}</span>}
+        {iconStyle === "text" && <span style={{ fontSize: "12px", fontWeight: 500 }}>{label}</span>}
+      </a>
+    );
+  });
+}
+
+const SOCIAL_PLATFORM_LABELS: Record<string, string> = {
+  linkedin: "LinkedIn",
+  twitter: "𝕏",
+  facebook: "Facebook",
+  instagram: "Instagram",
+  github: "GitHub",
+  youtube: "YouTube",
+  tiktok: "TikTok",
+  website: "Web",
+};
+
 interface SignaturePreviewProps {
   data: SignatureData;
   templateId: TemplateId;
@@ -51,6 +152,7 @@ const SocialIcon = ({ platform }: { platform: string }) => {
     case "instagram": return <Instagram className={iconClass} />;
     case "github": return <Github className={iconClass} />;
     case "youtube": return <Youtube className={iconClass} />;
+    case "tiktok": return <Music className={iconClass} />;
     default: return <Globe className={iconClass} />;
   }
 };
@@ -66,12 +168,14 @@ function ProfessionalClassic({ data, isDark = false }: { data: SignatureData; is
   const addressParts = [data.address, data.city, data.state, data.zipCode, data.country].filter(Boolean);
   const safeColor = sanitizeColor(data.primaryColor);
   
-  const textPrimary = isDark ? "#f4f4f5" : "#333333";
-  const textSecondary = isDark ? "#a1a1aa" : "#666666";
+  const textPrimary = getEffectiveTextColor(data, isDark);
+  const textSecondary = getEffectiveTextColor(data, isDark, "#a1a1aa", "#666666");
   const textMuted = isDark ? "#71717a" : "#999999";
+  const spacing = getContentSpacing(data.contentPadding);
+  const photo = getPhotoDimensions(data, 80);
 
   return (
-    <table cellPadding="0" cellSpacing="0" style={{ fontFamily: data.fontFamily, fontSize: `${data.fontSize}px`, color: textPrimary }}>
+    <table cellPadding="0" cellSpacing="0" style={{ fontFamily: data.fontFamily, fontSize: `${data.fontSize}px`, color: textPrimary, lineHeight: data.lineHeight ?? 1.4 }}>
       <tbody>
         <tr>
           {data.profilePhotoUrl && (
@@ -79,15 +183,15 @@ function ProfessionalClassic({ data, isDark = false }: { data: SignatureData; is
               <img
                 src={validateUrl(data.profilePhotoUrl) || undefined}
                 alt={data.fullName}
-                style={{ width: "80px", height: "80px", borderRadius: "50%", objectFit: "cover" }}
+                style={{ ...photo, borderRadius: getPhotoRadius(data.photoShape), objectFit: "cover" }}
               />
             </td>
           )}
-          <td style={{ verticalAlign: "top", borderLeft: `3px solid ${safeColor}`, paddingLeft: "16px" }}>
+          <td style={{ verticalAlign: "top", borderLeft: getDividerBorder(data, safeColor, "left"), paddingLeft: "16px" }}>
             <table cellPadding="0" cellSpacing="0">
               <tbody>
                 <tr>
-                  <td style={{ paddingBottom: "4px" }}>
+                  <td style={{ paddingBottom: spacing.element }}>
                     <span 
                       data-editable="fullName"
                       style={applyStyleOverride(
@@ -104,7 +208,7 @@ function ProfessionalClassic({ data, isDark = false }: { data: SignatureData; is
                   <td 
                     data-editable="jobTitle"
                     style={applyStyleOverride(
-                      { paddingBottom: "8px", color: textSecondary },
+                      { paddingBottom: spacing.section, color: textSecondary },
                       getOverride(data, "jobTitle"),
                       data.fontSize
                     )}
@@ -116,7 +220,7 @@ function ProfessionalClassic({ data, isDark = false }: { data: SignatureData; is
                   <td 
                     data-editable="company"
                     style={applyStyleOverride(
-                      { fontWeight: "bold", color: textPrimary, paddingBottom: "8px" },
+                      { fontWeight: "bold", color: textPrimary, paddingBottom: spacing.section },
                       getOverride(data, "company"),
                       data.fontSize
                     )}
@@ -126,7 +230,7 @@ function ProfessionalClassic({ data, isDark = false }: { data: SignatureData; is
                 </tr>
                 {data.email && (
                   <tr>
-                    <td style={{ paddingBottom: "2px" }}>
+                    <td style={{ paddingBottom: spacing.element }}>
                       <a 
                         href={`mailto:${encodeURIComponent(data.email)}`} 
                         data-editable="email"
@@ -146,7 +250,7 @@ function ProfessionalClassic({ data, isDark = false }: { data: SignatureData; is
                     <td 
                       data-editable="phone"
                       style={applyStyleOverride(
-                        { paddingBottom: "2px" },
+                        { paddingBottom: spacing.element },
                         getOverride(data, "phone"),
                         data.fontSize
                       )}
@@ -157,7 +261,7 @@ function ProfessionalClassic({ data, isDark = false }: { data: SignatureData; is
                 )}
                 {data.website && validateUrl(data.website) && (
                   <tr>
-                    <td style={{ paddingBottom: "2px" }}>
+                    <td style={{ paddingBottom: spacing.element }}>
                       <a 
                         href={validateUrl(data.website)} 
                         data-editable="website"
@@ -177,7 +281,7 @@ function ProfessionalClassic({ data, isDark = false }: { data: SignatureData; is
                     <td 
                       data-editable="address"
                       style={applyStyleOverride(
-                        { paddingTop: "4px", color: textSecondary, fontSize: `${data.fontSize - 1}px` },
+                        { paddingTop: spacing.element, color: textSecondary, fontSize: `${data.fontSize - 1}px` },
                         getOverride(data, "address"),
                         data.fontSize - 1
                       )}
@@ -188,32 +292,15 @@ function ProfessionalClassic({ data, isDark = false }: { data: SignatureData; is
                 )}
                 {data.socialLinks.length > 0 && (
                   <tr>
-                    <td style={{ paddingTop: "12px" }}>
-                      {data.socialLinks.map((link, i) => {
-                        const safeUrl = validateUrl(link.url);
-                        if (!safeUrl) return null;
-                        return (
-                          <a
-                            key={i}
-                            href={safeUrl}
-                            style={{
-                              display: "inline-block",
-                              marginRight: "8px",
-                              color: safeColor,
-                              textDecoration: "none",
-                            }}
-                          >
-                            <SocialIcon platform={link.platform} />
-                          </a>
-                        );
-                      })}
+                    <td style={{ paddingTop: spacing.section }}>
+                      {renderSocialLinks(data.socialLinks, data, safeColor, textPrimary)}
                     </td>
                   </tr>
                 )}
                 {data.logoUrl && (
                   <tr>
-                    <td style={{ paddingTop: "12px" }}>
-                      <img src={validateUrl(data.logoUrl) || undefined} alt={data.company} style={{ maxHeight: "40px", maxWidth: "120px" }} />
+                    <td style={{ paddingTop: spacing.section }}>
+                      <img src={validateUrl(data.logoUrl) || undefined} alt={data.company} style={{ maxHeight: "40px", maxWidth: getLogoMaxWidth(data, 120) }} />
                     </td>
                   </tr>
                 )}
@@ -245,12 +332,13 @@ function ProfessionalClassic({ data, isDark = false }: { data: SignatureData; is
 function MinimalModern({ data, isDark = false }: { data: SignatureData; isDark?: boolean }) {
   const safeColor = sanitizeColor(data.primaryColor);
   
-  const textPrimary = isDark ? "#f4f4f5" : "#333333";
-  const textSecondary = isDark ? "#a1a1aa" : "#666666";
+  const textPrimary = getEffectiveTextColor(data, isDark);
+  const textSecondary = getEffectiveTextColor(data, isDark, "#a1a1aa", "#666666");
   const textMuted = isDark ? "#71717a" : "#999999";
+  const spacing = getContentSpacing(data.contentPadding);
   
   return (
-    <table cellPadding="0" cellSpacing="0" style={{ fontFamily: data.fontFamily, fontSize: `${data.fontSize}px`, color: textPrimary }}>
+    <table cellPadding="0" cellSpacing="0" style={{ fontFamily: data.fontFamily, fontSize: `${data.fontSize}px`, color: textPrimary, lineHeight: data.lineHeight ?? 1.4 }}>
       <tbody>
         <tr>
           <td>
@@ -278,7 +366,7 @@ function MinimalModern({ data, isDark = false }: { data: SignatureData; isDark?:
           </td>
         </tr>
         <tr>
-          <td style={{ paddingTop: "4px", paddingBottom: "8px", borderBottom: `2px solid ${safeColor}` }}>
+          <td style={{ paddingTop: spacing.element, paddingBottom: spacing.section, borderBottom: getDividerBorder(data, safeColor) }}>
             <span 
               data-editable="company"
               style={applyStyleOverride(
@@ -292,7 +380,7 @@ function MinimalModern({ data, isDark = false }: { data: SignatureData; isDark?:
           </td>
         </tr>
         <tr>
-          <td style={{ paddingTop: "8px" }}>
+          <td style={{ paddingTop: spacing.section }}>
             <table cellPadding="0" cellSpacing="0">
               <tbody>
                 <tr>
@@ -345,25 +433,8 @@ function MinimalModern({ data, isDark = false }: { data: SignatureData; isDark?:
         </tr>
         {data.socialLinks.length > 0 && (
           <tr>
-            <td style={{ paddingTop: "8px" }}>
-              {data.socialLinks.map((link, i) => {
-                const safeUrl = validateUrl(link.url);
-                if (!safeUrl) return null;
-                return (
-                  <a
-                    key={i}
-                    href={safeUrl}
-                    style={{
-                      display: "inline-block",
-                      marginRight: "12px",
-                      color: textSecondary,
-                      textDecoration: "none",
-                    }}
-                  >
-                    <SocialIcon platform={link.platform} />
-                  </a>
-                );
-              })}
+            <td style={{ paddingTop: spacing.section }}>
+              {renderSocialLinks(data.socialLinks, data, textSecondary, textPrimary)}
             </td>
           </tr>
         )}
@@ -376,24 +447,25 @@ function MinimalModern({ data, isDark = false }: { data: SignatureData; isDark?:
 function CorporateBold({ data, isDark = false }: { data: SignatureData; isDark?: boolean }) {
   const safeColor = sanitizeColor(data.primaryColor);
   
-  const textPrimary = isDark ? "#f4f4f5" : "#333333";
-  const textBold = isDark ? "#fafafa" : "#1a1a1a";
-  const textSecondary = isDark ? "#a1a1aa" : "#666666";
+  const textPrimary = getEffectiveTextColor(data, isDark);
+  const textBold = getEffectiveTextColor(data, isDark, "#fafafa", "#1a1a1a");
+  const textSecondary = getEffectiveTextColor(data, isDark, "#a1a1aa", "#666666");
+  const spacing = getContentSpacing(data.contentPadding);
   
   return (
-    <table cellPadding="0" cellSpacing="0" style={{ fontFamily: data.fontFamily, fontSize: `${data.fontSize}px`, color: textPrimary }}>
+    <table cellPadding="0" cellSpacing="0" style={{ fontFamily: data.fontFamily, fontSize: `${data.fontSize}px`, color: textPrimary, lineHeight: data.lineHeight ?? 1.4 }}>
       <tbody>
         <tr>
           {data.logoUrl && (
-            <td style={{ paddingRight: "20px", verticalAlign: "middle", borderRight: `2px solid ${safeColor}` }}>
-              <img src={validateUrl(data.logoUrl) || undefined} alt={data.company} style={{ maxHeight: "60px", maxWidth: "150px" }} />
+            <td style={{ paddingRight: "20px", verticalAlign: "middle", borderRight: getDividerBorder(data, safeColor, "right") }}>
+              <img src={validateUrl(data.logoUrl) || undefined} alt={data.company} style={{ maxHeight: "60px", maxWidth: getLogoMaxWidth(data, 150) }} />
             </td>
           )}
           <td style={{ paddingLeft: data.logoUrl ? "20px" : "0", verticalAlign: "top" }}>
             <table cellPadding="0" cellSpacing="0">
               <tbody>
                 <tr>
-                  <td style={{ paddingBottom: "2px" }}>
+                  <td style={{ paddingBottom: spacing.element }}>
                     <span 
                       data-editable="fullName"
                       style={applyStyleOverride(
@@ -410,7 +482,7 @@ function CorporateBold({ data, isDark = false }: { data: SignatureData; isDark?:
                   <td 
                     data-editable="jobTitle"
                     style={applyStyleOverride(
-                      { paddingBottom: "4px", color: safeColor, fontWeight: "600", textTransform: "uppercase", fontSize: `${data.fontSize - 1}px`, letterSpacing: "0.5px" },
+                      { paddingBottom: spacing.element, color: safeColor, fontWeight: "600", textTransform: "uppercase", fontSize: `${data.fontSize - 1}px`, letterSpacing: "0.5px" },
                       getOverride(data, "jobTitle"),
                       data.fontSize - 1
                     )}
@@ -419,7 +491,7 @@ function CorporateBold({ data, isDark = false }: { data: SignatureData; isDark?:
                   </td>
                 </tr>
                 <tr>
-                  <td style={{ paddingBottom: "8px" }}>
+                  <td style={{ paddingBottom: spacing.section }}>
                     <span 
                       data-editable="company"
                       style={applyStyleOverride(
@@ -498,27 +570,12 @@ function CorporateBold({ data, isDark = false }: { data: SignatureData; isDark?:
         </tr>
         {data.socialLinks.length > 0 && (
           <tr>
-            <td colSpan={2} style={{ paddingTop: "12px" }}>
-              {data.socialLinks.map((link, i) => {
-                const safeUrl = validateUrl(link.url);
-                if (!safeUrl) return null;
-                return (
-                  <a
-                    key={i}
-                    href={safeUrl}
-                    style={{
-                      display: "inline-block",
-                      marginRight: "10px",
-                      padding: "6px",
-                      backgroundColor: safeColor,
-                      borderRadius: "4px",
-                      color: "#ffffff",
-                      textDecoration: "none",
-                    }}
-                  >
-                    <SocialIcon platform={link.platform} />
-                  </a>
-                );
+            <td colSpan={2} style={{ paddingTop: spacing.section }}>
+              {renderSocialLinks(data.socialLinks, data, safeColor, "#ffffff", {
+                padding: "6px",
+                backgroundColor: safeColor,
+                borderRadius: "4px",
+                color: "#ffffff",
               })}
             </td>
           </tr>
@@ -532,21 +589,23 @@ function CorporateBold({ data, isDark = false }: { data: SignatureData; isDark?:
 function CreativeGradient({ data, isDark = false }: { data: SignatureData; isDark?: boolean }) {
   const safeColor = sanitizeColor(data.primaryColor);
   
-  const textPrimary = isDark ? "#f4f4f5" : "#333333";
-  const textBold = isDark ? "#fafafa" : "#1a1a1a";
+  const textPrimary = getEffectiveTextColor(data, isDark);
+  const textBold = getEffectiveTextColor(data, isDark, "#fafafa", "#1a1a1a");
+  const spacing = getContentSpacing(data.contentPadding);
+  const photo = getPhotoDimensions(data, 70);
   const bgGradient = isDark 
     ? `linear-gradient(135deg, ${safeColor}20, ${safeColor}10)` 
     : `linear-gradient(135deg, ${safeColor}15, ${safeColor}05)`;
   
   return (
-    <table cellPadding="0" cellSpacing="0" style={{ fontFamily: data.fontFamily, fontSize: `${data.fontSize}px`, color: textPrimary }}>
+    <table cellPadding="0" cellSpacing="0" style={{ fontFamily: data.fontFamily, fontSize: `${data.fontSize}px`, color: textPrimary, lineHeight: data.lineHeight ?? 1.4 }}>
       <tbody>
         <tr>
           <td style={{ 
             background: bgGradient,
             padding: "16px",
             borderRadius: "8px",
-            borderLeft: `4px solid ${safeColor}`
+            borderLeft: getDividerBorder(data, safeColor, "left")
           }}>
             <table cellPadding="0" cellSpacing="0">
               <tbody>
@@ -556,7 +615,7 @@ function CreativeGradient({ data, isDark = false }: { data: SignatureData; isDar
                       <img
                         src={validateUrl(data.profilePhotoUrl) || undefined}
                         alt={data.fullName}
-                        style={{ width: "70px", height: "70px", borderRadius: "12px", objectFit: "cover" }}
+                        style={{ ...photo, borderRadius: getPhotoRadius(data.photoShape === "circle" ? "rounded" : data.photoShape), objectFit: "cover" }}
                       />
                     </td>
                   )}
@@ -578,7 +637,7 @@ function CreativeGradient({ data, isDark = false }: { data: SignatureData; isDar
                           </td>
                         </tr>
                         <tr>
-                          <td style={{ paddingBottom: "8px" }}>
+                          <td style={{ paddingBottom: spacing.section }}>
                             <span 
                               data-editable="jobTitle"
                               style={applyStyleOverride(
@@ -635,7 +694,7 @@ function CreativeGradient({ data, isDark = false }: { data: SignatureData; isDar
                         </tr>
                         {data.website && validateUrl(data.website) && (
                           <tr>
-                            <td style={{ paddingTop: "4px" }}>
+                            <td style={{ paddingTop: spacing.element }}>
                               <a 
                                 href={validateUrl(data.website)} 
                                 data-editable="website"
@@ -681,25 +740,8 @@ function CreativeGradient({ data, isDark = false }: { data: SignatureData; isDar
         </tr>
         {data.socialLinks.length > 0 && (
           <tr>
-            <td style={{ paddingTop: "8px" }}>
-              {data.socialLinks.map((link, i) => {
-                const safeUrl = validateUrl(link.url);
-                if (!safeUrl) return null;
-                return (
-                  <a
-                    key={i}
-                    href={safeUrl}
-                    style={{
-                      display: "inline-block",
-                      marginRight: "8px",
-                      color: safeColor,
-                      textDecoration: "none",
-                    }}
-                  >
-                    <SocialIcon platform={link.platform} />
-                  </a>
-                );
-              })}
+            <td style={{ paddingTop: spacing.section }}>
+              {renderSocialLinks(data.socialLinks, data, safeColor, textPrimary)}
             </td>
           </tr>
         )}
@@ -712,26 +754,28 @@ function CreativeGradient({ data, isDark = false }: { data: SignatureData; isDar
 function ExecutiveElegant({ data, isDark = false }: { data: SignatureData; isDark?: boolean }) {
   const safeColor = sanitizeColor(data.primaryColor);
   
-  const textPrimary = isDark ? "#f4f4f5" : "#333333";
-  const textBold = isDark ? "#fafafa" : "#1a1a1a";
-  const textSecondary = isDark ? "#a1a1aa" : "#666666";
+  const textPrimary = getEffectiveTextColor(data, isDark);
+  const textBold = getEffectiveTextColor(data, isDark, "#fafafa", "#1a1a1a");
+  const textSecondary = getEffectiveTextColor(data, isDark, "#a1a1aa", "#666666");
+  const spacing = getContentSpacing(data.contentPadding);
+  const photo = getPhotoDimensions(data, 90);
   
   return (
-    <table cellPadding="0" cellSpacing="0" style={{ fontFamily: data.fontFamily, fontSize: `${data.fontSize}px`, color: textPrimary }}>
+    <table cellPadding="0" cellSpacing="0" style={{ fontFamily: data.fontFamily, fontSize: `${data.fontSize}px`, color: textPrimary, lineHeight: data.lineHeight ?? 1.4 }}>
       <tbody>
         <tr>
-          <td style={{ textAlign: "center", paddingBottom: "12px" }}>
+          <td style={{ textAlign: "center", paddingBottom: spacing.section }}>
             {data.profilePhotoUrl && (
               <img
                 src={validateUrl(data.profilePhotoUrl) || undefined}
                 alt={data.fullName}
-                style={{ width: "90px", height: "90px", borderRadius: "50%", objectFit: "cover", border: `3px solid ${safeColor}` }}
+                style={{ ...photo, borderRadius: getPhotoRadius(data.photoShape), objectFit: "cover", border: getDividerBorder(data, safeColor) }}
               />
             )}
           </td>
         </tr>
         <tr>
-          <td style={{ textAlign: "center", paddingBottom: "4px" }}>
+          <td style={{ textAlign: "center", paddingBottom: spacing.element }}>
             <span 
               data-editable="fullName"
               style={applyStyleOverride(
@@ -745,7 +789,7 @@ function ExecutiveElegant({ data, isDark = false }: { data: SignatureData; isDar
           </td>
         </tr>
         <tr>
-          <td style={{ textAlign: "center", paddingBottom: "8px" }}>
+          <td style={{ textAlign: "center", paddingBottom: spacing.section }}>
             <span 
               data-editable="jobTitle"
               style={applyStyleOverride(
@@ -759,15 +803,15 @@ function ExecutiveElegant({ data, isDark = false }: { data: SignatureData; isDar
           </td>
         </tr>
         <tr>
-          <td style={{ textAlign: "center", paddingBottom: "12px" }}>
-            <div style={{ width: "60px", height: "2px", backgroundColor: safeColor, margin: "0 auto" }} />
+          <td style={{ textAlign: "center", paddingBottom: spacing.section }}>
+            <div style={{ width: "60px", borderTop: getDividerBorder(data, safeColor), margin: "0 auto" }} />
           </td>
         </tr>
         <tr>
           <td 
             data-editable="company"
             style={applyStyleOverride(
-              { textAlign: "center", fontWeight: "500", paddingBottom: "12px" },
+              { textAlign: "center", fontWeight: "500", paddingBottom: spacing.section },
               getOverride(data, "company"),
               data.fontSize
             )}
@@ -814,33 +858,15 @@ function ExecutiveElegant({ data, isDark = false }: { data: SignatureData; isDar
         </tr>
         {data.socialLinks.length > 0 && (
           <tr>
-            <td style={{ textAlign: "center", paddingTop: "12px" }}>
-              {data.socialLinks.map((link, i) => {
-                const safeUrl = validateUrl(link.url);
-                if (!safeUrl) return null;
-                return (
-                  <a
-                    key={i}
-                    href={safeUrl}
-                    style={{
-                      display: "inline-block",
-                      marginLeft: "8px",
-                      marginRight: "8px",
-                      color: textSecondary,
-                      textDecoration: "none",
-                    }}
-                  >
-                    <SocialIcon platform={link.platform} />
-                  </a>
-                );
-              })}
+            <td style={{ textAlign: "center", paddingTop: spacing.section }}>
+              {renderSocialLinks(data.socialLinks, data, textSecondary, textPrimary, { marginLeft: "8px" })}
             </td>
           </tr>
         )}
         {data.logoUrl && (
           <tr>
             <td style={{ textAlign: "center", paddingTop: "16px" }}>
-              <img src={validateUrl(data.logoUrl) || undefined} alt={data.company} style={{ maxHeight: "35px", maxWidth: "100px" }} />
+              <img src={validateUrl(data.logoUrl) || undefined} alt={data.company} style={{ maxHeight: "35px", maxWidth: getLogoMaxWidth(data, 100) }} />
             </td>
           </tr>
         )}
@@ -853,21 +879,22 @@ function ExecutiveElegant({ data, isDark = false }: { data: SignatureData; isDar
 function StartupFresh({ data, isDark = false }: { data: SignatureData; isDark?: boolean }) {
   const safeColor = sanitizeColor(data.primaryColor);
   
-  const textPrimary = isDark ? "#f4f4f5" : "#333333";
-  const textSecondary = isDark ? "#a1a1aa" : "#666666";
+  const textPrimary = getEffectiveTextColor(data, isDark);
+  const textSecondary = getEffectiveTextColor(data, isDark, "#a1a1aa", "#666666");
   const bgSecondary = isDark ? "#27272a" : "#f5f5f5";
+  const spacing = getContentSpacing(data.contentPadding);
   
   return (
-    <table cellPadding="0" cellSpacing="0" style={{ fontFamily: data.fontFamily, fontSize: `${data.fontSize}px`, color: textPrimary }}>
+    <table cellPadding="0" cellSpacing="0" style={{ fontFamily: data.fontFamily, fontSize: `${data.fontSize}px`, color: textPrimary, lineHeight: data.lineHeight ?? 1.4 }}>
       <tbody>
         <tr>
-          <td style={{ paddingBottom: "8px" }}>
+          <td style={{ paddingBottom: spacing.section }}>
             <table cellPadding="0" cellSpacing="0">
               <tbody>
                 <tr>
                   {data.logoUrl && (
                     <td style={{ paddingRight: "12px", verticalAlign: "middle" }}>
-                      <img src={validateUrl(data.logoUrl) || undefined} alt={data.company} style={{ maxHeight: "32px", maxWidth: "100px" }} />
+                      <img src={validateUrl(data.logoUrl) || undefined} alt={data.company} style={{ maxHeight: "32px", maxWidth: getLogoMaxWidth(data, 100) }} />
                     </td>
                   )}
                   <td style={{ verticalAlign: "middle" }}>
@@ -888,7 +915,7 @@ function StartupFresh({ data, isDark = false }: { data: SignatureData; isDark?: 
           </td>
         </tr>
         <tr>
-          <td style={{ paddingBottom: "12px" }}>
+          <td style={{ paddingBottom: spacing.section }}>
             <span 
               data-editable="jobTitle"
               style={applyStyleOverride(
@@ -959,28 +986,12 @@ function StartupFresh({ data, isDark = false }: { data: SignatureData; isDark?: 
         </tr>
         {data.socialLinks.length > 0 && (
           <tr>
-            <td style={{ paddingTop: "10px" }}>
-              {data.socialLinks.map((link, i) => {
-                const safeUrl = validateUrl(link.url);
-                if (!safeUrl) return null;
-                return (
-                  <a
-                    key={i}
-                    href={safeUrl}
-                    style={{
-                      display: "inline-block",
-                      marginRight: "6px",
-                      padding: "4px 8px",
-                      backgroundColor: bgSecondary,
-                      borderRadius: "4px",
-                      color: textSecondary,
-                      textDecoration: "none",
-                      fontSize: `${data.fontSize - 2}px`,
-                    }}
-                  >
-                    <SocialIcon platform={link.platform} />
-                  </a>
-                );
+            <td style={{ paddingTop: spacing.section }}>
+              {renderSocialLinks(data.socialLinks, data, textSecondary, textPrimary, {
+                padding: "4px 8px",
+                backgroundColor: bgSecondary,
+                borderRadius: "4px",
+                fontSize: `${data.fontSize - 2}px`,
               })}
             </td>
           </tr>
@@ -1010,6 +1021,627 @@ function StartupFresh({ data, isDark = false }: { data: SignatureData; isDark?: 
   );
 }
 
+// Compact Horizontal Template
+function CompactHorizontal({ data, isDark = false }: { data: SignatureData; isDark?: boolean }) {
+  const safeColor = sanitizeColor(data.primaryColor);
+  const textPrimary = getEffectiveTextColor(data, isDark);
+  const textSecondary = getEffectiveTextColor(data, isDark, "#a1a1aa", "#666666");
+  const textMuted = isDark ? "#71717a" : "#999999";
+  const spacing = getContentSpacing(data.contentPadding);
+  const photo = getPhotoDimensions(data, 48);
+
+  return (
+    <table cellPadding="0" cellSpacing="0" style={{ fontFamily: data.fontFamily, fontSize: `${data.fontSize}px`, color: textPrimary, lineHeight: data.lineHeight ?? 1.4 }}>
+      <tbody>
+        <tr>
+          {data.profilePhotoUrl && (
+            <td style={{ paddingRight: "12px", verticalAlign: "middle" }}>
+              <img
+                src={validateUrl(data.profilePhotoUrl) || undefined}
+                alt={data.fullName}
+                style={{ ...photo, borderRadius: getPhotoRadius(data.photoShape), objectFit: "cover" }}
+              />
+            </td>
+          )}
+          <td style={{ verticalAlign: "middle", paddingRight: "16px", borderRight: getDividerBorder(data, safeColor, "right") }}>
+            <span
+              data-editable="fullName"
+              style={applyStyleOverride(
+                { fontWeight: "bold", fontSize: `${data.fontSize + 1}px`, whiteSpace: "nowrap" as const },
+                getOverride(data, "fullName"),
+                data.fontSize + 1
+              )}
+            >
+              {data.fullName || "Your Name"}
+            </span>
+            <br />
+            <span
+              data-editable="jobTitle"
+              style={applyStyleOverride(
+                { color: textSecondary, fontSize: `${data.fontSize - 1}px`, whiteSpace: "nowrap" as const },
+                getOverride(data, "jobTitle"),
+                data.fontSize - 1
+              )}
+            >
+              {data.jobTitle || "Job Title"}
+            </span>
+          </td>
+          <td style={{ verticalAlign: "middle", paddingLeft: "16px" }}>
+            <table cellPadding="0" cellSpacing="0" style={{ fontSize: `${data.fontSize - 1}px` }}>
+              <tbody>
+                {data.email && (
+                  <tr>
+                    <td style={{ paddingBottom: spacing.element }}>
+                      <a
+                        href={`mailto:${encodeURIComponent(data.email)}`}
+                        data-editable="email"
+                        style={applyStyleOverride(
+                          { color: textPrimary, textDecoration: "none" },
+                          getOverride(data, "email"),
+                          data.fontSize - 1
+                        )}
+                      >
+                        {data.email}
+                      </a>
+                    </td>
+                  </tr>
+                )}
+                {data.phone && (
+                  <tr>
+                    <td
+                      data-editable="phone"
+                      style={applyStyleOverride(
+                        { paddingBottom: spacing.element, color: textSecondary },
+                        getOverride(data, "phone"),
+                        data.fontSize - 1
+                      )}
+                    >
+                      {data.phone}
+                    </td>
+                  </tr>
+                )}
+                {data.website && validateUrl(data.website) && (
+                  <tr>
+                    <td>
+                      <a
+                        href={validateUrl(data.website)}
+                        data-editable="website"
+                        style={applyStyleOverride(
+                          { color: safeColor, textDecoration: "none" },
+                          getOverride(data, "website"),
+                          data.fontSize - 1
+                        )}
+                      >
+                        {data.website.replace(/^https?:\/\//, "")}
+                      </a>
+                    </td>
+                  </tr>
+                )}
+              </tbody>
+            </table>
+          </td>
+        </tr>
+        {data.disclaimer && (
+          <tr>
+            <td
+              colSpan={3}
+              data-editable="disclaimer"
+              style={applyStyleOverride(
+                { paddingTop: "8px", fontSize: `${data.fontSize - 3}px`, color: textMuted },
+                getOverride(data, "disclaimer"),
+                data.fontSize - 3
+              )}
+            >
+              {data.disclaimer}
+            </td>
+          </tr>
+        )}
+      </tbody>
+    </table>
+  );
+}
+
+// Modern Card Template
+function ModernCard({ data, isDark = false }: { data: SignatureData; isDark?: boolean }) {
+  const safeColor = sanitizeColor(data.primaryColor);
+  const textPrimary = getEffectiveTextColor(data, isDark);
+  const textSecondary = getEffectiveTextColor(data, isDark, "#a1a1aa", "#666666");
+  const textMuted = isDark ? "#71717a" : "#999999";
+  const cardBg = isDark ? "#1c1c1e" : "#f9fafb";
+  const borderColor = isDark ? "#2c2c2e" : "#e5e7eb";
+  const spacing = getContentSpacing(data.contentPadding);
+  const photo = getPhotoDimensions(data, 72);
+
+  return (
+    <table cellPadding="0" cellSpacing="0" style={{ fontFamily: data.fontFamily, fontSize: `${data.fontSize}px`, color: textPrimary, lineHeight: data.lineHeight ?? 1.4 }}>
+      <tbody>
+        <tr>
+          <td style={{
+            backgroundColor: cardBg,
+            border: `1px solid ${borderColor}`,
+            borderRadius: "12px",
+            padding: "20px",
+            borderTop: getDividerBorder(data, safeColor),
+          }}>
+            <table cellPadding="0" cellSpacing="0" style={{ width: "100%" }}>
+              <tbody>
+                <tr>
+                  {data.profilePhotoUrl && (
+                    <td style={{ paddingRight: "16px", verticalAlign: "top" }}>
+                      <img
+                        src={validateUrl(data.profilePhotoUrl) || undefined}
+                        alt={data.fullName}
+                        style={{ ...photo, borderRadius: getPhotoRadius(data.photoShape === "circle" ? "rounded" : data.photoShape), objectFit: "cover" }}
+                      />
+                    </td>
+                  )}
+                  <td style={{ verticalAlign: "top" }}>
+                    <span
+                      data-editable="fullName"
+                      style={applyStyleOverride(
+                        { fontWeight: "bold", fontSize: `${data.fontSize + 2}px`, display: "block", paddingBottom: "2px" },
+                        getOverride(data, "fullName"),
+                        data.fontSize + 2
+                      )}
+                    >
+                      {data.fullName || "Your Name"}
+                    </span>
+                    <span
+                      data-editable="jobTitle"
+                      style={applyStyleOverride(
+                        { color: safeColor, fontWeight: "500", display: "block", paddingBottom: "2px" },
+                        getOverride(data, "jobTitle"),
+                        data.fontSize
+                      )}
+                    >
+                      {data.jobTitle || "Job Title"}
+                    </span>
+                    <span
+                      data-editable="company"
+                      style={applyStyleOverride(
+                        { color: textSecondary, display: "block", paddingBottom: spacing.section },
+                        getOverride(data, "company"),
+                        data.fontSize
+                      )}
+                    >
+                      {data.company || "Company"}{data.department ? ` · ${data.department}` : ""}
+                    </span>
+                  </td>
+                  {data.logoUrl && (
+                    <td style={{ verticalAlign: "top", paddingLeft: "16px", textAlign: "right" }}>
+                      <img src={validateUrl(data.logoUrl) || undefined} alt={data.company} style={{ maxHeight: "36px", maxWidth: getLogoMaxWidth(data, 100) }} />
+                    </td>
+                  )}
+                </tr>
+              </tbody>
+            </table>
+            {/* Divider */}
+            <div style={{ borderTop: getDividerBorder(data, borderColor), margin: `${spacing.section} 0` }} />
+            {/* Contact row */}
+            <table cellPadding="0" cellSpacing="0" style={{ fontSize: `${data.fontSize - 1}px` }}>
+              <tbody>
+                <tr>
+                  {data.email && (
+                    <td style={{ paddingRight: "16px" }}>
+                      <a
+                        href={`mailto:${encodeURIComponent(data.email)}`}
+                        data-editable="email"
+                        style={applyStyleOverride(
+                          { color: textPrimary, textDecoration: "none" },
+                          getOverride(data, "email"),
+                          data.fontSize - 1
+                        )}
+                      >
+                        {data.email}
+                      </a>
+                    </td>
+                  )}
+                  {data.phone && (
+                    <td
+                      data-editable="phone"
+                      style={applyStyleOverride(
+                        { paddingRight: "16px", color: textSecondary },
+                        getOverride(data, "phone"),
+                        data.fontSize - 1
+                      )}
+                    >
+                      {data.phone}
+                    </td>
+                  )}
+                  {data.website && validateUrl(data.website) && (
+                    <td>
+                      <a
+                        href={validateUrl(data.website)}
+                        data-editable="website"
+                        style={applyStyleOverride(
+                          { color: safeColor, textDecoration: "none" },
+                          getOverride(data, "website"),
+                          data.fontSize - 1
+                        )}
+                      >
+                        {data.website.replace(/^https?:\/\//, "")}
+                      </a>
+                    </td>
+                  )}
+                </tr>
+              </tbody>
+            </table>
+            {data.socialLinks.length > 0 && (
+              <div style={{ paddingTop: spacing.section }}>
+                {renderSocialLinks(data.socialLinks, data, safeColor, textPrimary, {
+                  padding: "4px 8px",
+                  backgroundColor: `${safeColor}15`,
+                  borderRadius: "6px",
+                })}
+              </div>
+            )}
+          </td>
+        </tr>
+        {data.disclaimer && (
+          <tr>
+            <td
+              data-editable="disclaimer"
+              style={applyStyleOverride(
+                { paddingTop: "12px", fontSize: `${data.fontSize - 3}px`, color: textMuted },
+                getOverride(data, "disclaimer"),
+                data.fontSize - 3
+              )}
+            >
+              {data.disclaimer}
+            </td>
+          </tr>
+        )}
+      </tbody>
+    </table>
+  );
+}
+
+// Two Column Template
+function TwoColumn({ data, isDark = false }: { data: SignatureData; isDark?: boolean }) {
+  const safeColor = sanitizeColor(data.primaryColor);
+  const textPrimary = getEffectiveTextColor(data, isDark);
+  const textSecondary = getEffectiveTextColor(data, isDark, "#a1a1aa", "#666666");
+  const textMuted = isDark ? "#71717a" : "#999999";
+  const spacing = getContentSpacing(data.contentPadding);
+  const photo = getPhotoDimensions(data, 80);
+
+  return (
+    <table cellPadding="0" cellSpacing="0" style={{ fontFamily: data.fontFamily, fontSize: `${data.fontSize}px`, color: textPrimary, lineHeight: data.lineHeight ?? 1.4 }}>
+      <tbody>
+        <tr>
+          {/* Left column: identity */}
+          <td style={{ verticalAlign: "top", paddingRight: "20px", borderRight: getDividerBorder(data, safeColor, "right"), minWidth: "160px" }}>
+            {data.profilePhotoUrl && (
+              <div style={{ paddingBottom: spacing.section }}>
+                <img
+                  src={validateUrl(data.profilePhotoUrl) || undefined}
+                  alt={data.fullName}
+                  style={{ ...photo, borderRadius: getPhotoRadius(data.photoShape), objectFit: "cover" }}
+                />
+              </div>
+            )}
+            <span
+              data-editable="fullName"
+              style={applyStyleOverride(
+                { fontWeight: "bold", fontSize: `${data.fontSize + 2}px`, display: "block", paddingBottom: spacing.element },
+                getOverride(data, "fullName"),
+                data.fontSize + 2
+              )}
+            >
+              {data.fullName || "Your Name"}
+            </span>
+            <span
+              data-editable="jobTitle"
+              style={applyStyleOverride(
+                { color: safeColor, display: "block", paddingBottom: spacing.element, fontWeight: "500" },
+                getOverride(data, "jobTitle"),
+                data.fontSize
+              )}
+            >
+              {data.jobTitle || "Job Title"}
+            </span>
+            <span
+              data-editable="company"
+              style={applyStyleOverride(
+                { color: textSecondary, display: "block" },
+                getOverride(data, "company"),
+                data.fontSize
+              )}
+            >
+              {data.company || "Company"}
+            </span>
+            {data.logoUrl && (
+              <div style={{ paddingTop: spacing.section }}>
+                <img src={validateUrl(data.logoUrl) || undefined} alt={data.company} style={{ maxHeight: "32px", maxWidth: getLogoMaxWidth(data, 100) }} />
+              </div>
+            )}
+          </td>
+          {/* Right column: contact + social */}
+          <td style={{ verticalAlign: "top", paddingLeft: "20px" }}>
+            <table cellPadding="0" cellSpacing="0">
+              <tbody>
+                {data.email && (
+                  <tr>
+                    <td style={{ paddingBottom: spacing.element }}>
+                      <a
+                        href={`mailto:${encodeURIComponent(data.email)}`}
+                        data-editable="email"
+                        style={applyStyleOverride(
+                          { color: textPrimary, textDecoration: "none" },
+                          getOverride(data, "email"),
+                          data.fontSize
+                        )}
+                      >
+                        ✉ {data.email}
+                      </a>
+                    </td>
+                  </tr>
+                )}
+                {data.phone && (
+                  <tr>
+                    <td
+                      data-editable="phone"
+                      style={applyStyleOverride(
+                        { paddingBottom: spacing.element, color: textSecondary },
+                        getOverride(data, "phone"),
+                        data.fontSize
+                      )}
+                    >
+                      ☎ {data.phone}
+                    </td>
+                  </tr>
+                )}
+                {data.website && validateUrl(data.website) && (
+                  <tr>
+                    <td style={{ paddingBottom: spacing.element }}>
+                      <a
+                        href={validateUrl(data.website)}
+                        data-editable="website"
+                        style={applyStyleOverride(
+                          { color: safeColor, textDecoration: "none" },
+                          getOverride(data, "website"),
+                          data.fontSize
+                        )}
+                      >
+                        🌐 {data.website.replace(/^https?:\/\//, "")}
+                      </a>
+                    </td>
+                  </tr>
+                )}
+                {(data.address || data.city) && (
+                  <tr>
+                    <td
+                      data-editable="address"
+                      style={applyStyleOverride(
+                        { paddingBottom: spacing.element, color: textMuted, fontSize: `${data.fontSize - 1}px` },
+                        getOverride(data, "address"),
+                        data.fontSize - 1
+                      )}
+                    >
+                      📍 {[data.address, data.city, data.state].filter(Boolean).join(", ")}
+                    </td>
+                  </tr>
+                )}
+              </tbody>
+            </table>
+            {data.socialLinks.length > 0 && (
+              <div style={{ paddingTop: spacing.section }}>
+                {renderSocialLinks(data.socialLinks, data, safeColor, textPrimary)}
+              </div>
+            )}
+            {data.calendarLink && validateUrl(data.calendarLink) && (
+              <div style={{ paddingTop: "12px" }}>
+                <a
+                  href={validateUrl(data.calendarLink)}
+                  style={{
+                    display: "inline-block",
+                    padding: "6px 14px",
+                    backgroundColor: safeColor,
+                    color: "#ffffff",
+                    borderRadius: "6px",
+                    textDecoration: "none",
+                    fontSize: `${data.fontSize - 1}px`,
+                    fontWeight: "500",
+                  }}
+                >
+                  📅 Book a Meeting
+                </a>
+              </div>
+            )}
+          </td>
+        </tr>
+        {data.disclaimer && (
+          <tr>
+            <td
+              colSpan={2}
+              data-editable="disclaimer"
+              style={applyStyleOverride(
+                { paddingTop: "14px", fontSize: `${data.fontSize - 3}px`, color: textMuted },
+                getOverride(data, "disclaimer"),
+                data.fontSize - 3
+              )}
+            >
+              {data.disclaimer}
+            </td>
+          </tr>
+        )}
+      </tbody>
+    </table>
+  );
+}
+
+// Banner CTA Template
+function BannerCTA({ data, isDark = false }: { data: SignatureData; isDark?: boolean }) {
+  const safeColor = sanitizeColor(data.primaryColor);
+  const textPrimary = getEffectiveTextColor(data, isDark);
+  const textSecondary = getEffectiveTextColor(data, isDark, "#a1a1aa", "#666666");
+  const textMuted = isDark ? "#71717a" : "#999999";
+  const spacing = getContentSpacing(data.contentPadding);
+  const photo = getPhotoDimensions(data, 64);
+
+  return (
+    <table cellPadding="0" cellSpacing="0" style={{ fontFamily: data.fontFamily, fontSize: `${data.fontSize}px`, color: textPrimary, lineHeight: data.lineHeight ?? 1.4, maxWidth: "500px" }}>
+      <tbody>
+        {/* Banner */}
+        {data.bannerUrl && validateUrl(data.bannerUrl) && (
+          <tr>
+            <td style={{ paddingBottom: spacing.section }}>
+              {data.bannerLink && validateUrl(data.bannerLink) ? (
+                <a href={validateUrl(data.bannerLink)} style={{ textDecoration: "none" }}>
+                  <img
+                    src={validateUrl(data.bannerUrl) || undefined}
+                    alt="Banner"
+                    style={{ width: "100%", maxHeight: "120px", objectFit: "cover", borderRadius: "8px", display: "block" }}
+                  />
+                </a>
+              ) : (
+                <img
+                  src={validateUrl(data.bannerUrl) || undefined}
+                  alt="Banner"
+                  style={{ width: "100%", maxHeight: "120px", objectFit: "cover", borderRadius: "8px", display: "block" }}
+                />
+              )}
+            </td>
+          </tr>
+        )}
+        {/* Identity row */}
+        <tr>
+          <td>
+            <table cellPadding="0" cellSpacing="0">
+              <tbody>
+                <tr>
+                  {data.profilePhotoUrl && (
+                    <td style={{ paddingRight: "14px", verticalAlign: "top" }}>
+                      <img
+                        src={validateUrl(data.profilePhotoUrl) || undefined}
+                        alt={data.fullName}
+                        style={{ ...photo, borderRadius: getPhotoRadius(data.photoShape), objectFit: "cover", border: getDividerBorder(data, safeColor) }}
+                      />
+                    </td>
+                  )}
+                  <td style={{ verticalAlign: "top" }}>
+                    <span
+                      data-editable="fullName"
+                      style={applyStyleOverride(
+                        { fontWeight: "bold", fontSize: `${data.fontSize + 2}px`, display: "block", paddingBottom: "2px" },
+                        getOverride(data, "fullName"),
+                        data.fontSize + 2
+                      )}
+                    >
+                      {data.fullName || "Your Name"}
+                    </span>
+                    <span
+                      data-editable="jobTitle"
+                      style={applyStyleOverride(
+                        { color: textSecondary, display: "block", paddingBottom: "2px" },
+                        getOverride(data, "jobTitle"),
+                        data.fontSize
+                      )}
+                    >
+                      {data.jobTitle || "Job Title"}
+                    </span>
+                    <span
+                      data-editable="company"
+                      style={applyStyleOverride(
+                        { color: safeColor, fontWeight: "500", display: "block" },
+                        getOverride(data, "company"),
+                        data.fontSize
+                      )}
+                    >
+                      {data.company || "Company"}
+                    </span>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </td>
+        </tr>
+        {/* Contact + CTA */}
+        <tr>
+          <td style={{ paddingTop: spacing.section }}>
+            <table cellPadding="0" cellSpacing="0" style={{ fontSize: `${data.fontSize - 1}px` }}>
+              <tbody>
+                <tr>
+                  {data.email && (
+                    <td style={{ paddingRight: "16px" }}>
+                      <a
+                        href={`mailto:${encodeURIComponent(data.email)}`}
+                        data-editable="email"
+                        style={applyStyleOverride(
+                          { color: textPrimary, textDecoration: "none" },
+                          getOverride(data, "email"),
+                          data.fontSize - 1
+                        )}
+                      >
+                        {data.email}
+                      </a>
+                    </td>
+                  )}
+                  {data.phone && (
+                    <td
+                      data-editable="phone"
+                      style={applyStyleOverride(
+                        { color: textSecondary },
+                        getOverride(data, "phone"),
+                        data.fontSize - 1
+                      )}
+                    >
+                      {data.phone}
+                    </td>
+                  )}
+                </tr>
+              </tbody>
+            </table>
+          </td>
+        </tr>
+        {/* CTA Button */}
+        {data.calendarLink && validateUrl(data.calendarLink) && (
+          <tr>
+            <td style={{ paddingTop: "12px" }}>
+              <a
+                href={validateUrl(data.calendarLink)}
+                style={{
+                  display: "inline-block",
+                  padding: "10px 24px",
+                  backgroundColor: safeColor,
+                  color: "#ffffff",
+                  borderRadius: "8px",
+                  textDecoration: "none",
+                  fontWeight: "600",
+                  fontSize: `${data.fontSize}px`,
+                }}
+              >
+                📅 Schedule a Call
+              </a>
+            </td>
+          </tr>
+        )}
+        {data.socialLinks.length > 0 && (
+          <tr>
+            <td style={{ paddingTop: spacing.section }}>
+              {renderSocialLinks(data.socialLinks, data, textSecondary, textPrimary)}
+            </td>
+          </tr>
+        )}
+        {data.disclaimer && (
+          <tr>
+            <td
+              data-editable="disclaimer"
+              style={applyStyleOverride(
+                { paddingTop: "14px", fontSize: `${data.fontSize - 3}px`, color: textMuted },
+                getOverride(data, "disclaimer"),
+                data.fontSize - 3
+              )}
+            >
+              {data.disclaimer}
+            </td>
+          </tr>
+        )}
+      </tbody>
+    </table>
+  );
+}
+
 export function SignaturePreview({ data, templateId, previewTheme = "light" }: SignaturePreviewProps) {
   const isDark = previewTheme === "dark";
   
@@ -1027,6 +1659,14 @@ export function SignaturePreview({ data, templateId, previewTheme = "light" }: S
         return <ExecutiveElegant data={data} isDark={isDark} />;
       case "startup-fresh":
         return <StartupFresh data={data} isDark={isDark} />;
+      case "compact-horizontal":
+        return <CompactHorizontal data={data} isDark={isDark} />;
+      case "modern-card":
+        return <ModernCard data={data} isDark={isDark} />;
+      case "two-column":
+        return <TwoColumn data={data} isDark={isDark} />;
+      case "banner-cta":
+        return <BannerCTA data={data} isDark={isDark} />;
       default:
         return <ProfessionalClassic data={data} isDark={isDark} />;
     }
@@ -1062,6 +1702,31 @@ export function SignaturePreview({ data, templateId, previewTheme = "light" }: S
   );
 }
 
+// Platform label map for email-safe export (SVGs are stripped by most email clients)
+const PLATFORM_LABELS: Record<string, string> = {
+  linkedin: "LinkedIn",
+  twitter: "𝕏",
+  facebook: "Facebook",
+  instagram: "Instagram",
+  github: "GitHub",
+  youtube: "YouTube",
+  tiktok: "TikTok",
+  website: "Web",
+};
+
+// Detect platform from a social link URL
+function detectPlatformFromUrl(url: string): string | null {
+  const lower = url.toLowerCase();
+  if (lower.includes("linkedin.com")) return "linkedin";
+  if (lower.includes("twitter.com") || lower.includes("x.com")) return "twitter";
+  if (lower.includes("facebook.com")) return "facebook";
+  if (lower.includes("instagram.com")) return "instagram";
+  if (lower.includes("github.com")) return "github";
+  if (lower.includes("youtube.com")) return "youtube";
+  if (lower.includes("tiktok.com")) return "tiktok";
+  return null;
+}
+
 // Export function to generate HTML string for copying
 export function generateSignatureHTML(data: SignatureData, templateId: TemplateId): string {
   // Use specific attribute selector to prevent DOM clobbering attacks
@@ -1071,7 +1736,26 @@ export function generateSignatureHTML(data: SignatureData, templateId: TemplateI
   // Clone and clean up the HTML
   const clone = container.cloneNode(true) as HTMLElement;
   
-  // Remove any React-specific attributes
+  // Replace SVG icons with email-safe text labels
+  // Email clients (Gmail, Outlook) strip <svg> tags entirely
+  const allLinks = clone.querySelectorAll("a");
+  allLinks.forEach((link) => {
+    const svg = link.querySelector("svg");
+    if (!svg) return;
+    
+    // Detect platform from href
+    const href = link.getAttribute("href") || "";
+    const platform = detectPlatformFromUrl(href);
+    const label = platform ? PLATFORM_LABELS[platform] : PLATFORM_LABELS["website"];
+    
+    // Replace SVG with a styled text span
+    const textNode = document.createElement("span");
+    textNode.textContent = label || "Link";
+    textNode.setAttribute("style", "font-size: 12px; font-weight: 500;");
+    svg.replaceWith(textNode);
+  });
+  
+  // Remove React-specific attributes and class (Tailwind) attributes
   const elements = clone.querySelectorAll("*");
   elements.forEach((el) => {
     const attrs = el.attributes;

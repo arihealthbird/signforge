@@ -134,6 +134,73 @@ const TemplatePreviewIcon = ({ templateId, category }: { templateId: string; cat
         </svg>
       );
     
+    case "compact-horizontal":
+      // Single row: photo | name/title | contact
+      return (
+        <svg viewBox="0 0 64 48" className="w-full h-full">
+          <circle cx="10" cy="24" r="7" className="fill-muted-foreground/30" />
+          <line x1="22" y1="14" x2="22" y2="34" className={`stroke-current ${accentClass}`} strokeWidth="2" />
+          <rect x="26" y="18" width="14" height="3" rx="1" className="fill-muted-foreground/50" />
+          <rect x="26" y="24" width="10" height="2" rx="1" className="fill-muted-foreground/30" />
+          <line x1="42" y1="14" x2="42" y2="34" className="stroke-muted-foreground/20" strokeWidth="1" />
+          <rect x="46" y="17" width="14" height="2" rx="1" className="fill-muted-foreground/30" />
+          <rect x="46" y="22" width="12" height="2" rx="1" className="fill-muted-foreground/30" />
+          <rect x="46" y="27" width="10" height="2" rx="1" className={`fill-current ${accentClass} opacity-50`} />
+        </svg>
+      );
+
+    case "modern-card":
+      // Card with border, top accent, structured content
+      return (
+        <svg viewBox="0 0 64 48" className="w-full h-full">
+          <rect x="4" y="4" width="56" height="40" rx="4" className="fill-muted-foreground/10 stroke-muted-foreground/20" strokeWidth="1" />
+          <rect x="4" y="4" width="56" height="3" rx="2" className={`fill-current ${accentClass}`} />
+          <rect x="10" y="12" width="12" height="12" rx="3" className="fill-muted-foreground/30" />
+          <rect x="26" y="12" width="18" height="3" rx="1" className="fill-muted-foreground/50" />
+          <rect x="26" y="18" width="14" height="2" rx="1" className={`fill-current ${accentClass} opacity-50`} />
+          <rect x="26" y="23" width="20" height="2" rx="1" className="fill-muted-foreground/30" />
+          <line x1="10" y1="30" x2="54" y2="30" className="stroke-muted-foreground/20" strokeWidth="1" />
+          <rect x="10" y="34" width="16" height="2" rx="1" className="fill-muted-foreground/30" />
+          <rect x="30" y="34" width="10" height="2" rx="1" className="fill-muted-foreground/30" />
+          <rect x="10" y="40" width="6" height="4" rx="2" className={`fill-current ${accentClass} opacity-25`} />
+          <rect x="18" y="40" width="6" height="4" rx="2" className={`fill-current ${accentClass} opacity-25`} />
+        </svg>
+      );
+
+    case "two-column":
+      // Left identity column | Right contact column
+      return (
+        <svg viewBox="0 0 64 48" className="w-full h-full">
+          <circle cx="14" cy="12" r="6" className="fill-muted-foreground/30" />
+          <rect x="6" y="22" width="18" height="3" rx="1" className="fill-muted-foreground/50" />
+          <rect x="6" y="28" width="14" height="2" rx="1" className={`fill-current ${accentClass} opacity-50`} />
+          <rect x="6" y="33" width="16" height="2" rx="1" className="fill-muted-foreground/30" />
+          <line x1="30" y1="6" x2="30" y2="42" className={`stroke-current ${accentClass}`} strokeWidth="2" />
+          <rect x="34" y="10" width="22" height="2" rx="1" className="fill-muted-foreground/30" />
+          <rect x="34" y="16" width="18" height="2" rx="1" className="fill-muted-foreground/30" />
+          <rect x="34" y="22" width="20" height="2" rx="1" className={`fill-current ${accentClass} opacity-40`} />
+          <rect x="34" y="28" width="16" height="2" rx="1" className="fill-muted-foreground/30" />
+          <circle cx="36" cy="38" r="2.5" className="fill-muted-foreground/30" />
+          <circle cx="43" cy="38" r="2.5" className="fill-muted-foreground/30" />
+          <circle cx="50" cy="38" r="2.5" className="fill-muted-foreground/30" />
+        </svg>
+      );
+
+    case "banner-cta":
+      // Full banner top, identity below, prominent CTA button
+      return (
+        <svg viewBox="0 0 64 48" className="w-full h-full">
+          <rect x="4" y="2" width="56" height="14" rx="3" className={`fill-current ${accentClass} opacity-20`} />
+          <rect x="20" y="6" width="24" height="3" rx="1" className="fill-muted-foreground/30" />
+          <rect x="26" y="11" width="12" height="2" rx="1" className="fill-muted-foreground/20" />
+          <circle cx="12" cy="26" r="6" className="fill-muted-foreground/30" />
+          <rect x="22" y="22" width="20" height="3" rx="1" className="fill-muted-foreground/50" />
+          <rect x="22" y="28" width="14" height="2" rx="1" className="fill-muted-foreground/30" />
+          <rect x="22" y="33" width="18" height="2" rx="1" className={`fill-current ${accentClass} opacity-50`} />
+          <rect x="4" y="40" width="24" height="6" rx="3" className={`fill-current ${accentClass} opacity-60`} />
+        </svg>
+      );
+
     default:
       return (
         <svg viewBox="0 0 64 48" className="w-full h-full">

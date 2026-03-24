@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useCallback, useEffect } from "react";
+import { useState, useCallback, useEffect, useRef } from "react";
 import { SignatureData, DEFAULT_SIGNATURE_DATA } from "@/types/signature";
 import { TemplateId } from "@/lib/templates";
 import { SignatureForm } from "@/components/signature/signature-form";
@@ -136,13 +136,21 @@ export default function Home() {
     setIsFullscreen(!isFullscreen);
   };
 
-  // Handle export click - show donation modal first
+  // Track whether the export donation modal has been shown this session
+  const hasSeenExportDonationRef = useRef(false);
+
+  // Handle export click - show donation modal only on first attempt per session
   const handleExportClick = () => {
+    if (hasSeenExportDonationRef.current) {
+      setRightTab("export");
+      return;
+    }
     setIsExportDonationModalOpen(true);
   };
 
   // After donation modal interaction, proceed to export
   const handleExportContinue = () => {
+    hasSeenExportDonationRef.current = true;
     setRightTab("export");
   };
 
@@ -680,6 +688,7 @@ function HomeContent({
               <div className="p-3 sm:p-4">
                 <AIGenerator
                   currentData={signatureData}
+                  selectedTemplate={selectedTemplate}
                   onGenerate={handleAIGenerate}
                   onGeneratingChange={setIsAIGenerating}
                   onGenerationComplete={() => setMobileTab("preview")}
@@ -792,6 +801,7 @@ function HomeContent({
               {rightTab === "ai" && (
                 <AIGenerator
                   currentData={signatureData}
+                  selectedTemplate={selectedTemplate}
                   onGenerate={handleAIGenerate}
                   onGeneratingChange={setIsAIGenerating}
                   onGenerationComplete={handleAIGenerationComplete}
@@ -814,8 +824,8 @@ function HomeContent({
 
           {/* Center - Canvas/Preview */}
           <main className="flex-1 bg-secondary/30 flex flex-col">
-            <div className="h-11 border-b border-border bg-background/50 flex items-center justify-between px-2 lg:px-4">
-              <div className="flex items-center gap-1.5 lg:gap-2">
+            <div className="min-h-[44px] border-b border-border bg-background/50 flex flex-wrap items-center justify-between px-2 lg:px-4 gap-y-1 py-1">
+              <div className="flex items-center gap-1 lg:gap-2 min-w-0">
                 <span className="text-[10px] lg:text-xs font-medium text-muted-foreground uppercase tracking-wide hidden lg:block">Preview</span>
                 <span className="text-[10px] lg:text-xs text-muted-foreground px-1.5 py-0.5 bg-secondary rounded border border-border capitalize truncate max-w-[80px] lg:max-w-[120px]">
                   {selectedTemplate.replace(/-/g, " ")}
@@ -859,7 +869,7 @@ function HomeContent({
                 >
                   <ZoomOut className="w-3.5 h-3.5 lg:w-4 lg:h-4" />
                 </Button>
-                <span className="text-[10px] lg:text-xs text-muted-foreground w-8 lg:w-10 text-center">{previewZoom}%</span>
+                <span className="text-[10px] lg:text-xs text-muted-foreground w-8 lg:w-10 text-center hidden lg:inline">{previewZoom}%</span>
                 <Button
                   variant="ghost"
                   size="icon"
@@ -973,12 +983,12 @@ function HomeContent({
             style={{ top: `${getTopOffset()}px` }}
           >
           {/* Canvas Toolbar - Responsive */}
-          <div className="h-11 border-b border-l border-r border-border bg-background/50 flex items-center justify-between px-2 xl:px-4">
-            <div className="flex items-center gap-1.5 xl:gap-3">
-              <span className="text-[10px] xl:text-xs font-medium text-muted-foreground uppercase tracking-wide hidden xl:block">
+          <div className="min-h-[44px] border-b border-l border-r border-border bg-background/50 flex flex-wrap items-center justify-between px-2 xl:px-4 gap-y-1 py-1">
+            <div className="flex items-center gap-1 xl:gap-2 min-w-0">
+              <span className="text-[10px] xl:text-xs font-medium text-muted-foreground uppercase tracking-wide hidden 2xl:block">
                 Preview
               </span>
-              <span className="text-[10px] xl:text-xs text-muted-foreground px-1.5 xl:px-2 py-0.5 bg-secondary rounded border border-border capitalize truncate max-w-[100px] xl:max-w-none">
+              <span className="text-[10px] xl:text-xs text-muted-foreground px-1.5 xl:px-2 py-0.5 bg-secondary rounded border border-border capitalize truncate max-w-[80px] xl:max-w-[100px] 2xl:max-w-none">
                 {selectedTemplate.replace(/-/g, " ")}
               </span>
               <div className="w-px h-4 bg-border hidden xl:block" />
@@ -1037,7 +1047,7 @@ function HomeContent({
               >
                 <ZoomOut className="w-3.5 h-3.5 xl:w-4 xl:h-4" />
               </Button>
-              <span className="text-[10px] xl:text-xs text-muted-foreground w-8 xl:w-10 text-center">
+              <span className="text-[10px] xl:text-xs text-muted-foreground w-8 xl:w-10 text-center hidden xl:inline">
                 {previewZoom}%
               </span>
               <Button
@@ -1197,6 +1207,7 @@ function HomeContent({
             {rightTab === "ai" && (
               <AIGenerator
                 currentData={signatureData}
+                selectedTemplate={selectedTemplate}
                 onGenerate={handleAIGenerate}
                 onGeneratingChange={setIsAIGenerating}
                 onGenerationComplete={handleAIGenerationComplete}

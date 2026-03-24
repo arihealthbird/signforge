@@ -43,6 +43,34 @@ export const SIGNATURE_TEMPLATES: SignatureTemplate[] = [
     thumbnail: "/templates/startup-fresh.png",
     category: "creative",
   },
+  {
+    id: "compact-horizontal",
+    name: "Compact Horizontal",
+    description: "Single-row ultra-compact layout",
+    thumbnail: "/templates/compact-horizontal.png",
+    category: "minimal",
+  },
+  {
+    id: "modern-card",
+    name: "Modern Card",
+    description: "Structured card with subtle background",
+    thumbnail: "/templates/modern-card.png",
+    category: "creative",
+  },
+  {
+    id: "two-column",
+    name: "Two Column",
+    description: "Balanced two-column grid layout",
+    thumbnail: "/templates/two-column.png",
+    category: "professional",
+  },
+  {
+    id: "banner-cta",
+    name: "Banner CTA",
+    description: "Full-width banner with call-to-action button",
+    thumbnail: "/templates/banner-cta.png",
+    category: "creative",
+  },
 ];
 
 export type TemplateId = typeof SIGNATURE_TEMPLATES[number]["id"];
