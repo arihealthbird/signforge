@@ -8,9 +8,7 @@ import {
   sanitizeColor,
   cleanText,
 } from "@/lib/security";
-
-const NOVITA_BASE_URL = process.env.AI_BASE_URL || "https://api.novita.ai/openai/v1";
-const NOVITA_MODEL = process.env.AI_MODEL || "deepseek/deepseek-v4-flash";
+import { TheoApiError, theoComplete } from "@/lib/theo";
 
 const fontMap: Record<string, string> = {};
 for (const f of FONT_OPTIONS) fontMap[f.label] = f.value;
@@ -217,18 +215,69 @@ export function coerceSignature(
   return { signature: sanitized, template, scene, gifQuery, message, changes };
 }
 
-function apiKey(): string {
-  return (
-    process.env.NOVITA_API_KEY ||
-    process.env.AI_API_KEY ||
-    process.env.OPENAI_API_KEY ||
-    ""
-  );
-}
-
 export interface ChatTurn {
   role: "user" | "assistant";
   text: string;
+}
+
+/**
+ * The user turn sent to Theo: the recent conversation, the request and, when
+ * refining, the current signature. Angle brackets are stripped from every piece
+ * of user text so none of it can imitate the tags that frame it.
+ */
+export function buildUserPrompt(
+  prompt: string,
+  currentData: SignatureData | null,
+  currentScene?: SceneId | null,
+  currentTemplate?: TemplateId | null,
+  history: ChatTurn[] = []
+): string {
+  const parts: string[] = [];
+
+  // Bounded conversation memory so refinements keep their context.
+  const turns: string[] = [];
+  for (const turn of history.slice(-10)) {
+    const role = turn?.role === "assistant" ? "assistant" : "user";
+    const text = cleanText(turn?.text, 1000).replace(/[<>]/g, "");
+    if (text) turns.push(`${role}: ${text}`);
+  }
+  if (turns.length) parts.push(`CONVERSATION SO FAR (oldest first):\n${turns.join("\n")}`);
+
+  parts.push(`<user_request>${prompt.replace(/[<>]/g, "")}</user_request>`);
+
+  // The model needs the full current state to explain what it is changing.
+  if (currentData) {
+    const state = { ...currentData, template: currentTemplate ?? null, scene: currentScene ?? "classic" };
+    parts.push(`CURRENT SIGNATURE (refine this):\n${JSON.stringify(state)}`);
+  }
+
+  return parts.join("\n\n");
+}
+
+/**
+ * Maps a failure from Theo onto the error codes the API route answers with. The
+ * log carries the Theo request id and code for support, never the API key.
+ */
+function toServiceError(error: unknown): Error {
+  if (!(error instanceof TheoApiError)) {
+    return error instanceof Error ? error : new Error("UNKNOWN");
+  }
+
+  console.error(
+    `Theo API error: status=${error.status} code=${error.code ?? "none"} request_id=${error.requestId ?? "none"}`
+  );
+  switch (error.status) {
+    case 429:
+      return new Error("RATE_LIMITED");
+    case 401:
+    case 403:
+      // Our key was rejected: a deployment problem, not the visitor's.
+      return new Error("AI_NOT_CONFIGURED");
+    case 400:
+      return new Error("AI_REQUEST_REJECTED");
+    default:
+      return new Error("AI_UNAVAILABLE");
+  }
 }
 
 export async function requestGeneration(
@@ -239,57 +288,17 @@ export async function requestGeneration(
   currentTemplate?: TemplateId | null,
   history: ChatTurn[] = []
 ): Promise<GenerateResult> {
-  const key = apiKey();
-  if (!key) throw new Error("AI_NOT_CONFIGURED");
-
-  const messages: Array<{ role: "system" | "user" | "assistant"; content: string }> = [
-    { role: "system", content: buildSystemPrompt() },
-  ];
-
-  // Bounded conversation memory so refinements keep their context.
-  for (const turn of history.slice(-10)) {
-    const role = turn?.role === "assistant" ? "assistant" : "user";
-    const text = cleanText(turn?.text, 1000).replace(/[<>]/g, "");
-    if (text) messages.push({ role, content: text });
-  }
-
-  // The model needs the full current state to explain what it is changing.
-  const context = currentData
-    ? JSON.stringify({
-        ...currentData,
-        template: currentTemplate ?? null,
-        scene: currentScene ?? "classic",
-      })
-    : null;
-
-  const userMessage = `<user_request>${prompt.replace(/[<>]/g, "")}</user_request>${
-    context ? `\n\nCURRENT SIGNATURE (refine this):\n${context}` : ""
-  }`;
-  messages.push({ role: "user", content: userMessage });
-
-  const response = await fetch(`${NOVITA_BASE_URL}/chat/completions`, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${key}`,
-    },
-    body: JSON.stringify({
-      model: NOVITA_MODEL,
-      messages,
+  let content: string;
+  try {
+    content = await theoComplete({
+      prompt: buildUserPrompt(prompt, currentData, currentScene, currentTemplate, history),
+      persona: buildSystemPrompt(),
       temperature: 0.6,
-      max_tokens: 2000,
-    }),
-    signal,
-  });
-
-  if (!response.ok) {
-    if (response.status === 429) throw new Error("RATE_LIMITED");
-    throw new Error("AI_UNAVAILABLE");
+      signal,
+    });
+  } catch (error) {
+    throw toServiceError(error);
   }
-
-  const data = await response.json();
-  const message = data.choices?.[0]?.message;
-  const content: string = message?.content || message?.reasoning_content || "";
 
   if (!content) throw new Error("AI_EMPTY");
 

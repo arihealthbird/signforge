@@ -56,9 +56,9 @@ are whitelisted, and text has angle brackets and control characters stripped.
 | Status | Meaning |
 | ------ | ------- |
 | `400`  | Invalid JSON body, missing/oversized `prompt`, or invalid `currentData`. |
-| `429`  | Rate limited (see below), or the upstream AI provider rate limited. |
-| `500`  | The AI provider returned an unexpected response. |
-| `503`  | No AI key is configured, or the AI provider is unavailable. |
+| `429`  | Rate limited (see below), or Theo rate limited the API key. |
+| `500`  | Theo returned a reply SignForge could not use, or rejected the request. |
+| `503`  | `THEO_API_KEY` is missing or was rejected, or Theo is unavailable. |
 | `504`  | The AI request exceeded the 30 second timeout. |
 
 Every error body is `{ "error": "human-readable message" }`.
@@ -69,6 +69,8 @@ Every error body is `{ "error": "human-readable message" }`.
   (`src/lib/security.ts`). The client IP is read from the `cf-connecting-ip`,
   `x-real-ip` or `x-forwarded-for` header. The limit is per-process, so a
   multi-instance deployment does not share one global bucket.
+- Theo rate limits each API key as well. When that limit is hit the route answers
+  `429` with "AI service is busy".
 - The upstream AI call has a 30 second timeout.
 
 ## The model response is not exposed

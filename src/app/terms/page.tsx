@@ -29,7 +29,7 @@ const SECTIONS: LegalSection[] = [
   {
     title: "AI-generated content",
     body: [
-      "AI features generate content through a third-party provider. Output can be inaccurate, including made-up contact details and links. You are responsible for reviewing everything you export or share.",
+      "AI features generate content with Theo, an AI orchestration API that routes each request to a third-party model. Output can be inaccurate, including made-up contact details and links. You are responsible for reviewing everything you export or share.",
     ],
   },
   {

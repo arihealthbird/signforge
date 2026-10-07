@@ -1,9 +1,9 @@
 # SignForge production image.
 #
-# Build-time (NEXT_PUBLIC_*) values are inlined into the client bundle, so they
-# must be set as ARGs here, not in the running container. Server-only values
-# (NOVITA_API_KEY, AI_BASE_URL, AI_MODEL) are read from the environment at
-# request time and can be set at runtime.
+# NEXT_PUBLIC_* values are inlined into the client bundle at build time, so they
+# are build arguments. Server-only values (THEO_API_KEY, THEO_BASE_URL,
+# THEO_MODE) are read from the environment at request time: set them when you
+# run the container.
 
 FROM node:20-alpine AS base
 WORKDIR /app
@@ -30,12 +30,14 @@ ENV NEXT_TELEMETRY_DISABLED=1
 ENV PORT=3000
 
 # The full node_modules set is copied so `next start` can load next.config.ts.
-COPY --from=build /app/package.json ./package.json
-COPY --from=build /app/node_modules ./node_modules
-COPY --from=build /app/.next ./.next
-COPY --from=build /app/public ./public
-COPY --from=build /app/next.config.ts ./next.config.ts
+COPY --from=build --chown=node:node /app/package.json ./package.json
+COPY --from=build --chown=node:node /app/node_modules ./node_modules
+COPY --from=build --chown=node:node /app/.next ./.next
+COPY --from=build --chown=node:node /app/public ./public
+COPY --from=build --chown=node:node /app/next.config.ts ./next.config.ts
 
+USER node
 EXPOSE 3000
 
-CMD ["npm", "run", "start"]
+# Run Next directly rather than through npm, so the process receives stop signals.
+CMD ["node_modules/.bin/next", "start"]

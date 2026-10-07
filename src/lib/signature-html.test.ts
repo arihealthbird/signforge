@@ -259,7 +259,7 @@ describe("banner and credit", () => {
     expect(withCredit).toContain("SignForge");
     expect(withCredit).toContain("https://theovex.com");
     expect(withCredit).toContain("TheoVex");
-    expect(withCredit).toContain("opencharts.com/features/theo");
+    expect(withCredit).toContain('href="https://hitheo.ai"');
     expect(withCredit).toContain("Theo AI");
     expect(withCredit).not.toContain("class=");
   });

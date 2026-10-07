@@ -4,6 +4,7 @@
  */
 export const SITE = {
   name: "SignForge",
+  url: "https://signforge.com",
   tagline: "Email signatures from a single sentence.",
   description:
     "SignForge turns one sentence into an email signature that pastes into Gmail, Outlook and Apple Mail. Free and open source, from TheoVex.",
@@ -27,12 +28,13 @@ export const THEOVEX = {
 } as const;
 
 /**
- * Theo AI is the assistant that powers SignForge: it reads the prompt, picks a
- * template and scene, and writes the signature. Learn more on the OpenCharts
- * Theo page.
+ * Theo is the AI orchestration API from HiTheo (https://hitheo.ai) that powers
+ * SignForge: it reads the prompt, picks a template and scene, and writes the
+ * signature. SignForge is an E.V.I., its own persona on top of Theo's engine
+ * (see `src/lib/theo.ts`).
  */
 export const THEO_AI = {
   name: "Theo AI",
-  url: "http://opencharts.com/features/theo",
+  url: "https://hitheo.ai",
   blurb: "SignForge is powered by Theo AI.",
 } as const;

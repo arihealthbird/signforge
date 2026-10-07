@@ -10,7 +10,7 @@ fork it into your own product.
   flow, the registries and the security model.
 - [API](api.md) - the `/api/generate` contract for building on top of SignForge.
 - [Self-hosting](self-hosting.md) - deploy your own instance with Node, Docker
-  or Vercel, and configure an AI provider.
+  or Vercel, and set up Theo, the AI orchestration API behind it.
 - [Forking and rebranding](forking-and-rebranding.md) - create your own branded
   version under Apache 2.0, including handling the trademarked TheoVex assets.
 

@@ -1,0 +1,12 @@
+# Keep secrets, local state and build output out of the image context.
+.env*
+!.env.example
+.git
+.github
+.next
+node_modules
+*.tsbuildinfo
+coverage
+docs
+npm-debug.log*
+.DS_Store

@@ -63,6 +63,6 @@ https://fontsource.org
 Services
 --------
 GIFs are served by GIPHY and remain subject to GIPHY's terms. AI generation
-uses a third-party provider (Novita.ai by default). Optional scene backdrop
-videos are loaded only from a host the operator configures and are not
-distributed with this repository.
+uses Theo, the AI orchestration API from HiTheo (https://hitheo.ai), under its
+own terms. Optional scene backdrop videos are loaded only from a host the
+operator configures and are not distributed with this repository.

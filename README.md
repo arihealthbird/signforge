@@ -5,8 +5,11 @@
 
 **Email signatures from a single sentence.**
 
+[signforge.com](https://signforge.com) · [Docs](docs/README.md) · [Self-hosting](docs/self-hosting.md) · [Fork it](docs/forking-and-rebranding.md)
+
 SignForge is a free, open-source, AI-powered email signature builder from
-[TheoVex](https://theovex.com). Tell it who you are and how it should look
+[TheoVex](https://theovex.com), powered by [Theo](https://hitheo.ai), the AI
+orchestration API from HiTheo. Tell it who you are and how it should look
 (*"Priya Shah, pediatric nurse practitioner. Calm, trustworthy, soft green."*) and
 it designs a signature you can paste straight into Gmail, Outlook or Apple Mail.
 Then keep chatting to refine it, or fine-tune it by hand.
@@ -45,31 +48,41 @@ npm install
 
 # 2. Configure your keys
 cp .env.example .env.local
-#    Paste your keys into .env.local (see below)
+#    Add your THEO_API_KEY to .env.local (see below)
 
 # 3. Run the dev server
 npm run dev
 ```
 
-Open [http://localhost:3018](http://localhost:3018).
+The dev server prints its address when it starts. It listens on port 3000 unless
+you set `PORT`.
 
 ### Environment variables
 
-| Variable                        | Required | Purpose                                                  |
-|---------------------------------|----------|----------------------------------------------------------|
-| `NOVITA_API_KEY`                | Yes      | AI generation (server-side only)                         |
-| `NEXT_PUBLIC_GIPHY_API_KEY`     | No       | Enables the GIF picker and AI GIF suggestions            |
-| `NEXT_PUBLIC_SCENE_MEDIA_BASE`  | No       | https URL of a folder of scene backdrop videos (see below) |
-| `AI_BASE_URL`, `AI_MODEL`       | No       | Point at another OpenAI-compatible provider/model        |
+| Variable                       | Required | Purpose                                                         |
+|--------------------------------|----------|-----------------------------------------------------------------|
+| `THEO_API_KEY`                 | Yes      | AI generation through Theo (server-side only)                   |
+| `THEO_BASE_URL`, `THEO_MODE`   | No       | Override the Theo endpoint, or set `think` for deeper reasoning |
+| `NEXT_PUBLIC_GIPHY_API_KEY`    | No       | Enables the GIF picker and AI GIF suggestions                   |
+| `NEXT_PUBLIC_SCENE_MEDIA_BASE` | No       | https URL of a folder of scene backdrop videos (see below)      |
 
-SignForge works with any OpenAI-compatible chat endpoint. By default it targets
-[Novita.ai](https://novita.ai). Create a key there, then:
+### Powered by Theo
+
+SignForge designs signatures with [Theo](https://hitheo.ai), the AI orchestration
+API from HiTheo. It is an E.V.I., an embedded virtual intelligence: its own
+persona (the signature designer) on top of Theo's engine, which classifies each
+request and routes it to a model. Create a key in the Theo dashboard
+([guide](https://docs.hitheo.ai/quickstart/get-api-key)), then:
 
 ```bash
-NOVITA_API_KEY=your-novita-api-key
-# AI_BASE_URL=https://api.novita.ai/openai/v1
-# AI_MODEL=deepseek/deepseek-v4-flash   # for higher quality: deepseek/deepseek-v4-pro
+THEO_API_KEY=your-theo-api-key
+# THEO_MODE=think      # deeper reasoning, a little slower
 ```
+
+Keep real keys out of your shell history, chat and screenshots. A vault such as
+[AIRCTRL](https://airctrl.dev) stores keys and environment variables encrypted
+and scoped by project and environment. To build on Theo yourself, see the
+[HiTheo docs](https://docs.hitheo.ai).
 
 GIPHY keys are designed to be public, which is why that one is read in the
 browser. Get a free key at [developers.giphy.com](https://developers.giphy.com).
@@ -81,7 +94,7 @@ Without it the GIF picker is hidden and people can still paste a GIF URL.
 
 | Command             | Description                        |
 |---------------------|------------------------------------|
-| `npm run dev`       | Start the dev server on port 3018  |
+| `npm run dev`       | Start the development server       |
 | `npm run build`     | Production build                   |
 | `npm run start`     | Run the production build           |
 | `npm run lint`      | ESLint                             |
@@ -94,9 +107,10 @@ Without it the GIF picker is hidden and people can still paste a GIF URL.
 
 1. **Prompt.** Your request is POSTed to `/api/generate` along with the current
    signature (when refining) and the current preview scene.
-2. **Generate.** The server asks your AI provider for a JSON design and
-   validates it into a safe `SignatureData` object (`src/lib/ai.ts`). The model
-   can also pick a preview scene and ask for a GIF search.
+2. **Generate.** The server sends the request to [Theo](https://hitheo.ai) with
+   the signature designer persona (`src/lib/theo.ts`), then validates the JSON
+   design that comes back into a safe `SignatureData` object (`src/lib/ai.ts`).
+   The model can also pick a preview scene and ask for a GIF search.
 3. **Render.** A pure HTML generator (`src/lib/signature-html.ts`, with one
    hand-built renderer per template in `src/lib/signature/designs`) turns the
    data into email-safe markup. The same generator powers the live preview, the
@@ -136,6 +150,7 @@ src/
 │   ├── types.ts  helpers.ts  backdrop.ts
 ├── lib/
 │   ├── ai.ts                    # Prompting, JSON parsing, validation
+│   ├── theo.ts                  # Client for the Theo AI orchestration API
 │   ├── signature-html.ts        # Public API of the HTML generator (single source of truth)
 │   ├── signature/               # kit.ts (tokens + email-safe primitives), designs/ (24 renderers), index.ts
 │   ├── pictograms.ts            # Original icons for what Lucide does not draw
@@ -225,7 +240,10 @@ back to its canvas effect.
 
 SignForge makes these requests on your behalf. Each has a plain opt-out.
 
-- **AI provider** (Novita.ai by default) receives the text of AI requests.
+- **Theo** (`www.hitheo.ai`) receives the text of AI requests, the recent
+  conversation and the signature being edited. Leave `THEO_API_KEY` unset to
+  turn AI generation off. See HiTheo's
+  [data privacy notes](https://docs.hitheo.ai/security/data-privacy).
 - **GIPHY** (`api.giphy.com`) is contacted from the browser when the GIF picker is
   used. Unset `NEXT_PUBLIC_GIPHY_API_KEY` to disable it.
 - **Scene media host** (only if you set `NEXT_PUBLIC_SCENE_MEDIA_BASE`) serves

@@ -22,7 +22,7 @@ endpoint. Areas of particular interest:
   characters inside URLs, private-network addresses).
 - Rate-limit or CSRF bypass on the API endpoint.
 - Weakening of the Content-Security-Policy in `src/proxy.ts`.
-- Leakage of the configured `NOVITA_API_KEY` or AI provider key.
+- Leakage of the configured `THEO_API_KEY`.
 
 ## Supported versions
 
@@ -39,8 +39,8 @@ Older versions are not maintained; please upgrade.
 - Untrusted input (AI output, share links, saved drafts) is validated and
   sanitized before use. `/api/generate` also validates the signature it receives.
 - Signature data is never persisted server-side.
-- The AI provider key is server-only; never expose it via a `NEXT_PUBLIC_*`
-  variable. The GIPHY key is intentionally public.
+- The Theo API key is server-only and only ever sent over https; never expose
+  it via a `NEXT_PUBLIC_*` variable. The GIPHY key is intentionally public.
 - `src/proxy.ts` sets a Content-Security-Policy and enforces same-origin on API
   POST requests.
 

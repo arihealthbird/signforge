@@ -3,7 +3,7 @@ import { NextRequest } from "next/server";
 import { proxy, config } from "./proxy";
 
 function csp(path = "/"): Record<string, string> {
-  const res = proxy(new NextRequest(`http://localhost:3018${path}`));
+  const res = proxy(new NextRequest(`https://signforge.com${path}`));
   const header = res.headers.get("Content-Security-Policy") ?? "";
   const out: Record<string, string> = {};
   for (const part of header.split(";")) {
@@ -41,7 +41,7 @@ describe("Content-Security-Policy", () => {
   });
 
   it("sets a request id", () => {
-    const res = proxy(new NextRequest("http://localhost:3018/"));
+    const res = proxy(new NextRequest("https://signforge.com/"));
     expect(res.headers.get("X-Request-ID")).toMatch(/^[0-9a-f-]{36}$/);
   });
 });

@@ -9,8 +9,9 @@ services:
     ports:
       - "3000:3000"
     environment:
-      # Server-only, read at runtime.
-      NOVITA_API_KEY: ${NOVITA_API_KEY}
-      AI_BASE_URL: ${AI_BASE_URL:-https://api.novita.ai/openai/v1}
-      AI_MODEL: ${AI_MODEL:-deepseek/deepseek-v4-flash}
+      # Server-only, read at runtime. Compose reads these from the shell or from
+      # a .env file next to this one.
+      THEO_API_KEY: ${THEO_API_KEY:?Set THEO_API_KEY (see .env.example)}
+      THEO_BASE_URL: ${THEO_BASE_URL:-https://www.hitheo.ai}
+      THEO_MODE: ${THEO_MODE:-fast}
     restart: unless-stopped

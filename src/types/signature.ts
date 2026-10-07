@@ -13,7 +13,7 @@ export interface SocialLink {
 
 /**
  * The canonical signature model. This is the single source of truth shared by
- * the AI provider, the on-screen preview, the URL-sharing codec, and the
+ * the AI layer, the on-screen preview, the URL-sharing codec, and the
  * email-safe HTML exporter.
  */
 export interface SignatureData {
@@ -96,7 +96,7 @@ export interface FontOption {
 }
 
 export const FONT_OPTIONS: FontOption[] = [
-  // Modern Sans-Serif (self-hosted via next/font)
+  // Modern Sans-Serif (self-hosted via Fontsource)
   { label: "Inter", value: "var(--font-inter), 'Inter', system-ui, sans-serif", category: "sans-serif" },
   { label: "Roboto", value: "var(--font-roboto), 'Roboto', Arial, sans-serif", category: "sans-serif" },
   { label: "Open Sans", value: "var(--font-open-sans), 'Open Sans', Arial, sans-serif", category: "sans-serif" },
@@ -108,7 +108,7 @@ export const FONT_OPTIONS: FontOption[] = [
   { label: "Space Grotesk", value: "var(--font-space-grotesk), 'Space Grotesk', Arial, sans-serif", category: "sans-serif" },
   { label: "Manrope", value: "var(--font-manrope), 'Manrope', Arial, sans-serif", category: "sans-serif" },
 
-  // Serif (self-hosted via next/font)
+  // Serif (self-hosted via Fontsource)
   { label: "Playfair Display", value: "var(--font-playfair), 'Playfair Display', Georgia, serif", category: "serif" },
   { label: "Merriweather", value: "var(--font-merriweather), 'Merriweather', Georgia, serif", category: "serif" },
   { label: "Lora", value: "var(--font-lora), 'Lora', Georgia, serif", category: "serif" },

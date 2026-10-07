@@ -7,10 +7,10 @@ fork it with confidence.
 ## Overview
 
 A visitor describes a signature in plain English. The browser POSTs that request
-to the only API route, which calls an AI provider, validates the result, and
-returns a normalized `SignatureData` object. A pure HTML generator turns that
-object into email-safe markup, and the same generator powers the live preview,
-the template thumbnails and the export.
+to the only API route, which calls Theo (the AI orchestration API), validates the
+result, and returns a normalized `SignatureData` object. A pure HTML generator
+turns that object into email-safe markup, and the same generator powers the live
+preview, the template thumbnails and the export.
 
 ```
 browser (composer)
@@ -18,7 +18,9 @@ browser (composer)
       ▼
 api/generate/route.ts   (rate limit, validate, strip keys, 30s timeout)
       ▼
-lib/ai.ts               (prompt, model call, extract JSON, coerceSignature)
+lib/ai.ts               (prompts, extract JSON, coerceSignature)
+      ▼
+lib/theo.ts             (one stateless completion on the Theo API)
       ▼
 SignatureData           (canonical model, src/types/signature.ts)
       ▼
@@ -32,7 +34,7 @@ lib/signature-html.ts   (generateSignatureHTML: normalize -> renderer -> HTML)
 ## The data model
 
 `SignatureData` (`src/types/signature.ts`) is the single source of truth shared
-by the AI provider, the preview, the URL-sharing codec and the exporter. It
+by the AI layer, the preview, the URL-sharing codec and the exporter. It
 holds identity, contact, address, social links, branding (logo, photo,
 monogram), banner/GIF, style (colors, font, size), extras (disclaimer, calendar
 link) and layout (divider, photo shape, padding). Companion constants live in
@@ -68,13 +70,22 @@ against every design.
 
 `src/lib/ai.ts` builds a system prompt from the registries (templates via
 `templateDescription()`, fonts from `FONT_OPTIONS`, scenes via
-`sceneDescription()`), calls the OpenAI-compatible provider, extracts a JSON
-object from the response, and maps it onto safe data with `coerceSignature`.
+`sceneDescription()`) and sends it, with the user's request, to
+[Theo](https://hitheo.ai) through `src/lib/theo.ts`. SignForge is an E.V.I.: the
+system prompt becomes the persona, each request is one stateless completion (no
+conversation id, tools or skills), and the JSON in the reply is extracted and
+mapped onto safe data with `coerceSignature`.
+
 `coerceSignature` sanitizes every field: text is cleaned and angle brackets are
 stripped, URLs go through `validateUrl`, colors through `sanitizeColor`, fonts
 are mapped by exact label, enums are clamped, and a final
 `sanitizeSignatureFields` pass re-validates URLs and colors. The model never
 invents image URLs (the prompt says so, and empty URLs are the result).
+
+Failures map onto the route's error codes in `toServiceError`: a rejected key
+is a 503 "not configured", Theo's rate limit is a 429, and anything else Theo
+returns is a 503 or 500. The log carries Theo's request id for support, never
+the key.
 
 ## Registries
 
@@ -98,7 +109,8 @@ invents image URLs (the prompt says so, and empty URLs are the result).
   same-origin on API POSTs (CORS + CSRF). `next.config.ts` adds the static
   security headers (HSTS, `X-Frame-Options`, `nosniff`, referrer and
   permissions policies).
-- The AI provider key is server-only. The GIPHY key is intentionally public.
+- The Theo API key is server-only and only ever sent over https. The GIPHY key
+  is intentionally public.
 
 See [SECURITY.md](../SECURITY.md) for the reporting policy and the
 [self-hosting](self-hosting.md) guide for deployment hardening.

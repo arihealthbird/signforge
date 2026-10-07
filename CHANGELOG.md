@@ -7,6 +7,14 @@ All notable changes to SignForge are documented here. This project adheres to
 
 ### Added
 
+- Open-source project documentation: `docs/` (architecture, API, self-hosting,
+  forking and rebranding), a Code of Conduct, governance notes, a Developer
+  Certificate of Origin with a CI sign-off check, Dependabot, CodeQL and Docker
+  support. `SECURITY.md` gains supported versions, a response timeline and safe
+  harbor.
+- `src/lib/theo.ts`, a small tested client for the Theo API. It always uses the
+  www host, sends the key only over https, and reports failures with Theo's
+  request id.
 - The TheoVex house skin: a warm paper canvas with a soft wash and fine grain,
   squared corners across the shell, 2px ink borders and hard offset shadows,
   Geist 800 display type, Geist Mono numbered eyebrows (`02 · HOW IT WORKS`),
@@ -74,6 +82,17 @@ All notable changes to SignForge are documented here. This project adheres to
 
 ### Changed
 
+- AI generation runs on Theo, the AI orchestration API from HiTheo
+  (hitheo.ai). SignForge sends one stateless completion per request with its own
+  persona and reads the JSON design from the reply. Set `THEO_API_KEY`;
+  `THEO_BASE_URL` and `THEO_MODE` are optional. The previous provider variables
+  (`AI_BASE_URL`, `AI_MODEL`, `AI_API_KEY`, `OPENAI_API_KEY` and the
+  provider-specific key) are no longer read.
+- The "Powered by Theo AI" credit and the header and footer links now point to
+  hitheo.ai over https.
+- The dev server uses the Next.js default port instead of a fixed one.
+- The privacy and terms pages describe the Theo data flow, and the privacy page
+  now lists everything the AI request carries.
 - Contact details use letters and words by default (E, T, W, A or EMAIL, PHONE,
   WEB) instead of emoji. Startup and Tint keep email-safe mono letter tiles (a
   tinted table cell), and the booking buttons are plain text.
@@ -126,8 +145,7 @@ All notable changes to SignForge are documented here. This project adheres to
 ### Added
 
 - Complete rewrite into a chat-first, agentic experience.
-- Novita.ai (OpenAI-compatible) AI provider with robust JSON parsing and
-  validation.
+- OpenAI-compatible AI provider with robust JSON parsing and validation.
 - Nine email-safe signature templates rendered from a single pure HTML generator
   used by both preview and export.
 - Refine panel for manual editing of fields, templates, colors, fonts, and

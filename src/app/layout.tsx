@@ -76,6 +76,7 @@ const themeInitScript = `try{var t=localStorage.getItem('sf-theme');if(t==='dark
 const title = `${SITE.name} | AI email signature builder by ${THEOVEX.name}`;
 
 export const metadata: Metadata = {
+  metadataBase: new URL(SITE.url),
   title: {
     default: title,
     template: `%s | ${SITE.name}`,

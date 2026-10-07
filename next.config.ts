@@ -33,9 +33,8 @@ const nextConfig: NextConfig = {
   productionBrowserSourceMaps: false,
 
   turbopack: {
-    // The project sits nested inside a larger `Developer` folder that
-    // contains other packages with their own lockfiles, which makes Next
-    // mis-detect the workspace root. Pin it to the project directory.
+    // Pin the workspace root to this project, so a lockfile in a parent
+    // directory is never mistaken for it.
     root: process.cwd(),
   },
 

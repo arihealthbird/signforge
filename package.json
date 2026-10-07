@@ -2,10 +2,31 @@
   "name": "signforge",
   "version": "1.0.0",
   "private": true,
-  "description": "SignForge — free, open-source, AI-powered email signature builder.",
+  "description": "Free, open-source, AI-powered email signature builder.",
   "license": "Apache-2.0",
+  "author": "TheoVex (https://theovex.com)",
+  "homepage": "https://signforge.com",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/arihealthbird/signforge.git"
+  },
+  "bugs": {
+    "url": "https://github.com/arihealthbird/signforge/issues"
+  },
+  "keywords": [
+    "email-signature",
+    "signature-generator",
+    "html-email",
+    "ai",
+    "nextjs",
+    "typescript",
+    "open-source"
+  ],
+  "engines": {
+    "node": ">=20.9.0"
+  },
   "scripts": {
-    "dev": "next dev -p 3018",
+    "dev": "next dev",
     "build": "next build",
     "start": "next start",
     "lint": "eslint",

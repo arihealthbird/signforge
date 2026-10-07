@@ -4,6 +4,9 @@ on:
   pull_request:
     types: [opened, synchronize, reopened, ready_for_review]
 
+permissions:
+  contents: read
+
 jobs:
   dco:
     runs-on: ubuntu-latest
@@ -13,23 +16,21 @@ jobs:
         with:
           fetch-depth: 0
 
+      # Checks the commits the author wrote. GitHub's synthetic merge commit is
+      # skipped (--no-merges), and so are bots such as Dependabot.
       - name: Verify sign-off
+        env:
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+          HEAD_SHA: ${{ github.event.pull_request.head.sha }}
         run: |
-          base="${{ github.event.pull_request.base.sha }}"
-          if ! git cat-file -e "${base}^{commit}" 2>/dev/null; then
-            git fetch --depth=1 origin "${base}" || true
-          fi
-          commits=$(git rev-list "${base}..HEAD" 2>/dev/null || echo "")
-          if [ -z "$commits" ]; then
-            echo "No commits to verify."
-            exit 0
-          fi
           status=0
-          for sha in $commits; do
-            if ! git show -s --format=%B "$sha" | grep -qE '^Signed-off-by: '; then
-              echo "::error::Commit $sha is missing a 'Signed-off-by:' trailer."
-              git show -s --format='%h %s' "$sha"
+          for sha in $(git rev-list --no-merges "${BASE_SHA}..${HEAD_SHA}"); do
+            case "$(git show -s --format=%ae "$sha")" in
+              *"[bot]@users.noreply.github.com") continue ;;
+            esac
+            if ! git show -s --format=%B "$sha" | grep -qE '^Signed-off-by: .+ <.+>'; then
+              echo "::error::Commit ${sha:0:7} is missing a Signed-off-by trailer. Add one to every commit with: git rebase --signoff origin/main"
               status=1
             fi
           done
-          exit $status
+          exit "$status"

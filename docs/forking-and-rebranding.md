@@ -29,6 +29,9 @@ The following are **not** covered by Apache 2.0, as documented in
 - The pop-culture scene pack (`src/scenes/pop-culture`): unofficial tributes
   that use third-party show and character names. They are not TheoVex's
   property either, so keep or remove them based on your own risk tolerance.
+- **Theo** (hitheo.ai), the hosted AI service SignForge calls. It has its own
+  terms and pricing. Apache 2.0 covers the code in this repository, not that
+  service.
 
 Everything else - the code, the templates, the kit, the pictograms, the core
 scenes - is Apache 2.0.
@@ -69,6 +72,21 @@ The tribute scenes are a single import. Delete
 `src/scenes/index.ts`, and drop `PopSceneId` from `src/scenes/types.ts`. The
 picker, landing counts and AI prompt all follow the registry, so nothing else
 changes.
+
+## Swapping the AI provider
+
+SignForge reaches its AI through one small module, `src/lib/theo.ts`, which
+exposes `theoComplete({ prompt, persona, temperature, signal })` and returns the
+reply text. `src/lib/ai.ts` builds the prompts, calls it, and sanitizes whatever
+comes back. To use a different backend, replace the body of `theoComplete` (and
+its config reader) with a call to your own provider, keep the same inputs and
+the text output, and map its failures onto the error codes in `toServiceError`
+(`ai.ts`). Nothing else changes: the route, the sanitizers and the tests around
+them do not depend on the provider.
+
+Keep three properties when you do: the key stays server-side, requests carry an
+abort signal so the route can time out, and logs never include the key or the
+visitor's text.
 
 ## Keeping the quality gates
 
