@@ -4,13 +4,31 @@ updates:
     directory: "/"
     schedule:
       interval: "weekly"
-    open-pull-requests-limit: 10
+    open-pull-requests-limit: 5
     labels:
       - "dependencies"
+    commit-message:
+      prefix: "chore"
+      include: "scope"
+    groups:
+      # One pull request for all minor and patch bumps. Major bumps stay
+      # separate so each can be reviewed on its own.
+      minor-and-patch:
+        update-types:
+          - "minor"
+          - "patch"
 
   - package-ecosystem: "github-actions"
     directory: "/"
     schedule:
       interval: "weekly"
+    open-pull-requests-limit: 3
     labels:
       - "dependencies"
+    commit-message:
+      prefix: "chore"
+      include: "scope"
+    groups:
+      actions:
+        patterns:
+          - "*"
