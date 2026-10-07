@@ -1,7 +1,7 @@
 import type { NextConfig } from "next";
 
-// CSP is now generated per-request in middleware.ts with nonces.
-// Only non-CSP security headers remain here as static config.
+// CSP is generated per-request in proxy.ts. Only the non-CSP
+// security headers remain here as static config.
 const securityHeaders = [
   {
     key: "X-DNS-Prefetch-Control",
@@ -31,8 +31,14 @@ const securityHeaders = [
 
 const nextConfig: NextConfig = {
   productionBrowserSourceMaps: false,
-  reactCompiler: true,
-  
+
+  turbopack: {
+    // The project sits nested inside a larger `Developer` folder that
+    // contains other packages with their own lockfiles, which makes Next
+    // mis-detect the workspace root. Pin it to the project directory.
+    root: process.cwd(),
+  },
+
   async headers() {
     return [
       {

@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: GitHub Discussions
+    url: https://github.com/arihealthbird/signforge/discussions
+    about: Ask questions, share ideas, and get help from the community.
+  - name: Security policy
+    url: https://github.com/arihealthbird/signforge/security/policy
+    about: Report a security vulnerability privately.

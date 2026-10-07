@@ -1,39 +1,20 @@
 "use client";
 
-import { useTheme } from "next-themes";
-import { Button } from "@/components/ui/button";
-import { Moon, Sun } from "lucide-react";
-import { useEffect, useState } from "react";
+import { Icon } from "@/components/icons";
+import { setAppTheme, useAppTheme } from "@/lib/hooks";
 
 export function ThemeToggle() {
-  const { theme, setTheme } = useTheme();
-  const [mounted, setMounted] = useState(false);
-
-  useEffect(() => {
-    setMounted(true);
-  }, []);
-
-  if (!mounted) {
-    return (
-      <Button variant="ghost" size="icon" className="w-10 h-10">
-        <Sun className="h-5 w-5" />
-      </Button>
-    );
-  }
-
+  const theme = useAppTheme();
+  const next = theme === "dark" ? "light" : "dark";
   return (
-    <Button
-      variant="ghost"
-      size="icon"
-      onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
-      className="w-10 h-10"
+    <button
+      type="button"
+      aria-label={`Switch to ${next} mode`}
+      title={`Switch to ${next} mode`}
+      onClick={() => setAppTheme(next)}
+      className="grid size-9 shrink-0 place-items-center border-2 border-ink/20 text-ink transition-colors hover:border-ink hover:bg-ink/[0.06] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ink/30"
     >
-      {theme === "dark" ? (
-        <Sun className="h-5 w-5 text-yellow-500" />
-      ) : (
-        <Moon className="h-5 w-5 text-slate-700" />
-      )}
-      <span className="sr-only">Toggle theme</span>
-    </Button>
+      <Icon name={theme === "dark" ? "sun" : "moon"} size="sm" />
+    </button>
   );
 }

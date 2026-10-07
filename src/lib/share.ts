@@ -1,37 +1,24 @@
 import { compressToEncodedURIComponent, decompressFromEncodedURIComponent } from "lz-string";
 import { SignatureData, DEFAULT_SIGNATURE_DATA } from "@/types/signature";
-import { TemplateId } from "@/lib/templates";
-import { EmailThemeId } from "@/lib/email-themes";
-import { stripDangerousKeys, validateSignatureData, sanitizeSignatureFields, escapeHtml, sanitizeStyleOverrides } from "@/lib/security";
+import { DEFAULT_TEMPLATE_ID, resolveTemplateId, TemplateId } from "@/lib/templates";
+import {
+  stripDangerousKeys,
+  validateSignatureData,
+  sanitizeSignatureFields,
+} from "@/lib/security";
 
-// Maximum size for decompressed share data (100KB)
 const MAX_DECOMPRESSED_SIZE = 100 * 1024;
 
-/**
- * Shared signature data structure
- * Contains all necessary information to recreate a signature design
- */
 export interface SharedSignatureData {
-  /** Version for future compatibility */
   v: number;
-  /** Signature data (using short keys to minimize URL length) */
   s: SignatureData;
-  /** Template ID */
   t: TemplateId;
-  /** Email theme ID (optional) */
-  e?: EmailThemeId;
-  /** Timestamp when shared */
   ts: number;
 }
 
-/**
- * Encode signature data for URL sharing
- * Uses lz-string compression to minimize URL length
- */
 export function encodeSignatureForShare(
   signatureData: SignatureData,
-  templateId: TemplateId,
-  emailTheme?: EmailThemeId
+  templateId: TemplateId
 ): string {
   const shareData: SharedSignatureData = {
     v: 1,
@@ -39,146 +26,66 @@ export function encodeSignatureForShare(
     t: templateId,
     ts: Date.now(),
   };
-  
-  // Only include email theme if it's not the default
-  if (emailTheme && emailTheme !== "professional") {
-    shareData.e = emailTheme;
-  }
-
-  const jsonString = JSON.stringify(shareData);
-  return compressToEncodedURIComponent(jsonString);
+  return compressToEncodedURIComponent(JSON.stringify(shareData));
 }
 
-/**
- * Decode signature data from URL hash
- * Returns null if decoding fails or data is invalid
- */
 export function decodeSignatureFromShare(encoded: string): SharedSignatureData | null {
   try {
-    // Pre-check encoded string length to prevent decompression bombs
     if (encoded.length > 50000) return null;
 
     const decompressed = decompressFromEncodedURIComponent(encoded);
     if (!decompressed) return null;
-
-    // Enforce size limit on decompressed data to prevent abuse
     if (decompressed.length > MAX_DECOMPRESSED_SIZE) return null;
 
-    // Strip prototype pollution keys before spreading
-    const parsed = stripDangerousKeys(
-      JSON.parse(decompressed)
-    ) as SharedSignatureData;
-    
-    // Validate structure
+    const parsed = stripDangerousKeys(JSON.parse(decompressed)) as SharedSignatureData;
+
     if (
-      typeof parsed.v !== "number" ||
-      typeof parsed.s !== "object" ||
+      typeof parsed?.v !== "number" ||
+      typeof parsed?.s !== "object" ||
       parsed.s === null ||
-      typeof parsed.t !== "string" ||
-      typeof parsed.ts !== "number"
+      typeof parsed?.t !== "string" ||
+      typeof parsed?.ts !== "number"
     ) {
       return null;
     }
 
-    // Validate the signature data structure
-    if (!validateSignatureData(parsed.s)) {
-      return null;
-    }
+    if (!validateSignatureData(parsed.s)) return null;
 
-    // Ensure signature data has required fields, then sanitize URLs/colors
-    const merged = {
-      ...DEFAULT_SIGNATURE_DATA,
-      ...parsed.s,
-    };
+    // A template id from before the catalog was rebuilt opens on its nearest design, and an
+    // unknown one on the default, so a shared signature is never discarded over its template.
+    const template = resolveTemplateId(parsed.t) ?? DEFAULT_TEMPLATE_ID;
+
+    // Text is stored raw and escaped once at render time (signature-html.ts);
+    // only URLs and colours are normalised here.
+    const merged = { ...DEFAULT_SIGNATURE_DATA, ...parsed.s };
     const sanitized = sanitizeSignatureFields(merged as Record<string, unknown>);
 
-    // Escape HTML in all text fields to prevent stored XSS via crafted share URLs
-    const textFields = [
-      "fullName", "jobTitle", "company", "department",
-      "phone", "mobile", "fax", "address", "city", "state",
-      "zipCode", "country", "disclaimer",
-    ];
-    for (const field of textFields) {
-      if (typeof sanitized[field] === "string") {
-        sanitized[field] = escapeHtml(sanitized[field] as string);
-      }
-    }
-
-    // Sanitize styleOverrides to prevent CSS injection via crafted share URLs
-    if (sanitized.styleOverrides) {
-      sanitized.styleOverrides = sanitizeStyleOverrides(
-        sanitized.styleOverrides as Record<string, unknown>
-      );
-    }
-
-    const signatureData = sanitized as unknown as SignatureData;
-
-    return {
-      ...parsed,
-      s: signatureData,
-    };
+    return { ...parsed, t: template, s: sanitized as unknown as SignatureData };
   } catch (error) {
     console.error("Failed to decode shared signature:", error);
     return null;
   }
 }
 
-/**
- * Generate a shareable URL for a signature
- */
 export function generateShareUrl(
   signatureData: SignatureData,
-  templateId: TemplateId,
-  emailTheme?: EmailThemeId
+  templateId: TemplateId
 ): string {
-  const encoded = encodeSignatureForShare(signatureData, templateId, emailTheme);
-  
-  // Use window.location.origin in browser, fallback for SSR
-  const baseUrl = typeof window !== "undefined" 
-    ? window.location.origin 
-    : "";
-  
+  const encoded = encodeSignatureForShare(signatureData, templateId);
+  const baseUrl = typeof window !== "undefined" ? window.location.origin : "";
   return `${baseUrl}/?share=${encoded}`;
 }
 
-/**
- * Check if the current URL contains shared signature data
- */
 export function getSharedDataFromUrl(): SharedSignatureData | null {
   if (typeof window === "undefined") return null;
-  
-  const urlParams = new URLSearchParams(window.location.search);
-  const shareParam = urlParams.get("share");
-  
+  const shareParam = new URLSearchParams(window.location.search).get("share");
   if (!shareParam) return null;
-  
   return decodeSignatureFromShare(shareParam);
 }
 
-/**
- * Clear the share parameter from the URL without page reload
- */
 export function clearShareFromUrl(): void {
   if (typeof window === "undefined") return;
-  
   const url = new URL(window.location.href);
   url.searchParams.delete("share");
-  
   window.history.replaceState({}, "", url.pathname + url.search);
-}
-
-/**
- * Calculate approximate URL length for share link
- */
-export function estimateShareUrlLength(
-  signatureData: SignatureData,
-  templateId: TemplateId,
-  emailTheme?: EmailThemeId
-): number {
-  const encoded = encodeSignatureForShare(signatureData, templateId, emailTheme);
-  const baseUrl = typeof window !== "undefined" 
-    ? window.location.origin 
-    : "https://example.com";
-  
-  return `${baseUrl}/?share=${encoded}`.length;
 }

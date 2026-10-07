@@ -1,0 +1,68 @@
+SignForge
+Copyright 2026 TheoVex (https://theovex.com)
+
+This product is distributed under the Apache License, Version 2.0.
+You may obtain a copy of the License at:
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+
+Trademarks and brand assets
+---------------------------
+The TheoVex name, the TheoVex pixel-robot mark, the TheoVex wordmarks in
+public/brand/theovex/ and the SignForge name and mark are not licensed under
+the Apache License. Section 6 of the License does not grant permission to use
+them. They are included so this project can show its origin; forks should
+remove public/brand/theovex/ and use their own name and branding.
+
+The pixel-forest footer scene (src/components/forest-still.tsx and
+src/lib/forest-palettes.ts) is ported from the TheoVex site and is part of its
+brand look.
+
+Original artwork
+----------------
+The custom pictograms in src/lib/pictograms.ts (stapler, waffle, web, saber
+hilt, fedora) and the SignForge mark are original artwork released under the
+Apache License.
+
+Unofficial tributes
+-------------------
+The pop-culture scene pack (src/scenes/pop-culture) is an unofficial tribute.
+It parodies The Office, Parks and Recreation, Star Wars (Darth Vader and Yoda)
+and Spider-Man, which belong to their respective owners. SignForge is not
+affiliated with or endorsed by those works, their studios, networks or rights
+holders. The pack uses only names and short parody lines of text, for
+identification and parody. It contains no footage, logos, artwork or fonts
+from those works. Distributors who want to avoid any association can remove it
+by deleting that folder and its single import (see the README).
+
+Third-party software
+--------------------
+SignForge includes or builds upon the following projects, each distributed
+under its own license:
+
+  - Next.js (MIT)                   https://github.com/vercel/next.js
+  - React (MIT)                     https://github.com/facebook/react
+  - Tailwind CSS (MIT)              https://github.com/tailwindlabs/tailwindcss
+  - lucide-react (ISC)              https://github.com/lucide-icons/lucide
+  - lz-string (MIT)                 https://github.com/pieroxy/lz-string
+  - clsx (MIT)                      https://github.com/lukeed/clsx
+
+Fonts (SIL Open Font License 1.1, packaged by Fontsource)
+---------------------------------------------------------
+Geist, Geist Mono, Pixelify Sans, Pirata One, IM Fell English, Pacifico,
+Inter, Roboto, Open Sans, Montserrat, Poppins, DM Sans, Outfit, Plus Jakarta
+Sans, Space Grotesk, Manrope, Playfair Display, Merriweather and Lora.
+https://fontsource.org
+
+Services
+--------
+GIFs are served by GIPHY and remain subject to GIPHY's terms. AI generation
+uses a third-party provider (Novita.ai by default). Optional scene backdrop
+videos are loaded only from a host the operator configures and are not
+distributed with this repository.

@@ -1,0 +1,16 @@
+services:
+  signforge:
+    build:
+      context: .
+      # NEXT_PUBLIC_* values are build-time only; pass them through build args.
+      args:
+        NEXT_PUBLIC_GIPHY_API_KEY: ${NEXT_PUBLIC_GIPHY_API_KEY:-}
+        NEXT_PUBLIC_SCENE_MEDIA_BASE: ${NEXT_PUBLIC_SCENE_MEDIA_BASE:-}
+    ports:
+      - "3000:3000"
+    environment:
+      # Server-only, read at runtime.
+      NOVITA_API_KEY: ${NOVITA_API_KEY}
+      AI_BASE_URL: ${AI_BASE_URL:-https://api.novita.ai/openai/v1}
+      AI_MODEL: ${AI_MODEL:-deepseek/deepseek-v4-flash}
+    restart: unless-stopped
