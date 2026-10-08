@@ -5,7 +5,7 @@
 # THEO_MODE) are read from the environment at request time: set them when you
 # run the container.
 
-FROM node:20-alpine AS base
+FROM node:24-alpine AS base
 WORKDIR /app
 
 # ---- Build ----
