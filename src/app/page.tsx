@@ -18,6 +18,7 @@ import { DEFAULT_SCENE_ID, SceneId, getScene, isSceneId } from "@/scenes";
 import { SAMPLES, type Sample } from "@/lib/samples";
 import { getSharedDataFromUrl, clearShareFromUrl } from "@/lib/share";
 import { sanitizeSignatureFields, stripDangerousKeys, validateSignatureData } from "@/lib/security";
+import type { ImageAttachment } from "@/lib/attachments";
 import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
 import { Landing } from "@/components/landing";
@@ -115,6 +116,7 @@ export default function Home() {
   // shared or restored) rather than the built-in starter, so the AI refines it.
   const hasDesign = useRef(false);
   const lastPrompt = useRef("");
+  const lastAttachments = useRef<ImageAttachment[] | undefined>(undefined);
   const messagesRef = useRef<ChatMessage[]>([]);
 
   const rawDraft = useSyncExternalStore(subscribeDraft, readDraftRaw, () => null);
@@ -179,8 +181,9 @@ export default function Home() {
 
   /** Runs one generation. The caller decides whether a user message was added. */
   const run = useCallback(
-    async (prompt: string, history: HistoryTurn[] = []) => {
+    async (prompt: string, history: HistoryTurn[] = [], attachments?: ImageAttachment[]) => {
       lastPrompt.current = prompt;
+      lastAttachments.current = attachments;
       setLoading(true);
       setError(null);
       try {
@@ -193,6 +196,7 @@ export default function Home() {
             scene: sceneId,
             template: templateId,
             history,
+            attachments: attachments ?? [],
           }),
         });
         const json = (await res.json().catch(() => null)) as GenerateResponse | null;
@@ -250,19 +254,19 @@ export default function Home() {
   );
 
   const generate = useCallback(
-    (prompt: string) => {
+    (prompt: string, attachments?: ImageAttachment[]) => {
       if (loading) return;
       const history = toHistory(messagesRef.current);
       if (mode === "landing") {
         // A prompt from the landing page always starts a brand new signature.
         // Only prompts typed inside the studio refine the current one.
         hasDesign.current = false;
-        setMessages([{ role: "user", text: prompt }]);
+        setMessages([{ role: "user", text: prompt, attachments }]);
       } else {
-        setMessages((m) => [...m, { role: "user", text: prompt }]);
+        setMessages((m) => [...m, { role: "user", text: prompt, attachments }]);
       }
       setMode("studio");
-      void run(prompt, history);
+      void run(prompt, history, attachments);
     },
     [loading, mode, run]
   );
@@ -271,7 +275,7 @@ export default function Home() {
     if (!lastPrompt.current) return;
     // Drop the trailing user turn being retried so it is not duplicated in history.
     const history = toHistory(messagesRef.current).slice(0, -1);
-    void run(lastPrompt.current, history);
+    void run(lastPrompt.current, history, lastAttachments.current);
   }, [run]);
 
   const openStudio = useCallback(() => setMode("studio"), []);

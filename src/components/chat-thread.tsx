@@ -7,10 +7,13 @@ import { GifSuggestions, giphyEnabled, type GiphyGif } from "@/components/giphy"
 import { Icon } from "@/components/icons";
 import { Button, Chip, PixelProgress } from "@/components/ui";
 import { THEO_AI } from "@/lib/site";
+import type { ImageAttachment } from "@/lib/attachments";
 
 export interface ChatMessage {
   role: "user" | "assistant";
   text: string;
+  /** Reference images the user attached to this message. */
+  attachments?: ImageAttachment[];
   /** When set, show GIF suggestions for this search phrase under the message. */
   gifQuery?: string | null;
   /** One-tap follow-ups shown under the latest assistant message. */
@@ -42,7 +45,7 @@ export function ChatThread({
   messages: ChatMessage[];
   loading: boolean;
   error: string | null;
-  onSend: (prompt: string) => void;
+  onSend: (prompt: string, attachments?: ImageAttachment[]) => void;
   onRetry: () => void;
   onPickGif: (gif: GiphyGif) => void;
   onMoreGifs: (query: string) => void;
@@ -80,8 +83,23 @@ export function ChatThread({
         {messages.map((m, i) =>
           m.role === "user" ? (
             <div key={i} className="flex animate-fade-up justify-end">
-              <div className="max-w-[88%] border-2 border-ink bg-ink px-4 py-2.5 text-sm leading-relaxed text-paper">
-                {m.text}
+              <div className="max-w-[88%]">
+                {m.attachments?.length ? (
+                  <div className="mb-1.5 flex flex-wrap justify-end gap-1.5">
+                    {m.attachments.map((a, j) => (
+                      // eslint-disable-next-line @next/next/no-img-element
+                      <img
+                        key={j}
+                        src={`data:${a.mimeType};base64,${a.data}`}
+                        alt="Attached reference"
+                        className="h-14 w-14 border-2 border-ink bg-paper-soft object-cover"
+                      />
+                    ))}
+                  </div>
+                ) : null}
+                <div className="border-2 border-ink bg-ink px-4 py-2.5 text-sm leading-relaxed text-paper">
+                  {m.text}
+                </div>
               </div>
             </div>
           ) : (

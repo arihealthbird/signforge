@@ -10,8 +10,17 @@ services:
       - "3000:3000"
     environment:
       # Server-only, read at runtime. Compose reads these from the shell or from
-      # a .env file next to this one.
-      THEO_API_KEY: ${THEO_API_KEY:?Set THEO_API_KEY (see .env.example)}
-      THEO_BASE_URL: ${THEO_BASE_URL:-https://www.hitheo.ai}
-      THEO_MODE: ${THEO_MODE:-fast}
+      # a .env file next to this one. Set the Theo key, or the three AI_* values
+      # for any chat completions API (see .env.example). With neither, the site
+      # runs and AI generation answers "AI is not configured".
+      THEO_API_KEY: ${THEO_API_KEY:-}
+      THEO_BASE_URL: ${THEO_BASE_URL:-}
+      THEO_MODE: ${THEO_MODE:-}
+      AI_API_KEY: ${AI_API_KEY:-}
+      AI_BASE_URL: ${AI_BASE_URL:-}
+      AI_MODEL: ${AI_MODEL:-}
+      AI_EXTRA_BODY: ${AI_EXTRA_BODY:-}
+      AI_PROVIDER_NAME: ${AI_PROVIDER_NAME:-}
+      AI_PROVIDER_URL: ${AI_PROVIDER_URL:-}
+      TRUSTED_IP_HEADER: ${TRUSTED_IP_HEADER:-}
     restart: unless-stopped

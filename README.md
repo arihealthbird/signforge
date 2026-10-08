@@ -8,14 +8,18 @@
 [signforge.com](https://signforge.com) · [Docs](docs/README.md) · [Self-hosting](docs/self-hosting.md) · [Fork it](docs/forking-and-rebranding.md)
 
 SignForge is a free, open-source, AI-powered email signature builder from
-[TheoVex](https://theovex.com), powered by [Theo](https://hitheo.ai), the AI
-orchestration API from HiTheo. Tell it who you are and how it should look
+[TheoVex](https://theovex.com). It works with [Theo](https://hitheo.ai), the AI
+orchestration API from HiTheo, or with any chat completions API you choose. Tell
+it who you are and how it should look
 (*"Priya Shah, pediatric nurse practitioner. Calm, trustworthy, soft green."*) and
 it designs a signature you can paste straight into Gmail, Outlook or Apple Mail.
 Then keep chatting to refine it, or fine-tune it by hand.
 
 - **Design by conversation.** Describe it, then ask for changes ("bolder",
   "more minimal", "add a waving GIF") and the AI edits the design.
+- **Voice and images.** With Theo, dictate your request with the microphone, or
+  attach a reference image and the AI matches its palette and mood. Both are
+  hidden when the provider cannot serve them.
 - **Email-safe export.** Table-based HTML with inline styles and no external
   assets, built to the limits of Outlook for Windows and to stay under Gmail's
   10,000 character signature cap. Contact details use letters and words (E, T,
@@ -48,7 +52,7 @@ npm install
 
 # 2. Configure your keys
 cp .env.example .env.local
-#    Add your THEO_API_KEY to .env.local (see below)
+#    Enable one AI provider in .env.local (see below)
 
 # 3. Run the dev server
 npm run dev
@@ -61,23 +65,52 @@ you set `PORT`.
 
 | Variable                       | Required | Purpose                                                         |
 |--------------------------------|----------|-----------------------------------------------------------------|
-| `THEO_API_KEY`                 | Yes      | AI generation through Theo (server-side only)                   |
+| `THEO_API_KEY`                 | One of   | AI generation through Theo (server-side only)                   |
 | `THEO_BASE_URL`, `THEO_MODE`   | No       | Override the Theo endpoint, or set `think` for deeper reasoning |
+| `AI_API_KEY`                   | One of   | Any chat completions API instead of Theo (server-side only)     |
+| `AI_BASE_URL`, `AI_MODEL`      | With `AI_API_KEY` | The provider's https base URL, and the model to use    |
+| `AI_EXTRA_BODY`                | No       | Extra JSON fields for every request, for provider-specific options |
+| `AI_PROVIDER_NAME`, `AI_PROVIDER_URL` | No | Names the provider in the privacy policy                      |
 | `NEXT_PUBLIC_GIPHY_API_KEY`    | No       | Enables the GIF picker and AI GIF suggestions                   |
 | `NEXT_PUBLIC_SCENE_MEDIA_BASE` | No       | https URL of a folder of scene backdrop videos (see below)      |
 
-### Powered by Theo
+### AI provider
 
-SignForge designs signatures with [Theo](https://hitheo.ai), the AI orchestration
-API from HiTheo. It is an E.V.I., an embedded virtual intelligence: its own
-persona (the signature designer) on top of Theo's engine, which classifies each
-request and routes it to a model. Create a key in the Theo dashboard
+SignForge needs one AI provider, chosen through environment variables. If both
+are set, Theo is used.
+
+**Theo.** [Theo](https://hitheo.ai) is the AI orchestration API from HiTheo.
+SignForge is an E.V.I., an embedded virtual intelligence: its own persona (the
+signature designer) on top of Theo's engine, which classifies each request and
+routes it to a model. Create a key in the Theo dashboard
 ([guide](https://docs.hitheo.ai/quickstart/get-api-key)), then:
 
 ```bash
 THEO_API_KEY=your-theo-api-key
 # THEO_MODE=think      # deeper reasoning, a little slower
 ```
+
+Theo also powers voice dictation and image references in the chat box.
+
+**Any chat completions API.** Point SignForge at any provider that offers the
+common `POST /chat/completions` shape:
+
+```bash
+AI_API_KEY=your-provider-api-key
+AI_BASE_URL=https://api.example.com/v1
+AI_MODEL=your-model-name
+# AI_PROVIDER_NAME=Example AI          # shown in the privacy policy
+# AI_PROVIDER_URL=https://example.com
+```
+
+This path is text only, so voice dictation and image references are switched off
+and the chat box hides their buttons. Set `AI_PROVIDER_NAME` so the privacy
+policy tells visitors who receives their requests.
+
+Some reasoning models think for a long time before they answer, which is slow and
+can use up the whole token budget. If yours does, pass your provider's switch for
+it with `AI_EXTRA_BODY`, for example
+`AI_EXTRA_BODY={"thinking":{"type":"disabled"}}`.
 
 Keep real keys out of your shell history, chat and screenshots. A vault such as
 [AIRCTRL](https://airctrl.dev) stores keys and environment variables encrypted
@@ -107,10 +140,11 @@ Without it the GIF picker is hidden and people can still paste a GIF URL.
 
 1. **Prompt.** Your request is POSTed to `/api/generate` along with the current
    signature (when refining) and the current preview scene.
-2. **Generate.** The server sends the request to [Theo](https://hitheo.ai) with
-   the signature designer persona (`src/lib/theo.ts`), then validates the JSON
-   design that comes back into a safe `SignatureData` object (`src/lib/ai.ts`).
-   The model can also pick a preview scene and ask for a GIF search.
+2. **Generate.** The server sends the request to the configured AI provider
+   with the signature designer persona (`src/lib/ai-provider.ts` picks Theo or a
+   chat completions API), then validates the JSON design that comes back into a
+   safe `SignatureData` object (`src/lib/ai.ts`). The model can also pick a
+   preview scene and ask for a GIF search.
 3. **Render.** A pure HTML generator (`src/lib/signature-html.ts`, with one
    hand-built renderer per template in `src/lib/signature/designs`) turns the
    data into email-safe markup. The same generator powers the live preview, the
@@ -129,7 +163,7 @@ src/
 │   ├── layout.tsx               # Fonts, metadata, page backdrop
 │   ├── globals.css              # TheoVex skin tokens, utilities, motion (Tailwind v4)
 │   ├── privacy/  terms/         # Legal pages
-│   └── api/generate/route.ts    # AI generation endpoint
+│   └── api/                     # generate (AI), transcribe (voice), capabilities
 ├── components/
 │   ├── landing.tsx              # Hero, index strip, live demo, steps, features, TheoVex band
 │   ├── studio.tsx               # Workspace: tabs, scene picker, preview, export
@@ -150,7 +184,10 @@ src/
 │   ├── types.ts  helpers.ts  backdrop.ts
 ├── lib/
 │   ├── ai.ts                    # Prompting, JSON parsing, validation
+│   ├── ai-provider.ts           # Picks the provider from the environment
 │   ├── theo.ts                  # Client for the Theo AI orchestration API
+│   ├── chat-completions.ts      # Client for any chat completions API
+│   ├── attachments.ts  capabilities.ts  use-capabilities.ts  legal-copy.ts  provider-error.ts
 │   ├── signature-html.ts        # Public API of the HTML generator (single source of truth)
 │   ├── signature/               # kit.ts (tokens + email-safe primitives), designs/ (24 renderers), index.ts
 │   ├── pictograms.ts            # Original icons for what Lucide does not draw
@@ -240,10 +277,13 @@ back to its canvas effect.
 
 SignForge makes these requests on your behalf. Each has a plain opt-out.
 
-- **Theo** (`www.hitheo.ai`) receives the text of AI requests, the recent
-  conversation and the signature being edited. Leave `THEO_API_KEY` unset to
-  turn AI generation off. See HiTheo's
-  [data privacy notes](https://docs.hitheo.ai/security/data-privacy).
+- **Your AI provider** receives the text of AI requests, the recent
+  conversation and the signature being edited: Theo (`www.hitheo.ai`) or the
+  chat completions API you configure. With Theo it also receives reference
+  images and voice recordings. Leave both keys unset to turn AI generation off.
+  For Theo, see HiTheo's
+  [data privacy notes](https://docs.hitheo.ai/security/data-privacy). The
+  [privacy page](src/app/privacy/page.tsx) names whichever provider is in use.
 - **GIPHY** (`api.giphy.com`) is contacted from the browser when the GIF picker is
   used. Unset `NEXT_PUBLIC_GIPHY_API_KEY` to disable it.
 - **Scene media host** (only if you set `NEXT_PUBLIC_SCENE_MEDIA_BASE`) serves
@@ -260,7 +300,8 @@ See the [privacy policy page](src/app/privacy/page.tsx) for the user-facing word
 
 - [Architecture](docs/architecture.md) - how the data model, render pipeline,
   AI flow and security model fit together.
-- [API](docs/api.md) - the `/api/generate` contract.
+- [API](docs/api.md) - the `/api/generate`, `/api/transcribe` and
+  `/api/capabilities` contracts.
 - [Self-hosting](docs/self-hosting.md) - run your own instance with Node,
   Docker or Vercel.
 - [Forking and rebranding](docs/forking-and-rebranding.md) - build your own

@@ -56,7 +56,9 @@ scenes - is Apache 2.0.
    `credit()` in `src/lib/signature-html.ts` from `SITE`/`THEOVEX`/`THEO_AI`.
    Change or remove it there.
 6. **Legal pages** - update `src/app/privacy/page.tsx` and
-   `src/app/terms/page.tsx`, which name TheoVex as the operator.
+   `src/app/terms/page.tsx`, which name TheoVex as the operator. Their AI
+   sections are built from your provider settings (`src/lib/legal-copy.ts`), so
+   set `AI_PROVIDER_NAME` if you use a chat completions API.
 7. **Project metadata** - rename in `package.json`, `README.md`, and
    `.env.example`; update the DCO/`CONTRIBUTING.md` and `NOTICE` attribution
    (keep the original attribution when you retain substantial portions).
@@ -75,14 +77,19 @@ changes.
 
 ## Swapping the AI provider
 
-SignForge reaches its AI through one small module, `src/lib/theo.ts`, which
-exposes `theoComplete({ prompt, persona, temperature, signal })` and returns the
-reply text. `src/lib/ai.ts` builds the prompts, calls it, and sanitizes whatever
-comes back. To use a different backend, replace the body of `theoComplete` (and
-its config reader) with a call to your own provider, keep the same inputs and
-the text output, and map its failures onto the error codes in `toServiceError`
-(`ai.ts`). Nothing else changes: the route, the sanitizers and the tests around
-them do not depend on the provider.
+You may not need to change any code. SignForge already talks to any chat
+completions API: set `AI_API_KEY`, `AI_BASE_URL` and `AI_MODEL` (see
+[Self-hosting](self-hosting.md#choosing-an-ai-provider)) and leave
+`THEO_API_KEY` unset.
+
+For a provider with a different shape, add a client next to
+`src/lib/chat-completions.ts` that takes `{ prompt, persona, temperature,
+signal }` and returns the reply text, throw a `ProviderError`
+(`src/lib/provider-error.ts`) for every failure so `toServiceError` (`ai.ts`)
+can map it, and add a case for it in `complete()` and `activeProvider()` in
+`src/lib/ai-provider.ts`. Nothing else changes: the route, the sanitizers and the
+tests around them do not depend on the provider. Set `getCapabilities()` to say
+whether it can serve voice and images, and the composer follows.
 
 Keep three properties when you do: the key stays server-side, requests carry an
 abort signal so the route can time out, and logs never include the key or the

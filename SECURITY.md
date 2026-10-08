@@ -12,8 +12,8 @@ acknowledge your report as soon as possible and work with you to resolve it.
 
 ## Scope
 
-SignForge is a client-side signature builder with a single `/api/generate`
-endpoint. Areas of particular interest:
+SignForge is a client-side signature builder with a small API (`/api/generate`,
+`/api/transcribe` and `/api/capabilities`). Areas of particular interest:
 
 - Injection or cross-site scripting (XSS) through the generated signature HTML,
   including crafted `?share=` links, URLs, image and GIF fields, and font, color
@@ -22,7 +22,7 @@ endpoint. Areas of particular interest:
   characters inside URLs, private-network addresses).
 - Rate-limit or CSRF bypass on the API endpoint.
 - Weakening of the Content-Security-Policy in `src/proxy.ts`.
-- Leakage of the configured `THEO_API_KEY`.
+- Leakage of a configured AI provider key (`THEO_API_KEY` or `AI_API_KEY`).
 
 ## Supported versions
 
@@ -39,8 +39,11 @@ Older versions are not maintained; please upgrade.
 - Untrusted input (AI output, share links, saved drafts) is validated and
   sanitized before use. `/api/generate` also validates the signature it receives.
 - Signature data is never persisted server-side.
-- The Theo API key is server-only and only ever sent over https; never expose
-  it via a `NEXT_PUBLIC_*` variable. The GIPHY key is intentionally public.
+- AI provider keys (`THEO_API_KEY`, `AI_API_KEY`) are server-only and only ever
+  sent over https; never expose them via a `NEXT_PUBLIC_*` variable. The GIPHY
+  key is intentionally public.
+- Logs carry a provider's request id and error code, never a key or a visitor's
+  text. A model reply that cannot be parsed is logged by length only.
 - `src/proxy.ts` sets a Content-Security-Policy and enforces same-origin on API
   POST requests.
 

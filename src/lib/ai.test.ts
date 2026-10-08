@@ -196,6 +196,12 @@ describe("buildSystemPrompt", () => {
       expect(instruction).not.toContain(name);
     }
   });
+
+  it("tells the model to treat an attachment as style reference, never as a source URL", () => {
+    const prompt = buildSystemPrompt();
+    expect(prompt).toContain("style reference");
+    expect(prompt).toContain("Never set \"logoUrl\" or \"profilePhotoUrl\" to the image");
+  });
 });
 
 describe("buildUserPrompt", () => {
@@ -280,6 +286,9 @@ describe("requestGeneration", () => {
     vi.stubEnv("THEO_API_KEY", KEY);
     vi.stubEnv("THEO_BASE_URL", "");
     vi.stubEnv("THEO_MODE", "");
+    vi.stubEnv("AI_API_KEY", "");
+    vi.stubEnv("AI_BASE_URL", "");
+    vi.stubEnv("AI_MODEL", "");
     vi.spyOn(console, "error").mockImplementation(() => {});
   });
 
@@ -363,5 +372,133 @@ describe("requestGeneration", () => {
     expect(logged).toContain("req_support_1");
     expect(logged).toContain("invalid_api_key");
     expect(logged).not.toContain(KEY);
+  });
+
+  it("passes image attachments through to Theo as image_base64", async () => {
+    const fetchMock = stubTheo(reply({ content: JSON.stringify(design) }));
+    await requestGeneration("match this logo", null, undefined, null, null, [], [
+      { data: "QUJDRA==", mimeType: "image/png" },
+    ]);
+    const body = JSON.parse(String(fetchMock.mock.calls[0][1]?.body));
+    expect(body.attachments).toEqual([{ type: "image_base64", data: "QUJDRA==", mime_type: "image/png" }]);
+  });
+
+  it("never logs what the model said when it is not JSON, because it can echo the visitor's text", async () => {
+    stubTheo(reply({ content: "Sorry. Jane Doe, 555-0100, jane@private.example, cannot be designed." }));
+    await expect(requestGeneration("x", null)).rejects.toThrow("AI_BAD_JSON");
+    const logged = JSON.stringify(vi.mocked(console.error).mock.calls);
+    expect(logged).toContain("AI_BAD_JSON");
+    expect(logged).not.toContain("Jane Doe");
+    expect(logged).not.toContain("jane@private.example");
+  });
+});
+
+describe("requestGeneration through a chat completions provider", () => {
+  const KEY = "sk_not_a_real_key";
+  const BASE = "https://llm.example.com/v1";
+  const design = {
+    suggestedTemplate: "minimal-modern",
+    scene: "classic",
+    fullName: "Jane Doe",
+    jobTitle: "CTO",
+    company: "Nimbus",
+    email: "jane@nimbus.io",
+    primaryColor: "#0ea5e9",
+    fontFamily: "Inter",
+    fontSize: 14,
+    message: "Set up a calm design.",
+    changes: [],
+  };
+
+  const completion = (content: string) => ({ choices: [{ message: { role: "assistant", content } }] });
+  const reply = (body: unknown, status = 200) =>
+    new Response(JSON.stringify(body), { status, headers: { "content-type": "application/json" } });
+
+  function stubProvider(result: Response | Error) {
+    const fetchMock = vi.fn<typeof fetch>(async () => {
+      if (result instanceof Error) throw result;
+      return result;
+    });
+    vi.stubGlobal("fetch", fetchMock);
+    return fetchMock;
+  }
+
+  beforeEach(() => {
+    vi.stubEnv("THEO_API_KEY", "");
+    vi.stubEnv("AI_API_KEY", KEY);
+    vi.stubEnv("AI_BASE_URL", BASE);
+    vi.stubEnv("AI_MODEL", "some-model");
+    vi.spyOn(console, "error").mockImplementation(() => {});
+  });
+
+  afterEach(() => {
+    vi.unstubAllEnvs();
+    vi.unstubAllGlobals();
+    vi.restoreAllMocks();
+  });
+
+  it("turns the provider's reply into a sanitised signature", async () => {
+    const fetchMock = stubProvider(reply(completion(JSON.stringify(design))));
+
+    const result = await requestGeneration("a calm design", null);
+
+    expect(result.signature).toMatchObject({ fullName: "Jane Doe", company: "Nimbus", primaryColor: "#0ea5e9" });
+    expect(result.template).toBe("minimal-modern");
+    expect(result.message).toBe("Set up a calm design.");
+
+    expect(fetchMock.mock.calls[0][0]).toBe(`${BASE}/chat/completions`);
+    const body = JSON.parse(String(fetchMock.mock.calls[0][1]?.body));
+    expect(body.model).toBe("some-model");
+    expect(body.messages[0]).toMatchObject({ role: "system" });
+    expect(body.messages[0].content).toContain("expert email signature designer");
+    expect(body.messages[1]).toEqual({ role: "user", content: "<user_request>a calm design</user_request>" });
+  });
+
+  it("sends text only: reference images are never forwarded to a provider that cannot read them", async () => {
+    const fetchMock = stubProvider(reply(completion(JSON.stringify(design))));
+    await requestGeneration("match this logo", null, undefined, null, null, [], [
+      { data: "QUJDRA==", mimeType: "image/png" },
+    ]);
+    const sent = String(fetchMock.mock.calls[0][1]?.body);
+    expect(sent).not.toContain("QUJDRA==");
+    expect(JSON.parse(sent).attachments).toBeUndefined();
+  });
+
+  it.each([
+    [401, "AI_NOT_CONFIGURED"],
+    [402, "AI_UNAVAILABLE"],
+    [429, "RATE_LIMITED"],
+    [400, "AI_REQUEST_REJECTED"],
+    [503, "AI_UNAVAILABLE"],
+  ])("maps a provider %i to %s", async (status, expected) => {
+    stubProvider(reply({ code: status, reason: "EXAMPLE_REASON", message: "details" }, status));
+    await expect(requestGeneration("x", null)).rejects.toThrow(expected);
+  });
+
+  it("treats an unreachable provider as unavailable", async () => {
+    stubProvider(new TypeError("fetch failed"));
+    await expect(requestGeneration("x", null)).rejects.toThrow("AI_UNAVAILABLE");
+  });
+
+  it("logs the provider's code for support, and never the API key", async () => {
+    stubProvider(reply({ code: 401, reason: "FAILED_TO_AUTH", message: `key ${KEY} is wrong` }, 401));
+    await expect(requestGeneration("x", null)).rejects.toThrow("AI_NOT_CONFIGURED");
+    const logged = JSON.stringify(vi.mocked(console.error).mock.calls);
+    expect(logged).toContain("provider=custom");
+    expect(logged).toContain("FAILED_TO_AUTH");
+    expect(logged).not.toContain(KEY);
+  });
+
+  it("lets an abort through untouched, so the route can answer 504", async () => {
+    const abort = new DOMException("The operation was aborted.", "AbortError");
+    stubProvider(abort);
+    await expect(requestGeneration("x", null)).rejects.toBe(abort);
+  });
+
+  it("is not configured when the base URL or model is missing, and never calls out", async () => {
+    vi.stubEnv("AI_MODEL", "");
+    const fetchMock = stubProvider(reply(completion("{}")));
+    await expect(requestGeneration("x", null)).rejects.toThrow("AI_NOT_CONFIGURED");
+    expect(fetchMock).not.toHaveBeenCalled();
   });
 });

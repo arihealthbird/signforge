@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { checkRateLimit, getClientIp, stripDangerousKeys, validateSignatureData } from "@/lib/security";
 import { requestGeneration, type ChatTurn } from "@/lib/ai";
+import { sanitizeAttachments } from "@/lib/attachments";
 import { isTemplateId } from "@/lib/templates";
 import { isSceneId } from "@/scenes";
 import type { SignatureData } from "@/types/signature";
@@ -24,6 +25,7 @@ export async function POST(request: NextRequest) {
     template?: unknown;
     scene?: unknown;
     history?: unknown;
+    attachments?: unknown;
   };
   try {
     body = await request.json();
@@ -65,6 +67,9 @@ export async function POST(request: NextRequest) {
     }
   }
 
+  // Reference images: whitelisted types only, bounded count and byte size.
+  const attachments = sanitizeAttachments(body?.attachments);
+
   const controller = new AbortController();
   const timeout = setTimeout(() => controller.abort(), 30000);
 
@@ -77,7 +82,8 @@ export async function POST(request: NextRequest) {
       controller.signal,
       currentScene,
       currentTemplate,
-      history
+      history,
+      attachments
     );
     return NextResponse.json({
       signature: result.signature,

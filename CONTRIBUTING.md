@@ -18,7 +18,7 @@ contributions are welcome.
 
 ```bash
 npm install
-cp .env.example .env.local   # add THEO_API_KEY for live AI generation
+cp .env.example .env.local   # then enable one AI provider for live generation
 npm run dev
 ```
 

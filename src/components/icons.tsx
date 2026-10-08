@@ -22,6 +22,7 @@ import {
   Lock,
   Mail,
   MessageSquareText,
+  Mic,
   Monitor,
   Moon,
   Orbit,
@@ -83,6 +84,7 @@ const LUCIDE = {
   retry: RotateCcw,
   search: Search,
   shuffle: Shuffle,
+  mic: Mic,
   x: X,
 
   // Studio and preview

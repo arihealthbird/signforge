@@ -1,9 +1,9 @@
 # SignForge production image.
 #
 # NEXT_PUBLIC_* values are inlined into the client bundle at build time, so they
-# are build arguments. Server-only values (THEO_API_KEY, THEO_BASE_URL,
-# THEO_MODE) are read from the environment at request time: set them when you
-# run the container.
+# are build arguments. Server-only values (the AI provider settings such as
+# THEO_API_KEY or AI_API_KEY) are read from the environment at request time: set
+# them when you run the container.
 
 FROM node:24-alpine AS base
 WORKDIR /app

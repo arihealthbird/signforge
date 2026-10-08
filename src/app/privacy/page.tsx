@@ -1,34 +1,39 @@
 import type { Metadata } from "next";
 import { LegalPage, type LegalSection } from "@/components/legal-page";
+import { describeProvider } from "@/lib/ai-provider";
+import { aiPrivacySection } from "@/lib/legal-copy";
 import { SITE, THEOVEX } from "@/lib/site";
 
 export const metadata: Metadata = {
   title: "Privacy Policy",
 };
 
-const SECTIONS: LegalSection[] = [
-  {
-    title: "Overview",
-    body: [
-      `${SITE.name} is a free, open-source email signature builder from ${THEOVEX.name}. We keep data collection to a minimum: your signature lives in your browser, and there are no accounts.`,
-    ],
-  },
-  {
-    title: "What you type",
-    body: [
-      "Your name, job title, contact details, links and image URLs stay in your browser. They are not stored on our servers. The only time anything leaves your browser is when you use one of the features described below.",
-      "To let you pick up where you left off, we save your latest signature draft and your light or dark theme choice in your browser's local storage. Clear your site data at any time to remove them.",
-    ],
-  },
-  {
-    title: "AI generation",
-    body: [
-      "When you ask the AI to design or change a signature, the text of your request, the recent messages in the conversation and the signature you are editing are sent from our server to Theo, the AI orchestration API at hitheo.ai. Theo routes the request to a model and returns the result. We do not store these requests.",
-      "Theo handles that data under its own documentation and policies. It does not use prompts or responses to train models, and it may keep request audit logs and short-lived cache entries. It passes the request to the model provider it selects to produce the answer. Details: https://docs.hitheo.ai/security/data-privacy.",
-      "To protect the service from abuse we keep your IP address in memory for a short time to rate-limit requests. It is not written to a database.",
-      "If you self-host SignForge, you supply your own Theo API key through an environment variable. The key stays on your server and is never sent to the browser.",
-    ],
-  },
+// The AI section names the provider this deployment is configured with. That is
+// read from the environment, so the page is rendered per request instead of
+// being frozen at build time.
+export const dynamic = "force-dynamic";
+
+function buildSections(): LegalSection[] {
+  return [
+    {
+      title: "Overview",
+      body: [
+        `${SITE.name} is a free, open-source email signature builder from ${THEOVEX.name}. We keep data collection to a minimum: your signature lives in your browser, and there are no accounts.`,
+      ],
+    },
+    {
+      title: "What you type",
+      body: [
+        "Your name, job title, contact details, links and image URLs stay in your browser. They are not stored on our servers. The only time anything leaves your browser is when you use one of the features described below.",
+        "To let you pick up where you left off, we save your latest signature draft and your light or dark theme choice in your browser's local storage. Clear your site data at any time to remove them.",
+      ],
+    },
+    aiPrivacySection(describeProvider()),
+    ...STATIC_SECTIONS,
+  ];
+}
+
+const STATIC_SECTIONS: LegalSection[] = [
   {
     title: "GIFs (GIPHY)",
     body: [
@@ -57,5 +62,5 @@ const SECTIONS: LegalSection[] = [
 ];
 
 export default function PrivacyPage() {
-  return <LegalPage title="Privacy Policy" updated="October 2026" sections={SECTIONS} />;
+  return <LegalPage title="Privacy Policy" updated="October 2026" sections={buildSections()} />;
 }

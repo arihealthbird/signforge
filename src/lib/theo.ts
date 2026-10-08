@@ -1,4 +1,6 @@
 import { SITE } from "@/lib/site";
+import type { ImageAttachment } from "@/lib/attachments";
+import { ProviderError } from "@/lib/provider-error";
 
 /**
  * Client for Theo, the AI orchestration API from HiTheo (https://hitheo.ai).
@@ -82,17 +84,10 @@ function resolveMode(raw: string | undefined): TheoMode {
  * A failed call to Theo. `status` is the HTTP status, or 0 when Theo could not
  * be reached. `requestId` is what HiTheo support asks for.
  */
-export class TheoApiError extends Error {
-  readonly status: number;
-  readonly code: string | null;
-  readonly requestId: string | null;
-
+export class TheoApiError extends ProviderError {
   constructor(status: number, code: string | null, requestId: string | null, message?: string) {
-    super(message ?? `Theo API error ${status}${code ? ` (${code})` : ""}`);
+    super("theo", status, code, requestId, message ?? `Theo API error ${status}${code ? ` (${code})` : ""}`);
     this.name = "TheoApiError";
-    this.status = status;
-    this.code = code;
-    this.requestId = requestId;
   }
 }
 
@@ -103,6 +98,8 @@ export interface TheoCompletionInput {
   persona: string;
   temperature?: number;
   signal?: AbortSignal;
+  /** Optional reference images, sent as base64 multimodal content. */
+  attachments?: ImageAttachment[];
 }
 
 /**
@@ -129,6 +126,15 @@ export async function theoComplete(
         temperature: input.temperature,
         // One pass: SignForge uses no tools, so there is no loop to run.
         max_iterations: 1,
+        ...(input.attachments?.length
+          ? {
+              attachments: input.attachments.map((a) => ({
+                type: "image_base64",
+                data: a.data,
+                mime_type: a.mimeType,
+              })),
+            }
+          : {}),
       }),
       signal: input.signal,
     });
@@ -150,4 +156,59 @@ export async function theoComplete(
 
   const content = (body as { content?: unknown } | null)?.content;
   return typeof content === "string" ? content : "";
+}
+
+export interface TheoTranscribeOptions {
+  /** The filename attached to the uploaded part; browser defaults to webm. */
+  filename?: string;
+  /** BCP-47 language code, for example "en" or "es". */
+  language?: string;
+  signal?: AbortSignal;
+}
+
+/**
+ * Transcribes an audio file through Theo's speech-to-text endpoint. The file
+ * is uploaded as multipart form data; Theo returns `{ text, ... }`.
+ *
+ * Reference: https://docs.hitheo.ai/api-reference/audio/speech-to-text
+ */
+export async function theoTranscribe(
+  file: Blob,
+  options: TheoTranscribeOptions = {},
+  config: TheoConfig = readTheoConfig()
+): Promise<string> {
+  const form = new FormData();
+  form.append("file", file, options.filename ?? "recording.webm");
+  if (options.language) form.append("language", options.language);
+
+  let response: Response;
+  try {
+    response = await fetch(`${config.baseUrl}/api/v1/audio/stt`, {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${config.apiKey}`,
+        "User-Agent": `${SITE.name} (+${SITE.url})`,
+      },
+      // Do not set Content-Type: the fetch runtime adds the multipart boundary.
+      body: form,
+      signal: options.signal,
+    });
+  } catch (error) {
+    if ((error as { name?: string } | null)?.name === "AbortError") throw error;
+    throw new TheoApiError(0, "network_error", null, "Could not reach the Theo API");
+  }
+
+  const body: unknown = await response.json().catch(() => null);
+
+  if (!response.ok) {
+    const detail = (body as { error?: { code?: unknown; request_id?: unknown } } | null)?.error;
+    throw new TheoApiError(
+      response.status,
+      typeof detail?.code === "string" ? detail.code : null,
+      typeof detail?.request_id === "string" ? detail.request_id : response.headers.get("x-request-id")
+    );
+  }
+
+  const text = (body as { text?: unknown } | null)?.text;
+  return typeof text === "string" ? text : "";
 }

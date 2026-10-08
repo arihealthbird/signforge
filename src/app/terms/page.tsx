@@ -1,37 +1,44 @@
 import type { Metadata } from "next";
 import { LegalPage, type LegalSection } from "@/components/legal-page";
+import { describeProvider } from "@/lib/ai-provider";
+import { aiTermsSection } from "@/lib/legal-copy";
 import { SITE, THEOVEX } from "@/lib/site";
 
 export const metadata: Metadata = {
   title: "Terms of Use",
 };
 
-const SECTIONS: LegalSection[] = [
-  {
-    title: "Acceptance",
-    body: [
-      `By using ${SITE.name} (the "Service"), a free and open-source project from ${THEOVEX.name}, you agree to these terms. If you don't agree, please don't use the Service.`,
-    ],
-  },
-  {
-    title: "Free and open source",
-    body: [
-      `${SITE.name} is provided free of charge under the ${SITE.license} license. You may use, modify and self-host the software, provided you keep the required notices when you redistribute it.`,
-      `The ${THEOVEX.name} name and logo are trademarks of ${THEOVEX.name}. The ${SITE.license} license does not grant permission to use them.`,
-    ],
-  },
-  {
-    title: "Your responsibilities",
-    body: [
-      "You are responsible for the content you enter and the signatures you create. Don't use SignForge to impersonate others, create misleading or fraudulent signatures, or break the law.",
-    ],
-  },
-  {
-    title: "AI-generated content",
-    body: [
-      "AI features generate content with Theo, an AI orchestration API that routes each request to a third-party model. Output can be inaccurate, including made-up contact details and links. You are responsible for reviewing everything you export or share.",
-    ],
-  },
+// The AI section names the provider this deployment is configured with, which is
+// read from the environment, so the page is rendered per request.
+export const dynamic = "force-dynamic";
+
+function buildSections(): LegalSection[] {
+  return [
+    {
+      title: "Acceptance",
+      body: [
+        `By using ${SITE.name} (the "Service"), a free and open-source project from ${THEOVEX.name}, you agree to these terms. If you don't agree, please don't use the Service.`,
+      ],
+    },
+    {
+      title: "Free and open source",
+      body: [
+        `${SITE.name} is provided free of charge under the ${SITE.license} license. You may use, modify and self-host the software, provided you keep the required notices when you redistribute it.`,
+        `The ${THEOVEX.name} name and logo are trademarks of ${THEOVEX.name}. The ${SITE.license} license does not grant permission to use them.`,
+      ],
+    },
+    {
+      title: "Your responsibilities",
+      body: [
+        "You are responsible for the content you enter and the signatures you create. Don't use SignForge to impersonate others, create misleading or fraudulent signatures, or break the law.",
+      ],
+    },
+    aiTermsSection(describeProvider()),
+    ...STATIC_SECTIONS,
+  ];
+}
+
+const STATIC_SECTIONS: LegalSection[] = [
   {
     title: "Third-party content",
     body: [
@@ -65,5 +72,5 @@ const SECTIONS: LegalSection[] = [
 ];
 
 export default function TermsPage() {
-  return <LegalPage title="Terms of Use" updated="October 2026" sections={SECTIONS} />;
+  return <LegalPage title="Terms of Use" updated="October 2026" sections={buildSections()} />;
 }
