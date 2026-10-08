@@ -82,6 +82,10 @@ All notable changes to SignForge are documented here. This project adheres to
 
 ### Changed
 
+- The `Permissions-Policy` header allows the microphone for the site's own pages
+  (`microphone=(self)`), so features that record audio can work. It was
+  `microphone=()`, which blocks `getUserMedia` outright. Camera and geolocation
+  stay blocked.
 - The supported Node.js baseline is 22.12, because Node 20 reached end of life
   in April 2026. CI runs on Node 22 and 24, and the Docker image uses Node 24.
 - AI generation runs on Theo, the AI orchestration API from HiTheo

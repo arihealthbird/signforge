@@ -25,7 +25,10 @@ const securityHeaders = [
   },
   {
     key: "Permissions-Policy",
-    value: "camera=(), microphone=(), geolocation=()",
+    // The microphone is allowed for this origin only, so the composer can record
+    // voice. Camera and geolocation stay off. `microphone=()` would make
+    // getUserMedia fail before the browser even asks for permission.
+    value: "camera=(), microphone=(self), geolocation=()",
   },
 ];
 
