@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { checkRateLimit, stripDangerousKeys, validateSignatureData } from "@/lib/security";
+import { checkRateLimit, getClientIp, stripDangerousKeys, validateSignatureData } from "@/lib/security";
 import { requestGeneration, type ChatTurn } from "@/lib/ai";
 import { isTemplateId } from "@/lib/templates";
 import { isSceneId } from "@/scenes";
@@ -8,11 +8,7 @@ import type { SignatureData } from "@/types/signature";
 const MAX_PROMPT_LENGTH = 2000;
 
 export async function POST(request: NextRequest) {
-  const clientIp =
-    request.headers.get("cf-connecting-ip") ||
-    request.headers.get("x-real-ip") ||
-    request.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ||
-    "anonymous";
+  const clientIp = getClientIp(request.headers);
 
   const rateLimit = checkRateLimit(clientIp, 12, 60000);
   if (!rateLimit.allowed) {

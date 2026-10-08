@@ -8,6 +8,7 @@ import {
   sanitizeColor,
   sanitizeSignatureFields,
   truncate,
+  getClientIp,
   validateSignatureData,
 } from "./security";
 import { DEFAULT_SIGNATURE_DATA } from "@/types/signature";
@@ -168,5 +169,51 @@ describe("validateSignatureData", () => {
   it("rejects wrong field types", () => {
     expect(validateSignatureData({ ...DEFAULT_SIGNATURE_DATA, fontSize: "14" })).toBe(false);
     expect(validateSignatureData({ ...DEFAULT_SIGNATURE_DATA, fullName: 123 })).toBe(false);
+  });
+});
+
+describe("getClientIp", () => {
+  const headers = (init: Record<string, string>) => new Headers(init);
+
+  it("on Vercel, uses the address Vercel sets and ignores headers a visitor can forge", () => {
+    const h = headers({
+      "x-vercel-forwarded-for": "203.0.113.9",
+      "cf-connecting-ip": "198.51.100.1",
+      "x-forwarded-for": "198.51.100.2",
+      "x-real-ip": "198.51.100.3",
+    });
+    expect(getClientIp(h, { VERCEL: "1" })).toBe("203.0.113.9");
+  });
+
+  it("never lets a forged cf-connecting-ip pick the bucket", () => {
+    // The bypass this guards against: one visitor, a new cf-connecting-ip on every request.
+    const a = getClientIp(headers({ "cf-connecting-ip": "198.51.100.1" }), {});
+    const b = getClientIp(headers({ "cf-connecting-ip": "198.51.100.2" }), {});
+    expect(a).toBe("anonymous");
+    expect(b).toBe(a);
+
+    const onVercel = (forged: string) =>
+      getClientIp(headers({ "x-vercel-forwarded-for": "203.0.113.9", "cf-connecting-ip": forged }), { VERCEL: "1" });
+    expect(onVercel("1.1.1.1")).toBe(onVercel("2.2.2.2"));
+  });
+
+  it("trusts the header the operator names, case-insensitively, and takes its first entry", () => {
+    const h = headers({ "cf-connecting-ip": "198.51.100.7, 10.0.0.1", "x-forwarded-for": "6.6.6.6" });
+    expect(getClientIp(h, { TRUSTED_IP_HEADER: "CF-Connecting-IP" })).toBe("198.51.100.7");
+  });
+
+  it("falls back to x-real-ip, then the first x-forwarded-for entry, when no header is named", () => {
+    expect(getClientIp(headers({ "x-real-ip": "192.0.2.5", "x-forwarded-for": "6.6.6.6" }), {})).toBe("192.0.2.5");
+    expect(getClientIp(headers({ "x-forwarded-for": "192.0.2.6, 10.0.0.1" }), {})).toBe("192.0.2.6");
+    expect(getClientIp(headers({}), {})).toBe("anonymous");
+  });
+
+  it("falls back when the named header is missing from a request", () => {
+    const h = headers({ "x-real-ip": "192.0.2.5" });
+    expect(getClientIp(h, { TRUSTED_IP_HEADER: "cf-connecting-ip" })).toBe("192.0.2.5");
+  });
+
+  it("bounds the key, so a forged header cannot bloat the limiter", () => {
+    expect(getClientIp(headers({ "x-real-ip": "9".repeat(5000) }), {})).toHaveLength(64);
   });
 });

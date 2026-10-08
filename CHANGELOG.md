@@ -144,6 +144,11 @@ All notable changes to SignForge are documented here. This project adheres to
 
 ### Security
 
+- Rate limiting no longer trusts a visitor-supplied `cf-connecting-ip`. On Vercel
+  a visitor could send a different value with every request, give each its own
+  bucket and bypass the limit entirely. The address now comes from a header the
+  platform sets (`x-vercel-forwarded-for` on Vercel) or the one named in the new
+  `TRUSTED_IP_HEADER` setting, and the limiter key is length-bounded.
 - Dependency updates clear every advisory that reaches production
   (`source-map-js`) and the critical and high ones in dev tooling: the
   `tinypool` prototype-pollution gadget (vitest 4.1.11), `@vitest/mocker`, and

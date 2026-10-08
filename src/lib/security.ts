@@ -164,6 +164,46 @@ export function truncate(str: string | undefined | null, maxLength: number): str
 }
 
 /**
+ * The visitor's address, used as the rate-limit key.
+ *
+ * Only a header that the platform in front of the app sets or overwrites can be
+ * trusted. Every other header is chosen by the visitor, and a forged value would
+ * give each request its own bucket and switch the limit off. In order:
+ *
+ *  1. On Vercel, `x-vercel-forwarded-for`, which Vercel always overwrites.
+ *  2. The header named in `TRUSTED_IP_HEADER`, for the proxy you run: for
+ *     example `cf-connecting-ip` behind Cloudflare or `x-real-ip` behind nginx.
+ *  3. `x-real-ip`, then the first `x-forwarded-for` entry, which a reverse proxy
+ *     normally sets. A server exposed directly to the internet should name its
+ *     trusted header, or rate limit at the edge instead.
+ *
+ * `cf-connecting-ip` is never trusted unless it is named in `TRUSTED_IP_HEADER`.
+ */
+export function getClientIp(
+  headers: Pick<Headers, "get">,
+  env: Record<string, string | undefined> = process.env
+): string {
+  const first = (value: string | null | undefined) => value?.split(",")[0]?.trim() ?? "";
+  // IPv6 addresses are at most 45 characters. The cap keeps a forged header from
+  // bloating the limiter's memory.
+  const bounded = (value: string) => value.slice(0, 64);
+
+  if (env.VERCEL) {
+    const ip = first(headers.get("x-vercel-forwarded-for"));
+    if (ip) return bounded(ip);
+  }
+
+  const trusted = env.TRUSTED_IP_HEADER?.trim().toLowerCase();
+  if (trusted) {
+    const ip = first(headers.get(trusted));
+    if (ip) return bounded(ip);
+  }
+
+  const ip = first(headers.get("x-real-ip")) || first(headers.get("x-forwarded-for"));
+  return ip ? bounded(ip) : "anonymous";
+}
+
+/**
  * In-memory sliding-window rate limiter (per-process).
  * Suitable for single-instance and serverless minimum-footprint deployments.
  */
