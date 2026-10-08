@@ -17,6 +17,6 @@
 
 ## Checklist
 
-- [ ] I read [CONTRIBUTING.md](CONTRIBUTING.md).
+- [ ] I read [CONTRIBUTING.md](https://github.com/arihealthbird/signforge/blob/main/CONTRIBUTING.md).
 - [ ] I added/updated tests where appropriate.
 - [ ] My change is licensed under Apache 2.0.
