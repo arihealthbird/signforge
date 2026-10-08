@@ -1,5 +1,5 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
-import { THEO_DEFAULT_BASE_URL, TheoApiError, readTheoConfig, theoComplete } from "./theo";
+import { THEO_DEFAULT_BASE_URL, TheoApiError, readTheoConfig, theoComplete, theoTranscribe } from "./theo";
 
 const KEY = "theo_sk_not_a_real_key";
 const input = { prompt: "hello", persona: "You design email signatures.", temperature: 0.6 };
@@ -152,5 +152,61 @@ describe("theoComplete", () => {
     const abort = new DOMException("The operation was aborted.", "AbortError");
     stubFetch(abort);
     await expect(theoComplete(input, config())).rejects.toBe(abort);
+  });
+
+  it("forwards image attachments as image_base64", async () => {
+    const fetchMock = stubFetch(reply({ content: "{}" }));
+    await theoComplete(
+      {
+        ...input,
+        attachments: [
+          { data: "QUJDRA==", mimeType: "image/png" },
+          { data: "eHl6", mimeType: "image/webp" },
+        ],
+      },
+      config()
+    );
+    expect(JSON.parse(String(fetchMock.mock.calls[0][1]?.body)).attachments).toEqual([
+      { type: "image_base64", data: "QUJDRA==", mime_type: "image/png" },
+      { type: "image_base64", data: "eHl6", mime_type: "image/webp" },
+    ]);
+  });
+
+  it("omits attachments when none are supplied", async () => {
+    const fetchMock = stubFetch(reply({ content: "{}" }));
+    await theoComplete(input, config());
+    expect(JSON.parse(String(fetchMock.mock.calls[0][1]?.body)).attachments).toBeUndefined();
+  });
+});
+
+describe("theoTranscribe", () => {
+  const config = () => readTheoConfig({ THEO_API_KEY: KEY });
+
+  it("uploads one multipart audio file and returns the transcript", async () => {
+    const fetchMock = stubFetch(reply({ text: "build me a signature" }));
+
+    await expect(
+      theoTranscribe(new Blob(["audio"]), { filename: "recording.webm", language: "en" }, config())
+    ).resolves.toBe("build me a signature");
+
+    const [url, init] = fetchMock.mock.calls[0];
+    expect(url).toBe("https://www.hitheo.ai/api/v1/audio/stt");
+    expect(init?.method).toBe("POST");
+    const headers = init?.headers as Record<string, string>;
+    expect(headers.Authorization).toBe(`Bearer ${KEY}`);
+    expect(headers["Content-Type"]).toBeUndefined(); // FormData supplies the boundary
+
+    const form = init?.body as FormData;
+    expect(form.get("language")).toBe("en");
+    const uploaded = form.get("file") as File;
+    expect(uploaded.name).toBe("recording.webm");
+  });
+
+  it("raises a TheoApiError on failure and returns an empty string when there is no transcript", async () => {
+    stubFetch(reply({ error: { code: "invalid_api_key", request_id: "req_x" } }, { status: 401 }));
+    await expect(theoTranscribe(new Blob(["audio"]), {}, config())).rejects.toMatchObject({ status: 401 });
+
+    stubFetch(reply({}));
+    await expect(theoTranscribe(new Blob(["audio"]), {}, config())).resolves.toBe("");
   });
 });

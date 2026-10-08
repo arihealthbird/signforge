@@ -15,6 +15,18 @@ All notable changes to SignForge are documented here. This project adheres to
 - `src/lib/theo.ts`, a small tested client for the Theo API. It always uses the
   www host, sends the key only over https, and reports failures with Theo's
   request id.
+- `src/lib/chat-completions.ts`, a client for any chat completions API, chosen
+  with `AI_API_KEY`, `AI_BASE_URL` and `AI_MODEL`. It names no vendor, accepts
+  https URLs only, and reads `reasoning_content` when a reasoning model leaves
+  `content` empty. `AI_EXTRA_BODY` adds provider-specific fields to every
+  request, for example to turn off a reasoning phase that makes replies slow.
+  `src/lib/ai-provider.ts` picks the provider from the environment, and a shared
+  `ProviderError` lets one `toServiceError` map any provider's failure.
+- Voice dictation in the chat box (`POST /api/transcribe`, speech to text) and
+  reference images that the AI matches for palette and mood. Both need Theo.
+  `GET /api/capabilities` reports what a deployment can serve, on every request,
+  and the composer hides the microphone and attach buttons when the provider
+  cannot serve them.
 - The TheoVex house skin: a warm paper canvas with a soft wash and fine grain,
   squared corners across the shell, 2px ink borders and hard offset shadows,
   Geist 800 display type, Geist Mono numbered eyebrows (`02 · HOW IT WORKS`),
@@ -89,16 +101,18 @@ All notable changes to SignForge are documented here. This project adheres to
 - The supported Node.js baseline is 22.12, because Node 20 reached end of life
   in April 2026. CI runs on Node 22 and 24, and the Docker image uses Node 24.
 - AI generation runs on Theo, the AI orchestration API from HiTheo
-  (hitheo.ai). SignForge sends one stateless completion per request with its own
-  persona and reads the JSON design from the reply. Set `THEO_API_KEY`;
-  `THEO_BASE_URL` and `THEO_MODE` are optional. The previous provider variables
-  (`AI_BASE_URL`, `AI_MODEL`, `AI_API_KEY`, `OPENAI_API_KEY` and the
-  provider-specific key) are no longer read.
+  (hitheo.ai), or on any chat completions API. SignForge sends one stateless
+  completion per request with its own persona and reads the JSON design from the
+  reply. Set `THEO_API_KEY` (`THEO_BASE_URL` and `THEO_MODE` are optional), or
+  `AI_API_KEY` with `AI_BASE_URL` and `AI_MODEL`. Theo is used when both are
+  set. `OPENAI_API_KEY` and provider-specific key names are no longer read.
 - The "Powered by Theo AI" credit and the header and footer links now point to
   hitheo.ai over https.
 - The dev server uses the Next.js default port instead of a fixed one.
-- The privacy and terms pages describe the Theo data flow, and the privacy page
-  now lists everything the AI request carries.
+- The privacy and terms pages name the provider that actually receives visitors'
+  requests (Theo, or the one set in `AI_PROVIDER_NAME`), describe the data flow,
+  and list everything the AI request carries. They are rendered per request, so
+  a deployment's own settings are always reflected.
 - Contact details use letters and words by default (E, T, W, A or EMAIL, PHONE,
   WEB) instead of emoji. Startup and Tint keep email-safe mono letter tiles (a
   tinted table cell), and the booking buttons are plain text.

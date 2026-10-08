@@ -1,13 +1,13 @@
 # Architecture
 
-SignForge is a Next.js 16 (App Router) app with a single server endpoint and no
-database. This page describes how the pieces fit together so you can extend or
-fork it with confidence.
+SignForge is a Next.js 16 (App Router) app with a small API and no database.
+This page describes how the pieces fit together so you can extend or fork it
+with confidence.
 
 ## Overview
 
 A visitor describes a signature in plain English. The browser POSTs that request
-to the only API route, which calls Theo (the AI orchestration API), validates the
+to the AI route, which calls the configured AI provider, validates the
 result, and returns a normalized `SignatureData` object. A pure HTML generator
 turns that object into email-safe markup, and the same generator powers the live
 preview, the template thumbnails and the export.
@@ -20,7 +20,9 @@ api/generate/route.ts   (rate limit, validate, strip keys, 30s timeout)
       ▼
 lib/ai.ts               (prompts, extract JSON, coerceSignature)
       ▼
-lib/theo.ts             (one stateless completion on the Theo API)
+lib/ai-provider.ts      (picks the provider, one stateless completion)
+      ▼
+lib/theo.ts  or  lib/chat-completions.ts
       ▼
 SignatureData           (canonical model, src/types/signature.ts)
       ▼
@@ -70,9 +72,9 @@ against every design.
 
 `src/lib/ai.ts` builds a system prompt from the registries (templates via
 `templateDescription()`, fonts from `FONT_OPTIONS`, scenes via
-`sceneDescription()`) and sends it, with the user's request, to
-[Theo](https://hitheo.ai) through `src/lib/theo.ts`. SignForge is an E.V.I.: the
-system prompt becomes the persona, each request is one stateless completion (no
+`sceneDescription()`) and sends it, with the user's request, to the configured
+AI provider through `src/lib/ai-provider.ts`. SignForge is an E.V.I.: the system
+prompt becomes the persona, each request is one stateless completion (no
 conversation id, tools or skills), and the JSON in the reply is extracted and
 mapped onto safe data with `coerceSignature`.
 
@@ -82,10 +84,27 @@ are mapped by exact label, enums are clamped, and a final
 `sanitizeSignatureFields` pass re-validates URLs and colors. The model never
 invents image URLs (the prompt says so, and empty URLs are the result).
 
-Failures map onto the route's error codes in `toServiceError`: a rejected key
-is a 503 "not configured", Theo's rate limit is a 429, and anything else Theo
-returns is a 503 or 500. The log carries Theo's request id for support, never
-the key.
+Failures map onto the route's error codes in `toServiceError`, for any provider:
+a rejected key is a 503 "not configured", the provider's rate limit is a 429,
+and anything else it returns is a 503 or 500. Every provider client throws a
+`ProviderError` (`src/lib/provider-error.ts`), and the log carries its request
+id and code for support, never the key.
+
+### Providers
+
+`src/lib/ai-provider.ts` chooses the provider from the environment:
+
+- **Theo** (`src/lib/theo.ts`) when `THEO_API_KEY` is set. It also serves voice
+  dictation (`/api/transcribe`) and reference images.
+- **Any chat completions API** (`src/lib/chat-completions.ts`) when
+  `AI_API_KEY`, `AI_BASE_URL` and `AI_MODEL` are set. Text only, and it names no
+  vendor.
+- **Neither**: generation answers `AI_NOT_CONFIGURED`, a 503.
+
+`GET /api/capabilities` reports whether voice and images are on (only with Theo),
+so the composer hides the buttons that would fail. The privacy and terms pages
+are built from `describeProvider()` and `src/lib/legal-copy.ts`, so they name
+the provider that really receives the text.
 
 ## Registries
 
@@ -109,8 +128,10 @@ the key.
   same-origin on API POSTs (CORS + CSRF). `next.config.ts` adds the static
   security headers (HSTS, `X-Frame-Options`, `nosniff`, referrer and
   permissions policies).
-- The Theo API key is server-only and only ever sent over https. The GIPHY key
+- AI provider keys are server-only and only ever sent over https. The GIPHY key
   is intentionally public.
+- Logs carry a provider's request id and error code, never a key or a visitor's
+  text. A model reply that cannot be parsed is logged by length only.
 
 See [SECURITY.md](../SECURITY.md) for the reporting policy and the
 [self-hosting](self-hosting.md) guide for deployment hardening.

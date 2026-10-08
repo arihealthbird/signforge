@@ -13,6 +13,7 @@ import { EXAMPLES, SAMPLES, type Sample } from "@/lib/samples";
 import { SCENES, getScene } from "@/scenes";
 import { generateSignatureHTML } from "@/lib/signature-html";
 import type { TemplateId } from "@/lib/templates";
+import type { ImageAttachment } from "@/lib/attachments";
 import { usePrefersReducedMotion, useAppTheme } from "@/lib/hooks";
 
 /* ── Shared bits ──────────────────────────────────────────────────────── */
@@ -98,7 +99,7 @@ function Hero({
   hasDraft,
   onContinue,
 }: {
-  onGenerate: (prompt: string) => void;
+  onGenerate: (prompt: string, attachments?: ImageAttachment[]) => void;
   loading: boolean;
   hasDraft: boolean;
   onContinue: () => void;
@@ -541,7 +542,7 @@ export function Landing({
   onContinue,
   onUseSample,
 }: {
-  onGenerate: (prompt: string) => void;
+  onGenerate: (prompt: string, attachments?: ImageAttachment[]) => void;
   loading: boolean;
   hasDraft: boolean;
   onContinue: () => void;
