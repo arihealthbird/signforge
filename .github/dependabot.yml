@@ -6,7 +6,7 @@ updates:
       interval: "weekly"
     open-pull-requests-limit: 5
     ignore:
-      # Type definitions track the minimum supported Node.js (20), not the latest.
+      # Type definitions track the minimum supported Node.js (22), not the latest.
       - dependency-name: "@types/node"
         update-types: ["version-update:semver-major"]
     labels:

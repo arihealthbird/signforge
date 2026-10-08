@@ -1,11 +1,11 @@
 # Self-hosting
 
-SignForge is a standard Next.js 16 app with no database. You need Node.js 20.9
+SignForge is a standard Next.js 16 app with no database. You need Node.js 22.12
 or newer and a Theo API key. Everything else is optional.
 
 ## Prerequisites
 
-- Node.js 20.9 or newer.
+- Node.js 22.12 or newer (Node 20 reached end of life in April 2026).
 - A Theo API key. [Theo](https://hitheo.ai) is the AI orchestration API from
   HiTheo that designs the signatures. Create a key in the dashboard
   ([guide](https://docs.hitheo.ai/quickstart/get-api-key)).

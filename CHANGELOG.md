@@ -82,6 +82,8 @@ All notable changes to SignForge are documented here. This project adheres to
 
 ### Changed
 
+- The supported Node.js baseline is 22.12, because Node 20 reached end of life
+  in April 2026. CI runs on Node 22 and 24, and the Docker image uses Node 24.
 - AI generation runs on Theo, the AI orchestration API from HiTheo
   (hitheo.ai). SignForge sends one stateless completion per request with its own
   persona and reads the JSON design from the reply. Set `THEO_API_KEY`;
@@ -139,6 +141,15 @@ All notable changes to SignForge are documented here. This project adheres to
   original pictograms.
 - The template ids `creative-gradient` and `banner-cta`. Old share links and
   saved drafts that carry them open on `tint-panel` and `name-plate`.
+
+### Security
+
+- Dependency updates clear every advisory that reaches production
+  (`source-map-js`) and the critical and high ones in dev tooling: the
+  `tinypool` prototype-pollution gadget (vitest 4.1.11), `@vitest/mocker`, and
+  several `minimatch`, `js-yaml`, `brace-expansion`, `picomatch` and `flatted`
+  issues. One dev-only advisory remains (`braces`, via `eslint-config-next`)
+  because it has no patched release yet.
 
 ## [1.0.0] - 2026-01-15
 
