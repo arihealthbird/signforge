@@ -66,9 +66,13 @@ Every error body is `{ "error": "human-readable message" }`.
 ## Rate limiting and timeout
 
 - Requests are rate limited **in memory** to 12 per minute per client IP
-  (`src/lib/security.ts`). The client IP is read from the `cf-connecting-ip`,
-  `x-real-ip` or `x-forwarded-for` header. The limit is per-process, so a
-  multi-instance deployment does not share one global bucket.
+  (`src/lib/security.ts`). The client IP comes only from a header the platform
+  in front of the app controls: `x-vercel-forwarded-for` on Vercel, the header
+  named in `TRUSTED_IP_HEADER` if you set one, otherwise `x-real-ip` or the
+  first `x-forwarded-for` entry (see
+  [Client IP and rate limiting](self-hosting.md#client-ip-and-rate-limiting)).
+  The limit is per-process, so a multi-instance deployment does not share one
+  global bucket.
 - Theo rate limits each API key as well. When that limit is hit the route answers
   `429` with "AI service is busy".
 - The upstream AI call has a 30 second timeout.

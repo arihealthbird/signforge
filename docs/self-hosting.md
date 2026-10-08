@@ -19,6 +19,7 @@ Copy `.env.example` to `.env.local` and fill in your values.
 | `THEO_API_KEY`                 | yes      | server              | Your Theo API key. Never prefix it with `NEXT_PUBLIC_`. |
 | `THEO_BASE_URL`                | no       | server              | Defaults to `https://www.hitheo.ai`. Must be https. The apex `hitheo.ai` is rewritten to `www`, because the apex redirect drops the Authorization header. |
 | `THEO_MODE`                    | no       | server              | `fast` (default), or `think`, which reasons for longer. |
+| `TRUSTED_IP_HEADER`            | no       | server              | The one header your proxy sets or overwrites with the visitor's address, for rate limiting. See [Client IP and rate limiting](#client-ip-and-rate-limiting). |
 | `NEXT_PUBLIC_GIPHY_API_KEY`    | no       | browser, build time | Enables the GIF picker. GIPHY keys are public by design. |
 | `NEXT_PUBLIC_SCENE_MEDIA_BASE` | no       | browser, build time | Https folder of optional scene backdrop videos. |
 
@@ -100,6 +101,25 @@ IP; on a serverless or horizontally scaled deployment it becomes a per-instance
 budget. There is no shared store, by design (no database, no accounts). If you
 need a global limit, add a Redis-backed limiter or an edge proxy. Theo's per-key
 limit above is a second, global ceiling.
+
+## Client IP and rate limiting
+
+SignForge limits AI requests per visitor address, so it must read that address
+from a header the visitor cannot forge. It trusts only headers that the platform
+in front of the app sets or overwrites:
+
+- **Vercel:** `x-vercel-forwarded-for`. Nothing to configure.
+- **Another proxy or CDN:** set `TRUSTED_IP_HEADER` to the one header it sets or
+  overwrites, for example `cf-connecting-ip` behind Cloudflare or `x-real-ip`
+  behind nginx.
+- **Otherwise:** `x-real-ip`, then the first `x-forwarded-for` entry. This is only
+  safe behind a reverse proxy that overwrites those headers. A server exposed
+  directly to the internet should set `TRUSTED_IP_HEADER` or rate limit at the
+  edge, because a visitor can send it any header.
+
+`cf-connecting-ip` is ignored unless you name it. On every host that is not
+behind Cloudflare a visitor can send it, and a forged value would give each
+request its own bucket and switch the limit off.
 
 ## Optional services
 
